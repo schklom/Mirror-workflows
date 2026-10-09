@@ -557,25 +557,35 @@ public final class RestAlert {
                     .setUsage(AudioAttributes.USAGE_MEDIA)
                     .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                     .build();
-            track = new AudioTrack.Builder()
-                    .setAudioAttributes(attrs)
-                    .setAudioFormat(new AudioFormat.Builder()
-                            .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
-                            .setSampleRate(RATE)
-                            .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
-                            .build())
-                    .setBufferSizeInBytes(bytes)
-                    .setTransferMode(AudioTrack.MODE_STATIC)
-                    .build();
-            if (track.getState() != AudioTrack.STATE_INITIALIZED) return;
-            int frames = track.write(samples, 0, samples.length);
-            if (frames <= 0) return;
+            track = buildTrack(attrs, bytes, AudioTrack.MODE_STATIC);
+            // A static track holds the whole clip, the surest way to have it all heard. Some audio
+            // stacks refuse one (the Android emulator does, and so do some phones in some output
+            // modes) and the tone was then silently skipped: stream the same clip instead.
+            boolean streaming = false;
+            if (track.getState() != AudioTrack.STATE_INITIALIZED) {
+                Log.w("openGym", "rest tone: static track refused, streaming it");
+                track.release();
+                track = buildTrack(attrs, Math.max(min * 2, 8192), AudioTrack.MODE_STREAM);
+                streaming = true;
+            }
+            // Each way out says why in logcat: a rest tone that never plays is otherwise silent twice.
+            if (track.getState() != AudioTrack.STATE_INITIALIZED) { Log.w("openGym", "rest tone: track not initialized"); return; }
+            int frames = samples.length;
+            if (!streaming) {
+                frames = track.write(samples, 0, samples.length);
+                if (frames <= 0) { Log.w("openGym", "rest tone: write returned " + frames); return; }
+            }
             track.setVolume(1f);
             am = (AudioManager) ctx.getSystemService(Context.AUDIO_SERVICE);
             focus = duck(am, attrs);
             stopCurrent();
             current = track;
             track.play();
+            // A streaming track is fed after play(); write() blocks until the mixer has room.
+            if (streaming) {
+                int written = track.write(samples, 0, samples.length);
+                if (written <= 0) { Log.w("openGym", "rest tone: stream write returned " + written); return; }
+            }
             long clipMs = frames * 1000L / RATE;
             long deadline = System.currentTimeMillis() + clipMs + 3000;
             while (System.currentTimeMillis() < deadline
@@ -585,7 +595,9 @@ public final class RestAlert {
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        } catch (Exception ignored) { /* the notification still posted */ }
+        } catch (Exception e) {
+            Log.w("openGym", "rest tone failed", e);   // the notification still posted
+        }
         finally {
             if (track != null) {
                 try { track.stop(); } catch (Exception ignored) { /* */ }
@@ -594,6 +606,19 @@ public final class RestAlert {
             }
             unduck(am, focus);
         }
+    }
+
+    private static AudioTrack buildTrack(AudioAttributes attrs, int bytes, int mode) {
+        return new AudioTrack.Builder()
+                .setAudioAttributes(attrs)
+                .setAudioFormat(new AudioFormat.Builder()
+                        .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+                        .setSampleRate(RATE)
+                        .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
+                        .build())
+                .setBufferSizeInBytes(bytes)
+                .setTransferMode(mode)
+                .build();
     }
 
     /** Asks other apps to turn down for the tone. Returns what unduck needs, or null. */

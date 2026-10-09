@@ -2167,4 +2167,8 @@ export default {
   'Not started yet': 'अभी शुरू नहीं हुआ',
   'Exercise chips at the top': 'ऊपर व्यायाम चिप्स',
   'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'हर व्यायाम के लिए एक नंबर वाला बिंदु, जो आगे बढ़ते हुए भरता है। किसी पर टैप करें और वहीं पहुँच जाएँ।',
+  // --- collapse completed exercises (#241) ---
+  'Fold away': 'समेटें',
+  'Show the sets': 'सेट दिखाएँ',
+  'In List and Compact, a finished exercise folds into one line.': 'सूची और संक्षिप्त में पूरा हुआ व्यायाम एक लाइन में सिमट जाता है।',
 }

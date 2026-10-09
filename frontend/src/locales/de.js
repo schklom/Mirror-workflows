@@ -2187,4 +2187,8 @@ export default {
   'Not started yet': 'Noch nicht angefangen',
   'Exercise chips at the top': 'Übungs-Chips oben',
   'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'Ein nummerierter Punkt pro Übung, der sich beim Trainieren füllt. Tipp einen an und du bist da.',
+  // --- collapse completed exercises (#241) ---
+  'Fold away': 'Einklappen',
+  'Show the sets': 'Sätze anzeigen',
+  'In List and Compact, a finished exercise folds into one line.': 'In Liste und Kompakt schrumpft eine fertige Übung auf eine Zeile.',
 }

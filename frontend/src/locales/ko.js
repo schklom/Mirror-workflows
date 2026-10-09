@@ -2167,4 +2167,8 @@ export default {
   'Not started yet': '아직 시작 안 함',
   'Exercise chips at the top': '위쪽 운동 칩',
   'A numbered dot per exercise, filled as you go. Tap one to jump there.': '운동마다 번호 점이 하나씩 있고, 진행할수록 채워져요. 누르면 바로 그 운동으로 가요.',
+  // --- collapse completed exercises (#241) ---
+  'Fold away': '접기',
+  'Show the sets': '세트 보기',
+  'In List and Compact, a finished exercise folds into one line.': '목록과 간략 보기에서 끝낸 운동은 한 줄로 접혀요.',
 }

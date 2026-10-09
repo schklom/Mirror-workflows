@@ -2167,4 +2167,8 @@ export default {
   'Not started yet': 'Jeszcze nie rozpoczęte',
   'Exercise chips at the top': 'Znaczniki ćwiczeń na górze',
   'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'Ponumerowana kropka dla każdego ćwiczenia, wypełnia się w trakcie. Stuknij jedną, aby tam przejść.',
+  // --- collapse completed exercises (#241) ---
+  'Fold away': 'Zwiń',
+  'Show the sets': 'Pokaż serie',
+  'In List and Compact, a finished exercise folds into one line.': 'W widokach Lista i Kompaktowy ukończone ćwiczenie zwija się do jednej linii.',
 }

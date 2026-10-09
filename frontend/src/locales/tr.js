@@ -2167,4 +2167,8 @@ export default {
   'Not started yet': 'Henüz başlanmadı',
   'Exercise chips at the top': 'Üstte egzersiz çipleri',
   'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'Her egzersiz için numaralı bir nokta, ilerledikçe dolar. Birine dokun, oraya atla.',
+  // --- collapse completed exercises (#241) ---
+  'Fold away': 'Daralt',
+  'Show the sets': 'Setleri göster',
+  'In List and Compact, a finished exercise folds into one line.': 'Liste ve Kompakt görünümde biten egzersiz tek satıra iner.',
 }

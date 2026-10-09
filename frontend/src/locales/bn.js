@@ -2246,4 +2246,8 @@ export default {
   'Not started yet': 'এখনও শুরু হয়নি',
   'Exercise chips at the top': 'উপরে ব্যায়ামের চিপ',
   'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'প্রতিটি ব্যায়ামের জন্য একটি নম্বরওয়ালা বিন্দু, এগোতে এগোতে ভরে ওঠে। ট্যাপ করলেই সেখানে চলে যাবেন।',
+  // --- collapse completed exercises (#241) ---
+  'Fold away': 'গুটিয়ে রাখুন',
+  'Show the sets': 'সেটগুলো দেখান',
+  'In List and Compact, a finished exercise folds into one line.': 'তালিকা ও কমপ্যাক্টে শেষ হওয়া ব্যায়াম এক লাইনে গুটিয়ে যায়।',
 }

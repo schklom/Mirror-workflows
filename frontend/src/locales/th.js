@@ -2178,4 +2178,8 @@ export default {
   'Not started yet': 'ยังไม่เริ่ม',
   'Exercise chips at the top': 'ชิปท่าฝึกด้านบน',
   'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'จุดมีหมายเลขหนึ่งจุดต่อท่า เติมเต็มไปเรื่อยๆ ตามที่คุณฝึก แตะเพื่อไปที่ท่านั้นได้เลย',
+  // --- collapse completed exercises (#241) ---
+  'Fold away': 'ย่อเก็บ',
+  'Show the sets': 'แสดงเซ็ต',
+  'In List and Compact, a finished exercise folds into one line.': 'ในมุมมองรายการและแบบย่อ ท่าที่เสร็จแล้วจะย่อเหลือบรรทัดเดียว',
 }

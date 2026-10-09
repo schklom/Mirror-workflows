@@ -2164,4 +2164,8 @@ export default {
   'Not started yet': 'Ще не розпочато',
   'Exercise chips at the top': 'Позначки вправ угорі',
   'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'Пронумерована крапка для кожної вправи, заповнюється по ходу. Торкніться її, щоб перейти до вправи.',
+  // --- collapse completed exercises (#241) ---
+  'Fold away': 'Згорнути',
+  'Show the sets': 'Показати підходи',
+  'In List and Compact, a finished exercise folds into one line.': 'У режимах «Список» і «Компактно» виконана вправа згортається в один рядок.',
 }

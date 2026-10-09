@@ -2413,25 +2413,65 @@ describe('collapsing completed workout exercises', () => {
     await rerender()
   }
 
-  it.each(['list', 'compact'])('keeps the finished current exercise open in %s, then collapses it when moving on', async workoutView => {
+  it.each(['list', 'compact'])('folds the current exercise in %s the moment its last set is ticked, and opens it again on a tap', async workoutView => {
     await mount([exercise('bench', [true, false]), exercise('row', [false])], 0,
       { workoutView, active: { workoutView, collapseCompleted: true } })
+    const loggedBefore = structuredClone(mocks.S.active.entries[0].sets)
     await toggleSet(1)
     await rerender()
-    expect(units()[0].querySelector('.wl-summary')).toBeNull()
-    const loggedSets = structuredClone(mocks.S.active.entries[0].sets)
-    await setCurrent(1)
+    // the marker moved on to what is left, so the finished one folded
+    expect(mocks.S.active.cur).toBe(1)
     expect(units()[0].querySelector('.wl-summary')).toBeTruthy()
     expect(units()[0].querySelector('.setrow')).toBeNull()
     expect(units()[0].querySelector('.exmedia')).toBeNull()
-    expect(units()[0].querySelector('[aria-expanded="false"]')).toBeTruthy()
+    expect(units()[1].classList.contains('cur')).toBe(true)
     expect(units()[1].querySelector('.setrow')).toBeTruthy()
-    expect(mocks.S.active.entries[0].sets).toEqual(loggedSets)
+    expect(mocks.S.active.entries[0].sets).toEqual([...loggedBefore.slice(0, 1), { ...loggedBefore[1], done: true, at: expect.any(Number) }])
+    // a tap on the line opens the sets again, without making it current
+    const summary = units()[0].querySelector('button.wl-summary')
+    expect(summary.getAttribute('aria-expanded')).toBe('false')
+    await click(summary)
+    expect(units()[0].querySelectorAll('.setrow').length).toBe(2)
+    expect(mocks.S.active.cur).toBe(1)
+    const fold = [...units()[0].querySelectorAll('button')].find(b => b.textContent.trim() === 'Fold away')
+    expect(fold.getAttribute('aria-expanded')).toBe('true')
+    await click(fold)
+    expect(units()[0].querySelector('.wl-summary')).toBeTruthy()
+    // Set current still brings it back as the one you are on
     await setCurrent(0)
     expect(units()[0].querySelectorAll('.setrow').length).toBe(2)
+    // unticking and ticking again is not new progress: the marker stays
+    await toggleSet(1)
+    await toggleSet(1)
+    await rerender()
+    expect(mocks.S.active.cur).toBe(0)
+  })
+
+  it('keeps the marker where it is when collapsing is off', async () => {
+    await mount([exercise('bench', [true, false]), exercise('row', [false])], 0, { active: { workoutView: 'list' } })
+    await toggleSet(1)
+    await rerender()
+    expect(mocks.S.active.cur).toBe(0)
+    expect(container.querySelector('.wl-summary')).toBeNull()
+  })
+
+  it('leaves the marker alone when the exercise finished last is not the current one', async () => {
+    await mount([exercise('bench', [false]), exercise('row', [false]), exercise('squat', [false])], 2,
+      { active: { workoutView: 'list', collapseCompleted: true } })
     await toggleSet(0)
-    await setCurrent(1)
-    expect(units()[0].querySelector('.wl-summary')).toBeNull()
+    await rerender()
+    expect(mocks.S.active.cur).toBe(2)
+    expect(units()[0].querySelector('.wl-summary')).toBeTruthy()
+  })
+
+  it('stays on the last exercise when nothing is left, and offers the finish', async () => {
+    await mount([exercise('bench', [true]), exercise('row', [false])], 1,
+      { active: { workoutView: 'list', collapseCompleted: true } })
+    await toggleSet(0)   // the bench is folded already, so the row's set is the only tick on screen
+    await rerender()
+    expect(mocks.S.active.cur).toBe(1)
+    expect(mocks.workoutCompleteSheet).toHaveBeenCalledOnce()
+    expect(units()[1].querySelector('.wl-summary')).toBeNull()
   })
 
   it('leaves completed exercises expanded unless the option is enabled', async () => {
@@ -2464,6 +2504,116 @@ describe('collapsing completed workout exercises', () => {
       { active: { workoutView: 'compact', collapseCompleted: true } })
     expect(units()[0].querySelector('.wl-summary')).toBeTruthy()
     expect(units()[1].querySelector('.wl-summary')).toBeNull()
+  })
+})
+
+// Discord: "I use the list layout... I want to minimize/collapse completed exercises so I view
+// only what I have yet to do. Not the same as hiding the exercise image."
+describe('list layout: only what is left to do (Discord request, #241)', () => {
+  const units = () => [...container.querySelectorAll('.wl-unit')]
+  const ticks = () => [...container.querySelectorAll('[role="checkbox"]')]
+  const session = () => [
+    exercise('bench', [false, false]),
+    exercise('fly', [false], { sg: 'pair' }), exercise('row', [false], { sg: 'pair' }),
+    exercise('squat', [false]),
+  ]
+  // linkedom has no layout: the header ends at 120 px, the unit with `key` starts at `top`, and
+  // every other unit sits above the screen.
+  let realRect = null
+  afterEach(() => {
+    // linkedom's element classes are shared between windows: put the real one back
+    if (realRect) parseHTML('<p></p>').window.Element.prototype.getBoundingClientRect = realRect
+    realRect = null
+  })
+  const layout = (key, top) => {
+    realRect ||= dom.Element.prototype.getBoundingClientRect
+    dom.innerHeight = 800
+    dom.scrollY = 0
+    dom.scrollTo = vi.fn()
+    dom.Element.prototype.getBoundingClientRect = function () {
+      if (this.classList?.contains('whdr')) return { top: 0, bottom: 120 }
+      if (this.classList?.contains('wl-unit') && this.dataset.unitKey === key) return { top, bottom: top + 400 }
+      return { top: -400, bottom: -100 }
+    }
+  }
+
+  it('folds every finished exercise to one line as the session goes, superset included, and keeps it after a reload', async () => {
+    // switched on once in Settings: the session itself never chose
+    await mount(session(), 0, { workoutView: 'list', collapseCompleted: true, active: { workoutView: 'list' } })
+    expect(mocks.S.active.collapseCompleted).toBeUndefined()
+    await toggleSet(0)
+    await toggleSet(1)
+    await rerender()
+    expect(units()[0].querySelector('.wl-summary')).toBeTruthy()
+    expect(units()[1].classList.contains('cur')).toBe(true)
+    // the superset: its first member moves the marker to its partner, the second finishes the round
+    await toggleSet(0)
+    await rerender()
+    expect(units()[1].querySelector('.wl-summary')).toBeNull()
+    await toggleSet(1)
+    await rerender()
+    expect(units()[1].querySelectorAll('.wl-summary .tag').length).toBe(2)
+    expect(units()[2].classList.contains('cur')).toBe(true)
+    // what is left is all that is open
+    expect(ticks()).toHaveLength(1)
+    expect(container.querySelectorAll('.wl-summary').length).toBe(2)
+    // a reload (or Resume) brings the same picture back from the saved session
+    const saved = structuredClone(mocks.S)
+    await unmount()
+    mocks.S = saved
+    installDom()
+    await act(async () => { root.render(React.createElement(Workout)) })
+    expect(container.querySelectorAll('.wl-summary').length).toBe(2)
+    expect(ticks()).toHaveLength(1)
+  })
+
+  it('brings the next exercise up when it is left low on the screen, and leaves the page alone when it is in reach', async () => {
+    await mount(session(), 0, { active: { workoutView: 'list', collapseCompleted: true } })
+    await flushFrame()   // the list's own open-at-current scroll
+    layout('1-2', 700)
+    mocks.scrollCalls.length = 0
+    await toggleSet(0)
+    await toggleSet(1)
+    await rerender()   // the mocked store does not render by itself
+    expect(mocks.scrollCalls).toHaveLength(1)
+    expect(mocks.scrollCalls[0].node.dataset.unitKey).toBe('1-2')
+    expect(mocks.scrollCalls[0].options).toEqual({ block: 'start', behavior: 'smooth' })
+
+    await unmount()
+    await mount(session(), 0, { active: { workoutView: 'list', collapseCompleted: true } })
+    await flushFrame()
+    layout('1-2', 300)
+    mocks.scrollCalls.length = 0
+    await toggleSet(0)
+    await toggleSet(1)
+    await rerender()
+    expect(mocks.S.active.cur).toBe(1)
+    expect(mocks.scrollCalls).toEqual([])
+  })
+
+  it('is one switch in Settings for every session, and the Layout menu still flips it for this one', async () => {
+    await mount([exercise('bench', [true]), exercise('row', [false])], 1, { collapseCompleted: true, active: { workoutView: 'list' } })
+    expect(container.querySelectorAll('.wl-summary').length).toBe(1)
+    await click(container.querySelector('button[aria-label="Workout options"]'))
+    await act(async () => { menuItemsOf(mocks.menuSheet.mock.calls.at(-1)[0]).find(it => it.label === 'Layout').onClick() })
+    const toggleItem = menuItemsOf(mocks.menuSheet.mock.calls.at(-1)[0]).find(it => it.label === 'Collapse completed exercises')
+    expect(toggleItem.on).toBe(true)
+    await act(async () => { toggleItem.onClick() })
+    await rerender()
+    expect(mocks.S.active.collapseCompleted).toBe(false)
+    expect(mocks.S.collapseCompleted).toBe(true)
+    expect(container.querySelector('.wl-summary')).toBeNull()
+  })
+
+  it('opens a folded exercise when its chip at the top is tapped, and scrolls to it', async () => {
+    await mount([exercise('bench', [true]), exercise('row', [false])], 1, { active: { workoutView: 'list', collapseCompleted: true } })
+    await flushFrame()
+    mocks.scrollCalls.length = 0
+    await click(container.querySelectorAll('.wchip')[0])
+    expect(units()[0].querySelector('.wl-summary')).toBeNull()
+    await flushFrame()
+    expect(mocks.scrollCalls.at(-1).node.dataset.unitKey).toBe('0')
+    expect(mocks.S.active.cur).toBe(1)
   })
 })
 

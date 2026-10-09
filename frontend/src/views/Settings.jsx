@@ -479,6 +479,14 @@ export default function Settings({ page = null, find = null, via = null }) {
             options={[{ value: 'cards', label: t('Cards') }, { value: 'list', label: t('List') }, { value: 'compact', label: t('Compact') }, { value: 'focus', label: t('Focus') }]}
             value={layout} onChange={v => update(s => { s.workoutView = v })} />
         </Row>
+        {/* The saved side of the Layout menu's "Collapse completed exercises" (#241): on here, every
+            session starts with it, and the menu still flips it for one session. Setting it here
+            also drops a running session's own choice, so the switch does what it says right away. */}
+        <Row icon="minimize" iconTint="var(--teal)" title={t('Collapse completed exercises')}
+          subtitle={t('In List and Compact, a finished exercise folds into one line.')}>
+          <Switch aria-label={t('Collapse completed exercises')} checked={!!S.collapseCompleted}
+            onChange={v => update(s => { s.collapseCompleted = v; if (s.active) delete s.active.collapseCompleted })} />
+        </Row>
       </Section>
       <Section title={t('Before and during')}>
         {/* The quick weigh-in that opens on Start (sheets.jsx startFlow, issue #137); off skips

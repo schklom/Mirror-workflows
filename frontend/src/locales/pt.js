@@ -2167,4 +2167,8 @@ export default {
   'Not started yet': 'Ainda não começado',
   'Exercise chips at the top': 'Marcadores de exercícios no topo',
   'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'Um ponto numerado por exercício, que se vai enchendo. Toque num para saltar para lá.',
+  // --- collapse completed exercises (#241) ---
+  'Fold away': 'Recolher',
+  'Show the sets': 'Mostrar as séries',
+  'In List and Compact, a finished exercise folds into one line.': 'Em Lista e Compacta, um exercício terminado fica numa só linha.',
 }

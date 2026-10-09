@@ -2160,4 +2160,8 @@ export default {
   'Not started yet': '還沒開始',
   'Exercise chips at the top': '頂部動作圓點',
   'A numbered dot per exercise, filled as you go. Tap one to jump there.': '每個動作一個帶編號的圓點，練著練著就填滿了。點一下就能跳過去。',
+  // --- collapse completed exercises (#241) ---
+  'Fold away': '收起',
+  'Show the sets': '顯示各組',
+  'In List and Compact, a finished exercise folds into one line.': '在清單模式和緊湊模式中，完成的動作會收合成一行。',
 }

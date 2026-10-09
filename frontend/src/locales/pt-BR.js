@@ -1340,6 +1340,10 @@ export const PT_BR_OVERRIDES = {
   'Not started yet': 'Ainda não começou',
   'Exercise chips at the top': 'Marcadores de exercícios no topo',
   'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'Um ponto numerado por exercício, que vai enchendo conforme você treina. Toque em um para ir até lá.',
+  // --- collapse completed exercises (#241) ---
+  'Fold away': 'Recolher',
+  'Show the sets': 'Mostrar as séries',
+  'In List and Compact, a finished exercise folds into one line.': 'Em Lista e Compacta, um exercício concluído vira uma linha só.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

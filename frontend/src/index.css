@@ -1846,6 +1846,8 @@ body.no-tabbar.resting #toast{bottom:calc(100px + var(--sab))}
 .wl-unit.cur{box-shadow:inset 0 0 0 1.5px var(--acc-line)}
 .wl-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
 .wl-summary{display:grid;gap:8px;padding-bottom:10px}
+/* the folded unit is a button (a tap opens it again): full width, text where it always sat */
+button.wl-summary{width:100%;padding:0 0 10px;text-align:start;border-radius:var(--r-sm)}
 
 /* --- the chip per exercise at the top of a running workout (#323) --- */
 /* One numbered chip per unit, filled as far as it is done: an outline waiting, half full started,

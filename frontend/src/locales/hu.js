@@ -2170,4 +2170,8 @@ export default {
   'Not started yet': 'Még nincs elkezdve',
   'Exercise chips at the top': 'Gyakorlatjelölők felül',
   'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'Minden gyakorlatnak egy számozott pötty, ami menet közben telik meg. Koppints rá, és ott vagy.',
+  // --- collapse completed exercises (#241) ---
+  'Fold away': 'Összecsukás',
+  'Show the sets': 'Sorozatok mutatása',
+  'In List and Compact, a finished exercise folds into one line.': 'Lista és Tömör nézetben a befejezett gyakorlat egy sorra csukódik össze.',
 }

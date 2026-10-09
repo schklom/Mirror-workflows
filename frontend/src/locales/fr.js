@@ -2167,4 +2167,8 @@ export default {
   'Not started yet': 'Pas encore commencé',
   'Exercise chips at the top': 'Pastilles d’exercices en haut',
   'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'Une pastille numérotée par exercice, qui se remplit au fil de la séance. Touchez-en une pour y aller.',
+  // --- collapse completed exercises (#241) ---
+  'Fold away': 'Replier',
+  'Show the sets': 'Voir les séries',
+  'In List and Compact, a finished exercise folds into one line.': 'En Liste et Compacte, un exercice terminé se replie sur une seule ligne.',
 }

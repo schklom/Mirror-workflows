@@ -2171,4 +2171,8 @@ export default {
   'Not started yet': 'Ещё не начато',
   'Exercise chips at the top': 'Метки упражнений сверху',
   'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'По пронумерованной точке на каждое упражнение, заполняется по ходу. Нажмите на точку, чтобы перейти к упражнению.',
+  // --- collapse completed exercises (#241) ---
+  'Fold away': 'Свернуть',
+  'Show the sets': 'Показать подходы',
+  'In List and Compact, a finished exercise folds into one line.': 'В режимах «Список» и «Компактный» завершённое упражнение сворачивается в одну строку.',
 }

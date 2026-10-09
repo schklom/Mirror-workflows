@@ -2167,4 +2167,8 @@ export default {
   'Not started yet': 'Non ancora iniziato',
   'Exercise chips at the top': 'Chip degli esercizi in alto',
   'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'Un pallino numerato per esercizio, che si riempie man mano. Toccane uno per andarci.',
+  // --- collapse completed exercises (#241) ---
+  'Fold away': 'Comprimi',
+  'Show the sets': 'Mostra le serie',
+  'In List and Compact, a finished exercise folds into one line.': 'In Elenco e Compatta, un esercizio finito si riduce a una riga.',
 }

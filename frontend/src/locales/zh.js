@@ -2167,4 +2167,8 @@ export default {
   'Not started yet': '还没开始',
   'Exercise chips at the top': '顶部动作圆点',
   'A numbered dot per exercise, filled as you go. Tap one to jump there.': '每个动作一个带编号的圆点，练着练着就填满了。点一下就能跳过去。',
+  // --- collapse completed exercises (#241) ---
+  'Fold away': '收起',
+  'Show the sets': '显示各组',
+  'In List and Compact, a finished exercise folds into one line.': '在列表和紧凑视图中，完成的动作会折叠成一行。',
 }

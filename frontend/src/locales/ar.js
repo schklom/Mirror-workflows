@@ -2222,4 +2222,8 @@ export default {
   'Not started yet': 'لم يبدأ بعد',
   'Exercise chips at the top': 'شارات التمارين في الأعلى',
   'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'نقطة مرقّمة لكل تمرين تمتلئ كلما تقدّمت. اضغط على واحدة للانتقال إليه.',
+  // --- collapse completed exercises (#241) ---
+  'Fold away': 'اطوِه',
+  'Show the sets': 'اعرض المجموعات',
+  'In List and Compact, a finished exercise folds into one line.': 'في عرض القائمة والمضغوط، يُطوى التمرين المكتمل في سطر واحد.',
 }

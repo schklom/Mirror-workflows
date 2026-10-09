@@ -1380,6 +1380,27 @@ export const PT_BR_OVERRIDES = {
   'Fold away': 'Recolher',
   'Show the sets': 'Mostrar as séries',
   'In List and Compact, a finished exercise folds into one line.': 'Em Lista e Compacta, um exercício concluído vira uma linha só.',
+  // --- day notes (#261) ---
+  'Sick': 'Doente',
+  'Travelling': 'Viajando',
+  'Injured': 'Machucado',
+  'Day note': 'Nota do dia',
+  'Add a note for this day': 'Adicionar uma anotação a este dia',
+  'Noted. See you next session!': 'Anotado. Até a próxima sessão!',
+  'Note removed': 'Anotação removida',
+  'Remove note': 'Remover anotação',
+  'Life happens. Leave yourself a note, and the missed-day nudge lets this one go.': 'A vida acontece. Deixe uma anotação e o lembrete de dias perdidos deixa este em paz.',
+  'Anything else? (optional)': 'Mais alguma coisa? (opcional)',
+  // --- rest-end sounds (#306) ---
+  'Bell': 'Sino',
+  'Beep-beep': 'Bip-bip',
+  'Whistle': 'Apito',
+  'Soft': 'Suave',
+  'Tap one to hear it.': 'Toque em um para ouvir.',
+  'Ding-dong. Rest is over, class is in.': 'Ding-dong. Acabou o descanso, de volta ao treino.',
+  'Your sports watch, calling you back.': 'Seu relógio esportivo chamando você de volta.',
+  'Coach wants you back on the bar.': 'O coach quer você de volta na barra.',
+  'Gentle, for headphones or a quiet room.': 'Suave, para fones de ouvido ou um lugar silencioso.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

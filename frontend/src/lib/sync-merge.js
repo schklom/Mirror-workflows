@@ -36,10 +36,10 @@
  *     is the exception: the edit may have taken away the set the kept weight came from, so it
  *     is the best of the merged history and of the editing copy's own, and the other copy's
  *     can no longer bring a corrected typo back. exNotes, barWeights: key union
- *   - balanceOverrides, loadKind, plates, dbLoad, dumbbells: key union; of a key both have, the
- *     entry set last by its own `_ts`, a clear included (mergeStampedMap), the newer copy's on a
- *     tie. For plates and dumbbells the key is the unit, so the inventory of one unit is kept
- *     whole, as last edited
+ *   - balanceOverrides, loadKind, plates, dbLoad, dumbbells, dayNotes: key union; of a key both
+ *     have, the entry set last by its own `_ts`, a clear included (mergeStampedMap), the newer
+ *     copy's on a tie. For plates and dumbbells the key is the unit, so the inventory of one unit
+ *     is kept whole, as last edited; for dayNotes the key is the date, so each day's note is its own
  *   - `_ts`: the later of the two; `_rev` dropped (the server sets it); `active` left to the caller
  *
  * Two rules come before all of these:
@@ -77,9 +77,13 @@ import { beatsWeight } from './exercises.js'
 import { bestWeightForEntry } from './history.js'
 import { convertStateUnit, convertBodyWeight } from './units.js'
 import { sanitizeAccent } from './accent.js'
+import { readDayNote as readNote } from './day-notes.js'
 
 const clone = o => JSON.parse(JSON.stringify(o))
 const list = v => (Array.isArray(v) ? v : [])
+// The maps whose every entry carries its own edit time (mergeStampedMap). dayNotes is a day's
+// note on a day off (lib/day-notes.js), one entry per date.
+export const STAMPED_MAPS = ['balanceOverrides', 'loadKind', 'plates', 'dbLoad', 'dumbbells', 'dayNotes']
 
 /** The copy with the later `_ts`; on a tie the first argument (callers pass local first). */
 export const newerOf = (a, b) => ((b?._ts || 0) > (a?._ts || 0) ? b : a)
@@ -398,7 +402,7 @@ const RESET_LISTS = {
   workouts: workoutKey, routines: x => x?.id, customEx: x => x?.id, bodyweight: bodyweightKey,
   measurements: bodyweightKey, gymCards: x => x?.id, equipProfiles: x => x?.id, favEx: x => x,
 }
-const RESET_MAPS = ['exNotes', 'barWeights', 'balanceOverrides', 'loadKind', 'plates', 'dbLoad', 'dumbbells']
+const RESET_MAPS = ['exNotes', 'barWeights', ...STAMPED_MAPS]
 /** An entry's name in resetIds: a workout's id (or day and start), a weigh-in's day and time, … */
 export const entryKey = (field, x) => String(RESET_LISTS[field](x))
 // Per field, the most names a reset keeps — far more workouts than anyone logs, and a bound on
@@ -458,7 +462,7 @@ export function sinceReset(S, at, ids) {
     out.favEx = []
     out.exNotes = {}
     out.barWeights = {}
-    for (const f of ['balanceOverrides', 'loadKind', 'plates', 'dbLoad', 'dumbbells']) {
+    for (const f of STAMPED_MAPS) {
       out[f] = Object.fromEntries(Object.entries(isMap(S[f]) ? S[f] : {}).filter(([, v]) => after(stampOf(v))))
     }
   }
@@ -608,7 +612,7 @@ function applyDeletions(S, deleted) {
 const OWN_MERGE = new Set([
   '_ts', '_rev', '_wid', '_wids', '_unstamped', '_prior', 'active', 'unit', 'unitSet', 'resetAt', 'resetIds', 'deleted', 'edited', 'undone', 'routineOrder',
   'workouts', 'routines', 'customEx', 'equipProfiles', 'gymCards', 'bodyweight', 'measurements', 'favEx',
-  'exWeights', 'balanceOverrides', 'loadKind', 'plates', 'dbLoad', 'dumbbells',
+  'exWeights', 'balanceOverrides', 'loadKind', 'plates', 'dbLoad', 'dumbbells', 'dayNotes',
 ])
 // Stamped per key instead of whole: one day of the plan, one exercise's note or bar.
 const PER_KEY = new Set(['week', 'dayPlan', 'exNotes', 'barWeights'])
@@ -845,7 +849,7 @@ export function mergeStates(a0, b0, { prefer } = {}) {
   // The plate-loading choices (lib/plates.js) are stamped the same way: an exercise's loading and
   // a unit's plate inventory are each one choice, made on one device, that a later set logged on
   // the other must not undo.
-  for (const f of ['balanceOverrides', 'loadKind', 'plates', 'dbLoad', 'dumbbells']) {
+  for (const f of STAMPED_MAPS) {
     if (n[f] || o[f]) out[f] = clone(mergeStampedMap(n[f], o[f], prefer))
   }
   // Each stamped setting and plan day from the copy that changed it last (the `edited` section
@@ -968,7 +972,7 @@ export function stampReplace(next, others = [], now = Date.now()) {
       x._ts = Math.max(Number(x._ts) || 0, now)
     }
   }
-  for (const f of ['balanceOverrides', 'loadKind', 'plates', 'dbLoad', 'dumbbells']) {
+  for (const f of STAMPED_MAPS) {
     if (!isMap(next[f])) continue
     for (const [k, v] of Object.entries(next[f])) {
       if (!isMap(v)) continue
@@ -1004,7 +1008,7 @@ export function highestStamp(S) {
       if (isMap(x._f)) for (const v of Object.values(x._f)) see(v)
     }
   }
-  for (const f of ['balanceOverrides', 'loadKind', 'plates', 'dbLoad', 'dumbbells']) if (isMap(S[f])) for (const v of Object.values(S[f])) see(stampOf(v))
+  for (const f of STAMPED_MAPS) if (isMap(S[f])) for (const v of Object.values(S[f])) see(stampOf(v))
   for (const e of [...list(S.bodyweight), ...list(S.measurements)]) if (e && typeof e === 'object') see(e.t)
   return m
 }
@@ -1026,7 +1030,7 @@ export function stampChange(prev, next, wall = Date.now()) {
   }
   // Settings maps whose entries carry their own stamp (mergeStampedMap): an entry the change
   // re-stamped takes the change's time.
-  for (const f of ['balanceOverrides', 'loadKind', 'plates', 'dbLoad', 'dumbbells']) {
+  for (const f of STAMPED_MAPS) {
     const p = isMap(prev?.[f]) ? prev[f] : {}, n = isMap(next[f]) ? next[f] : null
     if (!n) continue
     for (const [k, v] of Object.entries(n)) if (isMap(v) && v._ts != null && stampOf(v) !== stampOf(p[k])) v._ts = now
@@ -1122,6 +1126,7 @@ export function localExtras(local, server) {
   const measured = new Set(list(server?.measurements).map(e => e?.d))
   const setup = ['gymCards', 'equipProfiles'].reduce((n, f) => n + list(local?.[f]).filter(x => x && x.id != null && !ids(f).has(x.id)).length, 0) +
     list(local?.measurements).filter(e => e && e.d != null && !measured.has(e.d)).length +
+    Object.entries(isMap(local?.dayNotes) ? local.dayNotes : {}).filter(([k, v]) => readNote(v) && !readNote(server?.dayNotes?.[k])).length +
     keysNew('week') + keysNew('dayPlan') + keysNew('exNotes')
   return {
     workouts: list(local?.workouts).filter(w => !have.has(workoutKey(w))).length,

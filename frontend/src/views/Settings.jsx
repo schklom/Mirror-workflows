@@ -12,7 +12,8 @@ import { inventoryFor, ownsPlates } from '../lib/plates.js'
 import { dumbbellsOf } from '../lib/dumbbells.js'
 import { effortOf } from '../lib/history.js'
 import { figureOf } from '../lib/exercises.js'
-import { unlock, playOnSilentSupported, vibrateSupported, appleTouchDevice } from '../lib/sound.js'
+import { unlock, chime, playOnSilentSupported, vibrateSupported, appleTouchDevice } from '../lib/sound.js'
+import { REST_SOUND_IDS, restSoundOf } from '../lib/rest-sounds.js'
 import { scheduleModeOf, chooseFixedWeek, chooseRotation } from '../lib/rotation.js'
 import { queueOf } from '../lib/queue.js'
 import { api, webauthnOK, passkeyRegister, passkeyError, IS_ANDROID } from '../lib/api.js'
@@ -580,14 +581,10 @@ export default function Settings({ page = null, find = null, via = null }) {
           </Row>
           {/* The chime that replaced the original three beeps (Discord: "too quiet under music")
               is not an improvement for everyone: louder is a cost with headphones or in a quiet
-              room. The chime by default; Classic brings the original back unchanged
-              (lib/sound.js's CLASSIC). Stored as S.classicChime, as before. */}
-          {S.sound && <SelectRow icon="speaker" iconTint="var(--pink)" title={t('Sound')}
-            value={S.classicChime ? 'classic' : 'chime'} onChange={v => update(s => { s.classicChime = v === 'classic' })}
-            options={[
-              { value: 'chime', label: t('Chime (louder)') },
-              { value: 'classic', label: t('Classic beeps'), subtitle: t('The quieter three-beep sound from before 1.3.9, instead of the louder chime.') },
-            ]} />}
+              room, and some want a sound that feels like theirs (#306). The chime by default; the
+              sheet plays each one as you tap it (restSoundSheet). */}
+          {S.sound && <Row icon="speaker" iconTint="var(--pink)" title={t('Sound')} value={t(REST_SOUND_LABEL[restSoundOf(S)])}
+            accessory="chevron" onClick={restSoundSheet} />}
           {/* iOS only (WebKit's audio-session API, iOS 17+): with it off the ring/silent switch
               mutes the timer. On, the phone treats the timer like a music player (exclusive, and
               the music app is not told it may resume), so it is a choice, off by default. */}
@@ -1015,6 +1012,39 @@ const DownloadProgress = forwardRef(function DownloadProgress(_, ref) {
     </div>
   )
 })
+
+// Settings → Sound (#306): every end-of-rest sound, each played as it is picked so you hear it
+// before the next rest does. The sheet stays open for the next one; Done closes it. Stored as
+// S.restSound, with S.classicChime kept for an app from before (lib/rest-sounds.js restSoundOf).
+const REST_SOUND_LABEL = { chime: 'Chime (louder)', classic: 'Classic beeps', bell: 'Bell', beep: 'Beep-beep', whistle: 'Whistle', soft: 'Soft' }
+const REST_SOUND_HINT = {
+  classic: 'The quieter three-beep sound from before 1.3.9, instead of the louder chime.',
+  bell: 'Ding-dong. Rest is over, class is in.',
+  beep: 'Your sports watch, calling you back.',
+  whistle: 'Coach wants you back on the bar.',
+  soft: 'Gentle, for headphones or a quiet room.',
+}
+export function pickRestSound(id) {
+  unlock(true)
+  useStore.getState().update(s => { s.restSound = id; s.classicChime = id === 'classic' })
+  chime(true, id)
+}
+export function RestSoundSheet({ close }) {
+  const S = useStore(s => s.S)
+  const cur = restSoundOf(S)
+  return <>
+    <h3>{t('Sound')}</h3>
+    <div className="muted small" style={{ marginBottom: 12 }}>{t('Tap one to hear it.')}</div>
+    <Section>
+      {REST_SOUND_IDS.map(id => <Row key={id} icon={id === cur ? 'speaker' : 'play'} iconTint="var(--pink)" title={t(REST_SOUND_LABEL[id])}
+        subtitle={REST_SOUND_HINT[id] ? t(REST_SOUND_HINT[id]) : null} accessory={id === cur ? 'check' : 'none'}
+        onClick={() => pickRestSound(id)} />)}
+    </Section>
+    <div style={{ height: 14 }} />
+    <Button variant="primary" onClick={close}>{t('Done')}</Button>
+  </>
+}
+const restSoundSheet = () => useUI.getState().openSheet(close => <RestSoundSheet close={close} />)
 
 function effortHelpSheet() {
   useUI.getState().openSheet(close => <>

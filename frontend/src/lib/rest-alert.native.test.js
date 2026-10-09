@@ -151,7 +151,9 @@ describe('the alarm buzz in the Android app', () => {
     await alert.armRestAlert(Date.now() + 90_000, { totalSec: 90, sound: true })
     expect(calls.schedule.at(-1)).toMatchObject({ sound: true, classic: false })
     await alert.armRestAlert(Date.now() + 90_000, { totalSec: 90, sound: true, classic: true })
-    expect(calls.schedule.at(-1)).toMatchObject({ sound: true, classic: true })
+    expect(calls.schedule.at(-1)).toMatchObject({ sound: true, classic: true, tone: 'classic' })
+    await alert.armRestAlert(Date.now() + 90_000, { totalSec: 90, sound: true, tone: 'whistle' })
+    expect(calls.schedule.at(-1)).toMatchObject({ sound: true, classic: false, tone: 'whistle' })
   })
 
   it('buzzAsAlarm reaches the plugin with the pattern and answers true', async () => {

@@ -2166,4 +2166,14 @@ export default {
   'Remove note': 'Видалити нотатку',
   'Life happens. Leave yourself a note, and the missed-day nudge lets this one go.': 'Всяке буває. Залиште собі нотатку, і нагадування про пропущені дні дасть цьому дню спокій.',
   'Anything else? (optional)': 'Щось іще? (необов’язково)',
+  // --- rest-end sounds (#306) ---
+  'Bell': 'Дзвін',
+  'Beep-beep': 'Біп-біп',
+  'Whistle': 'Свисток',
+  'Soft': 'М’який',
+  'Tap one to hear it.': 'Торкніться, щоб послухати.',
+  'Ding-dong. Rest is over, class is in.': 'Дзень-дзелень. Відпочинок скінчився, до роботи.',
+  'Your sports watch, calling you back.': 'Ваш спортивний годинник кличе вас назад.',
+  'Coach wants you back on the bar.': 'Тренер чекає вас назад біля штанги.',
+  'Gentle, for headphones or a quiet room.': 'Тихий, для навушників або спокійної кімнати.',
 }

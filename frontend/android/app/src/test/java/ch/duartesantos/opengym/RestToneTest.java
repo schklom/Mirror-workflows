@@ -51,4 +51,34 @@ public class RestToneTest {
         }
         assertTrue(peak(RestTone.renderChime(), 0, 1) < 32767);
     }
+
+    @Test
+    public void everySoundIsItsOwnEndsInSilenceAndNeverClips() {
+        java.util.Set<String> shapes = new java.util.HashSet<>();
+        for (String kind : RestTone.KINDS) {
+            short[] s = RestTone.render(kind);
+            double secs = s.length / (double) RestTone.RATE;
+            assertTrue(kind, peak(s, 0, secs - RestTone.TAIL_SEC) > 0.25 * 32767);
+            assertEquals(kind, 0, peak(s, secs - RestTone.TAIL_SEC + 0.01, secs));
+            for (short v : s) assertTrue(kind, Math.abs(v) <= 32767);
+            shapes.add(java.util.Arrays.toString(s));
+        }
+        assertEquals(RestTone.KINDS.length, shapes.size());
+    }
+
+    @Test
+    public void namesStandInForTheOldSwitchAndAnUnknownOneIsTheChime() {
+        assertArrayEquals(RestTone.render(false), RestTone.render("chime"));
+        assertArrayEquals(RestTone.render(true), RestTone.render("classic"));
+        assertArrayEquals(RestTone.render("chime"), RestTone.render("kazoo"));
+        assertArrayEquals(RestTone.render("chime"), RestTone.render((String) null));
+    }
+
+    @Test
+    public void aNoteWithoutAHoldFadesFromTheEndOfItsAttack() {
+        // the bell and the soft one: up in 20 ms, then straight down, as Web Audio runs the ramps
+        assertEquals(0.55, RestTone.gain(0.02, 0.9, 0.55, 0), 1e-9);
+        assertTrue(RestTone.gain(0.3, 0.9, 0.55, 0) < 0.55 / 4);
+        assertEquals(RestTone.chimeGain(0.25, 0.5), RestTone.gain(0.25, 0.5, RestTone.CHIME_PEAK, 0.6), 1e-12);
+    }
 }

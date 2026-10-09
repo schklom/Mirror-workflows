@@ -2224,4 +2224,14 @@ export default {
   'Remove note': 'إزالة الملاحظة',
   'Life happens. Leave yourself a note, and the missed-day nudge lets this one go.': 'الحياة تحدث. اترك لنفسك ملاحظة، وسيترك تذكير الأيام الفائتة هذا اليوم وشأنه.',
   'Anything else? (optional)': 'أي شيء آخر؟ (اختياري)',
+  // --- rest-end sounds (#306) ---
+  'Bell': 'جرس',
+  'Beep-beep': 'بيب-بيب',
+  'Whistle': 'صفارة',
+  'Soft': 'هادئ',
+  'Tap one to hear it.': 'اضغط على أحدها لتسمعه.',
+  'Ding-dong. Rest is over, class is in.': 'دينغ-دونغ. انتهت الراحة، عُد إلى التمرين.',
+  'Your sports watch, calling you back.': 'ساعتك الرياضية تناديك للعودة.',
+  'Coach wants you back on the bar.': 'المدرب يريدك أن تعود إلى البار.',
+  'Gentle, for headphones or a quiet room.': 'هادئ، للسماعات أو لغرفة هادئة.',
 }

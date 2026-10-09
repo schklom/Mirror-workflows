@@ -2162,4 +2162,14 @@ export default {
   'Remove note': '刪除備註',
   'Life happens. Leave yourself a note, and the missed-day nudge lets this one go.': '生活總有意外。給自己留個備註，錯過訓練的提醒就會放過這一天。',
   'Anything else? (optional)': '還有別的嗎？（選填）',
+  // --- rest-end sounds (#306) ---
+  'Bell': '鈴聲',
+  'Beep-beep': '嗶嗶',
+  'Whistle': '哨子',
+  'Soft': '柔和',
+  'Tap one to hear it.': '點一下就能試聽。',
+  'Ding-dong. Rest is over, class is in.': '叮咚。休息結束，回來上課。',
+  'Your sports watch, calling you back.': '你的運動手錶在叫你回來。',
+  'Coach wants you back on the bar.': '教練等你回到槓鈴前。',
+  'Gentle, for headphones or a quiet room.': '輕柔，適合耳機或安靜的房間。',
 }

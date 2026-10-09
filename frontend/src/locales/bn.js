@@ -2248,4 +2248,14 @@ export default {
   'Remove note': 'নোট সরান',
   'Life happens. Leave yourself a note, and the missed-day nudge lets this one go.': 'জীবনে এমন হয়। নিজের জন্য একটি নোট রাখুন, আর মিস করা দিনের রিমাইন্ডার এই দিনটিকে ছেড়ে দেবে।',
   'Anything else? (optional)': 'আর কিছু? (ঐচ্ছিক)',
+  // --- rest-end sounds (#306) ---
+  'Bell': 'ঘণ্টা',
+  'Beep-beep': 'বিপ-বিপ',
+  'Whistle': 'বাঁশি',
+  'Soft': 'নরম',
+  'Tap one to hear it.': 'শুনতে যেকোনো একটিতে ট্যাপ করুন।',
+  'Ding-dong. Rest is over, class is in.': 'ডিং-ডং। বিশ্রাম শেষ, আবার কাজে।',
+  'Your sports watch, calling you back.': 'আপনার স্পোর্টস ঘড়ি আপনাকে ফিরে ডাকছে।',
+  'Coach wants you back on the bar.': 'কোচ আপনাকে আবার বারে চান।',
+  'Gentle, for headphones or a quiet room.': 'মৃদু, হেডফোন বা শান্ত ঘরের জন্য।',
 }

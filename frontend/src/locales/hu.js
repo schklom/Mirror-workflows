@@ -2172,4 +2172,14 @@ export default {
   'Remove note': 'Jegyzet törlése',
   'Life happens. Leave yourself a note, and the missed-day nudge lets this one go.': 'Az élet közbeszól. Hagyj magadnak egy jegyzetet, és a kihagyott napok emlékeztetője ezt a napot békén hagyja.',
   'Anything else? (optional)': 'Még valami? (nem kötelező)',
+  // --- rest-end sounds (#306) ---
+  'Bell': 'Harang',
+  'Beep-beep': 'Bip-bip',
+  'Whistle': 'Síp',
+  'Soft': 'Lágy',
+  'Tap one to hear it.': 'Koppints egyre, hogy meghalld.',
+  'Ding-dong. Rest is over, class is in.': 'Ding-dong. Vége a pihenőnek, vissza a munkához.',
+  'Your sports watch, calling you back.': 'A sportórád visszahív.',
+  'Coach wants you back on the bar.': 'Az edző visszavár a rúdhoz.',
+  'Gentle, for headphones or a quiet room.': 'Halk, fülhallgatóhoz vagy csendes helyre.',
 }

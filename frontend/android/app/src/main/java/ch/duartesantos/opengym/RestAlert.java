@@ -45,7 +45,7 @@ public final class RestAlert {
     static final String QUIET_CHANNEL_ID = "rest-over-quiet";
     private static String lastAlertTitle = "Rest over";
     private static boolean lastSound = true;
-    private static boolean lastClassic = false;
+    private static String lastTone = "chime";
     private static boolean lastVibrate = true;
     private static boolean lastAlarmBuzz = false;
     private static String lastChannel = CHANNEL_ID;
@@ -73,7 +73,7 @@ public final class RestAlert {
      * alarm, which silent mode lets through, and the notification goes out on the quiet channel so
      * a phone with its ringer on does not buzz twice.
      */
-    public static void schedule(Context ctx, long at, int id, String title, boolean sound, boolean classic, boolean vibrate,
+    public static void schedule(Context ctx, long at, int id, String title, boolean sound, String tone, boolean vibrate,
                                 boolean alarmBuzz, String channelId, String visibility, String importance,
                                 boolean localOnly, String countdownTitle, long totalMs) {
         alarmBuzz = vibrate && alarmBuzz;
@@ -82,7 +82,7 @@ public final class RestAlert {
         intent.putExtra("id", id);
         intent.putExtra("title", title == null ? "" : title);
         intent.putExtra("sound", sound);
-        intent.putExtra("classic", classic);
+        intent.putExtra("tone", tone == null ? "chime" : tone);
         intent.putExtra("vibrate", vibrate);
         intent.putExtra("alarmBuzz", alarmBuzz);
         intent.putExtra("channelId", channelId);
@@ -108,7 +108,7 @@ public final class RestAlert {
         }
         lastAlertTitle = title == null ? "Rest over" : title;
         lastSound = sound;
-        lastClassic = classic;
+        lastTone = tone == null ? "chime" : tone;
         lastVibrate = vibrate;
         lastAlarmBuzz = alarmBuzz;
         lastChannel = channelId;
@@ -150,7 +150,7 @@ public final class RestAlert {
         intent.putExtra("id", NOTIFICATION_ID);
         intent.putExtra("title", lastAlertTitle);
         intent.putExtra("sound", lastSound);
-        intent.putExtra("classic", lastClassic);
+        intent.putExtra("tone", lastTone);
         intent.putExtra("vibrate", lastVibrate);
         intent.putExtra("alarmBuzz", lastAlarmBuzz);
         intent.putExtra("channelId", lastChannel);
@@ -193,9 +193,9 @@ public final class RestAlert {
             // Settings → Vibrate off is off here too: without notifications this buzz is the alert.
             else if (!shown && vibrate) vibrateFallback(ctx);
             // Locked or in the background, the page does not play its chime, so this is the one:
-            // the same chime (or classic beeps) as Settings → Sound picks for the page.
+            // the same sound as Settings → Sound picks for the page (RestTone.render).
             boolean play = intent.getBooleanExtra("sound", true);
-            if (play) playSound(ctx, intent.getBooleanExtra("classic", false));
+            if (play) playSound(ctx, toneOf(intent));
             // The countdown card is the foreground-service notification. Drop it once the
             // "rest over" alert is up and the tone has played, including when the WebView is
             // frozen. Not before the tone: the service is what keeps this process in the
@@ -365,7 +365,7 @@ public final class RestAlert {
         intent.putExtra("id", NOTIFICATION_ID);
         intent.putExtra("title", lastAlertTitle);
         intent.putExtra("sound", lastSound);
-        intent.putExtra("classic", lastClassic);
+        intent.putExtra("tone", lastTone);
         intent.putExtra("vibrate", lastVibrate);
         intent.putExtra("alarmBuzz", lastAlarmBuzz);
         intent.putExtra("channelId", lastChannel);
@@ -514,8 +514,18 @@ public final class RestAlert {
         nm.createNotificationChannel(channel);
     }
 
-    private static void playSound(Context ctx, boolean classic) {
-        playClip(ctx, RestTone.render(classic));
+    private static void playSound(Context ctx, String tone) {
+        playClip(ctx, RestTone.render(tone));
+    }
+
+    /**
+     * The sound an alarm asks for: its "tone" (#306), or for an alarm armed by the app before it,
+     * still pending across the update, its "classic" switch.
+     */
+    private static String toneOf(Intent intent) {
+        String tone = intent.getStringExtra("tone");
+        if (tone != null) return tone;
+        return intent.getBooleanExtra("classic", false) ? "classic" : "chime";
     }
 
     /**

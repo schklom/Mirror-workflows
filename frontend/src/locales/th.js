@@ -2180,4 +2180,14 @@ export default {
   'Remove note': 'ลบบันทึก',
   'Life happens. Leave yourself a note, and the missed-day nudge lets this one go.': 'ชีวิตก็แบบนี้ ทิ้งบันทึกไว้ให้ตัวเอง แล้วการเตือนวันที่พลาดจะปล่อยวันนี้ไป',
   'Anything else? (optional)': 'มีอะไรอีกไหม (ไม่บังคับ)',
+  // --- rest-end sounds (#306) ---
+  'Bell': 'ระฆัง',
+  'Beep-beep': 'บี๊บ-บี๊บ',
+  'Whistle': 'นกหวีด',
+  'Soft': 'นุ่มนวล',
+  'Tap one to hear it.': 'แตะเพื่อฟังเสียง',
+  'Ding-dong. Rest is over, class is in.': 'ติ๊ง-ต่อง หมดเวลาพัก กลับไปลุยกัน',
+  'Your sports watch, calling you back.': 'นาฬิกาสปอร์ตเรียกคุณกลับมาแล้ว',
+  'Coach wants you back on the bar.': 'โค้ชอยากให้คุณกลับมาที่บาร์',
+  'Gentle, for headphones or a quiet room.': 'เบา ๆ สำหรับหูฟังหรือห้องที่เงียบ',
 }

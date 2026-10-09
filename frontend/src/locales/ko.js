@@ -2169,4 +2169,14 @@ export default {
   'Remove note': '메모 삭제',
   'Life happens. Leave yourself a note, and the missed-day nudge lets this one go.': '그런 날도 있죠. 메모를 남겨 두면 놓친 날 알림이 이 날은 그냥 넘어가요.',
   'Anything else? (optional)': '더 남길 말이 있나요? (선택)',
+  // --- rest-end sounds (#306) ---
+  'Bell': '종소리',
+  'Beep-beep': '삐삐',
+  'Whistle': '호루라기',
+  'Soft': '부드럽게',
+  'Tap one to hear it.': '탭하면 들어볼 수 있어요.',
+  'Ding-dong. Rest is over, class is in.': '딩동. 휴식 끝, 다시 시작해요.',
+  'Your sports watch, calling you back.': '스포츠 시계가 다시 부르고 있어요.',
+  'Coach wants you back on the bar.': '코치가 바 앞으로 돌아오래요.',
+  'Gentle, for headphones or a quiet room.': '이어폰이나 조용한 곳에 어울려요.',
 }

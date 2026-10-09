@@ -2169,4 +2169,14 @@ export default {
   'Remove note': 'Eliminar nota',
   'Life happens. Leave yourself a note, and the missed-day nudge lets this one go.': 'La vida pasa. Déjate una nota y el aviso de días perdidos dejará este en paz.',
   'Anything else? (optional)': '¿Algo más? (opcional)',
+  // --- rest-end sounds (#306) ---
+  'Bell': 'Campana',
+  'Beep-beep': 'Bip-bip',
+  'Whistle': 'Silbato',
+  'Soft': 'Suave',
+  'Tap one to hear it.': 'Toca uno para escucharlo.',
+  'Ding-dong. Rest is over, class is in.': 'Din-don. Se acabó el descanso, a clase.',
+  'Your sports watch, calling you back.': 'Tu reloj deportivo te llama de vuelta.',
+  'Coach wants you back on the bar.': 'El coach te quiere de vuelta en la barra.',
+  'Gentle, for headphones or a quiet room.': 'Suave, para auriculares o una sala tranquila.',
 }

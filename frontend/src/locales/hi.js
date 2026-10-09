@@ -2169,4 +2169,14 @@ export default {
   'Remove note': 'नोट हटाएँ',
   'Life happens. Leave yourself a note, and the missed-day nudge lets this one go.': 'ज़िंदगी है, होता है। अपने लिए एक नोट छोड़ दें, और छूटे दिन की याद दिलाने वाला इस दिन को छोड़ देगा।',
   'Anything else? (optional)': 'और कुछ? (वैकल्पिक)',
+  // --- rest-end sounds (#306) ---
+  'Bell': 'घंटी',
+  'Beep-beep': 'बीप-बीप',
+  'Whistle': 'सीटी',
+  'Soft': 'हल्की',
+  'Tap one to hear it.': 'सुनने के लिए किसी एक पर टैप करें।',
+  'Ding-dong. Rest is over, class is in.': 'डिंग-डॉन्ग। आराम ख़त्म, फिर से काम पर।',
+  'Your sports watch, calling you back.': 'आपकी स्पोर्ट्स घड़ी आपको वापस बुला रही है।',
+  'Coach wants you back on the bar.': 'कोच आपको बार पर वापस चाहते हैं।',
+  'Gentle, for headphones or a quiet room.': 'धीमी, हेडफ़ोन या शांत कमरे के लिए।',
 }

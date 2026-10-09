@@ -2169,4 +2169,14 @@ export default {
   'Remove note': '删除备注',
   'Life happens. Leave yourself a note, and the missed-day nudge lets this one go.': '生活总有意外。给自己留个备注，错过训练的提醒就会放过这一天。',
   'Anything else? (optional)': '还有别的吗？（可选）',
+  // --- rest-end sounds (#306) ---
+  'Bell': '铃声',
+  'Beep-beep': '哔哔',
+  'Whistle': '哨子',
+  'Soft': '柔和',
+  'Tap one to hear it.': '点一下就能试听。',
+  'Ding-dong. Rest is over, class is in.': '叮咚。休息结束，回来上课。',
+  'Your sports watch, calling you back.': '你的运动手表在叫你回来。',
+  'Coach wants you back on the bar.': '教练等你回到杠铃前。',
+  'Gentle, for headphones or a quiet room.': '轻柔，适合耳机或安静的房间。',
 }

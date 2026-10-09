@@ -2169,4 +2169,14 @@ export default {
   'Remove note': 'Notu sil',
   'Life happens. Leave yourself a note, and the missed-day nudge lets this one go.': 'Hayat bu. Kendine bir not bırak, kaçırılan gün hatırlatıcısı bu günü rahat bıraksın.',
   'Anything else? (optional)': 'Başka bir şey? (isteğe bağlı)',
+  // --- rest-end sounds (#306) ---
+  'Bell': 'Zil',
+  'Beep-beep': 'Bip-bip',
+  'Whistle': 'Düdük',
+  'Soft': 'Yumuşak',
+  'Tap one to hear it.': 'Dinlemek için birine dokun.',
+  'Ding-dong. Rest is over, class is in.': 'Ding-dong. Mola bitti, iş başına.',
+  'Your sports watch, calling you back.': 'Spor saatin seni geri çağırıyor.',
+  'Coach wants you back on the bar.': 'Koç seni bara geri bekliyor.',
+  'Gentle, for headphones or a quiet room.': 'Sakin, kulaklık ya da sessiz bir oda için.',
 }

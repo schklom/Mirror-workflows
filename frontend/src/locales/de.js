@@ -2189,4 +2189,14 @@ export default {
   'Remove note': 'Notiz entfernen',
   'Life happens. Leave yourself a note, and the missed-day nudge lets this one go.': 'Das Leben passiert. Hinterlass dir eine Notiz, und die Erinnerung an verpasste Tage lässt diesen hier in Ruhe.',
   'Anything else? (optional)': 'Sonst noch was? (optional)',
+  // --- rest-end sounds (#306) ---
+  'Bell': 'Glocke',
+  'Beep-beep': 'Piep-piep',
+  'Whistle': 'Pfeife',
+  'Soft': 'Sanft',
+  'Tap one to hear it.': 'Tippe auf einen, um ihn zu hören.',
+  'Ding-dong. Rest is over, class is in.': 'Ding-dong. Pause vorbei, weiter geht’s.',
+  'Your sports watch, calling you back.': 'Deine Sportuhr ruft dich zurück.',
+  'Coach wants you back on the bar.': 'Der Coach will dich zurück an der Stange.',
+  'Gentle, for headphones or a quiet room.': 'Leise, für Kopfhörer oder einen ruhigen Raum.',
 }

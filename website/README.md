@@ -1,4 +1,4 @@
-# opengym.duarte-santos.ch
+# opengym.ch
 
 Source of the project website — plain hand-written HTML/CSS/JS, no build step,
 served by nginx.

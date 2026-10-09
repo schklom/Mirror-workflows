@@ -11,7 +11,7 @@ to support it anyway, there's [Buy Me a Coffee](https://buymeacoffee.com/duartes
 
 No, there are three ways to use it:
 
-- **Try it:** the [online demo](https://opengym.duarte-santos.ch/demo/) runs entirely in your
+- **Try it:** the [online demo](https://opengym.ch/demo/) runs entirely in your
   browser with example data.
 - **Phone only:** the Android app needs no server and no account; everything stays on the phone.
   See [MOBILE.md](MOBILE.md).

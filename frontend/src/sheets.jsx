@@ -52,6 +52,7 @@ import { useAutoMore } from './lib/use-auto-more.js'
 import { isFav, toggleFav, sortFavouritesFirst } from './lib/favourites.js'
 import { buildSessionEntries, buildPlannedEntry, builtOutOfProgression } from './lib/session-start.js'
 import { finishCompare, finishCardio } from './lib/finish-compare.js'
+import { workoutFit, fitFileName } from './lib/fit-export.js'
 import { joinSessionNoProg } from './lib/session-noprog.js'
 import { buildCombinedEntries, deriveSessionName } from './lib/session-merge.js'
 import { workoutsOn, backfillStart, backfillEnd, completeBackfill, historyAsOf, sessionHistory } from './lib/backfill.js'
@@ -2314,6 +2315,14 @@ function WorkoutDetail({ w, close }) {
     const rec = { ...(st.workouts.find(x => sameWorkout(x, w)) || w), note: note.trim() }
     toast(await copyText(workoutText(rec, { unit: st.unit, nameOf, speedUnit: speedUnitOf(st) })) ? t('Copied') : t('Could not copy'))
   }
+  // A Garmin .fit activity (#447) of the saved record, for Garmin Connect's Import Data.
+  const exportFit = () => {
+    const rec = st.workouts.find(x => sameWorkout(x, w)) || w
+    let bytes
+    try { bytes = workoutFit(rec, { unit: st.unit, version: __APP_VERSION__ }) }
+    catch (e) { toast(t('Could not create the file')); return }
+    saveFitFile(new Blob([bytes], { type: 'application/vnd.ant.fit' }), fitFileName(rec))
+  }
   const shareAsImage = () => {
     const rec = st.workouts.find(x => sameWorkout(x, w)) || w
     ui().openSheet(c2 => <ShareWorkoutImage w={rec} nameOf={nameOf} close={c2} />)
@@ -2394,6 +2403,8 @@ function WorkoutDetail({ w, close }) {
     <Button icon="copy" onClick={copyAsText}>{t('Copy as text')}</Button>
     <div style={{ height: 8 }} />
     <Button icon="share" onClick={shareAsImage}>{t('Share as image')}</Button>
+    <div style={{ height: 8 }} />
+    <Button icon="download" onClick={exportFit}>{t('Export as .fit file')}</Button>
     <div style={{ height: 10 }} />
     {/* Matched the way the edits above are, not by id: a workout from before ids has none, and
         filtering on `x.id !== undefined` took every other one of them with it. */}
@@ -2465,6 +2476,13 @@ async function workoutCardImage(model, { map, body }) {
   canvas.height = layout.height
   drawWorkoutCard(ctx, layout, colors, shape ? { body: shape, levels: model.levels } : null)
   return new Promise(resolve => canvas.toBlob(resolve, 'image/png'))
+}
+// The .fit file goes out the way a backup does: the share sheet in the phone app (Files, Drive,
+// Garmin Connect itself), a download in the browser.
+async function saveFitFile(blob, name) {
+  if (MOBILE) { try { await shareExportBlob(blob, name) } catch (e) { /* share sheet dismissed */ } return }
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click(); URL.revokeObjectURL(a.href)
+  toast(t('Saved. Garmin Connect can take it from here.'))
 }
 // The phone app goes through the OS share sheet the way a backup does; a browser that can share
 // files (most phones) opens its own; anything else saves the picture as a download.

@@ -2154,4 +2154,8 @@ export default {
   // --- cardio: treadmill incline ---
   'Incline (%)': '坡度 (%)',
   '{0}% incline': '坡度 {0}%',
+  // --- workout detail: Garmin .fit export ---
+  'Export as .fit file': '匯出為 .fit 檔案',
+  'Could not create the file': '無法建立檔案',
+  'Saved. Garmin Connect can take it from here.': '已儲存。接下來交給 Garmin Connect 吧。',
 }

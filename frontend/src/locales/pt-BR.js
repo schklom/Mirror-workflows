@@ -1334,6 +1334,10 @@ export const PT_BR_OVERRIDES = {
   // --- cardio: treadmill incline ---
   'Incline (%)': 'Inclinação (%)',
   '{0}% incline': '{0}% de inclinação',
+  // --- workout detail: Garmin .fit export ---
+  'Export as .fit file': 'Exportar como arquivo .fit',
+  'Could not create the file': 'Não foi possível criar o arquivo',
+  'Saved. Garmin Connect can take it from here.': 'Salvo. Daqui em diante é com o Garmin Connect.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

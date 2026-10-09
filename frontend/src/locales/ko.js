@@ -2161,4 +2161,8 @@ export default {
   // --- cardio: treadmill incline ---
   'Incline (%)': '경사 (%)',
   '{0}% incline': '경사 {0}%',
+  // --- workout detail: Garmin .fit export ---
+  'Export as .fit file': '.fit 파일로 내보내기',
+  'Could not create the file': '파일을 만들 수 없어요',
+  'Saved. Garmin Connect can take it from here.': '저장했어요. 이제 Garmin Connect에 맡기세요.',
 }

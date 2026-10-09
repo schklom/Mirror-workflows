@@ -2172,4 +2172,8 @@ export default {
   // --- cardio: treadmill incline ---
   'Incline (%)': 'ความชัน (%)',
   '{0}% incline': 'ความชัน {0}%',
+  // --- workout detail: Garmin .fit export ---
+  'Export as .fit file': 'ส่งออกเป็นไฟล์ .fit',
+  'Could not create the file': 'สร้างไฟล์ไม่ได้',
+  'Saved. Garmin Connect can take it from here.': 'บันทึกแล้ว ที่เหลือให้ Garmin Connect จัดการ',
 }

@@ -2162,4 +2162,7 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'Похожие упражнения',
   'No exact match. These come close:': 'Точного совпадения нет. Вот что близко:',
+  // --- cardio: treadmill incline ---
+  'Incline (%)': 'Наклон (%)',
+  '{0}% incline': 'наклон {0}%',
 }

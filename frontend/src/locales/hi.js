@@ -2158,4 +2158,7 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'मिलते-जुलते व्यायाम',
   'No exact match. These come close:': 'सटीक मेल नहीं मिला। ये करीब हैं:',
+  // --- cardio: treadmill incline ---
+  'Incline (%)': 'ढलान (%)',
+  '{0}% incline': '{0}% ढलान',
 }

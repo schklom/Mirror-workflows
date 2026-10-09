@@ -1331,6 +1331,9 @@ export const PT_BR_OVERRIDES = {
   'Where an exercise is drawn on both figures. Your workouts stay exactly as they are.': 'Que figura mostra um exercício quando está desenhado nas duas. Seus treinos ficam exatamente como estão.',
   'Enter the address of the server this token is for': 'Informe o endereço do servidor a que este token pertence',
   'No exact match. These come close:': 'Nada exato. Estes chegam perto:',
+  // --- cardio: treadmill incline ---
+  'Incline (%)': 'Inclinação (%)',
+  '{0}% incline': '{0}% de inclinação',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

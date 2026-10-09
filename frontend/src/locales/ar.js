@@ -2213,4 +2213,7 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'تمارين مشابهة',
   'No exact match. These come close:': 'لا تطابق تام. هذه قريبة:',
+  // --- cardio: treadmill incline ---
+  'Incline (%)': 'الميل (%)',
+  '{0}% incline': 'ميل {0}%',
 }

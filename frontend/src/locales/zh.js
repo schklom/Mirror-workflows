@@ -2158,4 +2158,7 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': '相似动作',
   'No exact match. These come close:': '没有完全匹配，这些比较接近：',
+  // --- cardio: treadmill incline ---
+  'Incline (%)': '坡度 (%)',
+  '{0}% incline': '坡度 {0}%',
 }

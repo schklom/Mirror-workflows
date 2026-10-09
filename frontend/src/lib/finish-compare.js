@@ -60,3 +60,18 @@ export function finishCompare(st, w) {
   }
   return rows
 }
+
+/**
+ * The cardio of `w` for the finish summary, which the rows above leave out: one row per cardio
+ * exercise with the sets that were done, warm-ups included (a walk to warm up is still a walk).
+ * The summary prints them with setLabel, so a treadmill's speed and incline read as logged.
+ */
+export function finishCardio(w) {
+  const rows = []
+  for (const entry of w?.entries || []) {
+    if (!entry?.id || modeOf({ ...(entry.target || {}), id: entry.id }) !== 'cardio') continue
+    const sets = (Array.isArray(entry.sets) ? entry.sets : []).filter(s => s && s.done && (Number(s.min) > 0 || Number(s.speed) > 0))
+    if (sets.length) rows.push({ id: entry.id, target: entry.target, sets })
+  }
+  return rows
+}

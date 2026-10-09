@@ -2161,4 +2161,7 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'Hasonló gyakorlatok',
   'No exact match. These come close:': 'Nincs pontos találat. Ezek közel állnak:',
+  // --- cardio: treadmill incline ---
+  'Incline (%)': 'Emelkedő (%)',
+  '{0}% incline': '{0}% emelkedő',
 }

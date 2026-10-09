@@ -2178,4 +2178,7 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'Ähnliche Übungen',
   'No exact match. These come close:': 'Kein genauer Treffer. Die hier kommen nah ran:',
+  // --- cardio: treadmill incline ---
+  'Incline (%)': 'Steigung (%)',
+  '{0}% incline': '{0} % Steigung',
 }

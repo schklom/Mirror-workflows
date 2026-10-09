@@ -2237,4 +2237,7 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'একই ধরনের ব্যায়াম',
   'No exact match. These come close:': 'হুবহু মিল নেই। এগুলো কাছাকাছি:',
+  // --- cardio: treadmill incline ---
+  'Incline (%)': 'ঢাল (%)',
+  '{0}% incline': '{0}% ঢাল',
 }

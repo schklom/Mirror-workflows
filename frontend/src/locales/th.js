@@ -2169,4 +2169,7 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'ท่าที่คล้ายกัน',
   'No exact match. These come close:': 'ไม่พบที่ตรงทั้งหมด ท่าเหล่านี้ใกล้เคียง:',
+  // --- cardio: treadmill incline ---
+  'Incline (%)': 'ความชัน (%)',
+  '{0}% incline': 'ความชัน {0}%',
 }

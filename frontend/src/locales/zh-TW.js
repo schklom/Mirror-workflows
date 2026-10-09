@@ -2151,4 +2151,7 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': '相似動作',
   'No exact match. These come close:': '沒有完全符合，這些比較接近：',
+  // --- cardio: treadmill incline ---
+  'Incline (%)': '坡度 (%)',
+  '{0}% incline': '坡度 {0}%',
 }

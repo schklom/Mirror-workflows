@@ -51,7 +51,7 @@ import { useSheetKeyboard, useRevealActiveChip, tappable } from './lib/use-sheet
 import { useAutoMore } from './lib/use-auto-more.js'
 import { isFav, toggleFav, sortFavouritesFirst } from './lib/favourites.js'
 import { buildSessionEntries, buildPlannedEntry, builtOutOfProgression } from './lib/session-start.js'
-import { finishCompare } from './lib/finish-compare.js'
+import { finishCompare, finishCardio } from './lib/finish-compare.js'
 import { joinSessionNoProg } from './lib/session-noprog.js'
 import { buildCombinedEntries, deriveSessionName } from './lib/session-merge.js'
 import { workoutsOn, backfillStart, backfillEnd, completeBackfill, historyAsOf, sessionHistory } from './lib/backfill.js'
@@ -3072,6 +3072,23 @@ function LastAndNext({ st, w }) {
   </div>
 }
 
+// The cardio of the session, which "Last time and next time" leaves out: minutes, speed and the
+// treadmill's incline as they were logged.
+function CardioDone({ st, w }) {
+  const rows = finishCardio(w)
+  if (!rows.length) return null
+  return <div style={{ textAlign: 'start', marginBottom: 14 }}>
+    <h4 className="sec">{t('Cardio')}</h4>
+    <div className="list">{rows.map((row, i) => {
+      const ex = EXIDX[row.id]
+      return <div key={i} className="item" style={{ display: 'block' }}>
+        <span className={'tt ' + exerciseNameClass(ex)} style={{ fontWeight: 600 }}>{ex ? exerciseNameFor(ex) : row.id}</span>
+        <div className="small">{row.sets.map(x => setLabel(row.id, x, row.target, speedUnitOf(st))).join('  ·  ')}</div>
+      </div>
+    })}</div>
+  </div>
+}
+
 function FinishSummary({ w, prs, e1prs = [], close }) {
   const st = useStore(s => s.S)
   return <div style={{ textAlign: 'center', padding: '8px 0' }}>
@@ -3091,6 +3108,7 @@ function FinishSummary({ w, prs, e1prs = [], close }) {
     <BodyMap load={loadOfWorkouts([w])} body={st.body} />
     <div style={{ height: 14 }} />
     <LastAndNext st={st} w={w} />
+    <CardioDone st={st} w={w} />
     {/* The moment for a progress photo or the clip of a set: the workout is already saved, so
         what is added here goes straight onto its record. */}
     <div style={{ textAlign: 'start' }}><WorkoutMediaSection w={w} hint /></div>

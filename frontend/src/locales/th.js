@@ -2169,4 +2169,17 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'ท่าที่คล้ายกัน',
   'No exact match. These come close:': 'ไม่พบที่ตรงทั้งหมด ท่าเหล่านี้ใกล้เคียง:',
+  // --- dumbbell weight meaning (#474) ---
+  '{0} each': '{0} ต่อข้าง',
+  '{0} total': 'รวม {0}',
+  'Each ({0})': 'ต่อข้าง ({0})',
+  'Both ({0})': 'รวม ({0})',
+  'As entered': 'ตามที่กรอก',
+  'Each': 'ต่อข้าง',
+  'Both': 'รวม',
+  'Weight means': 'น้ำหนักหมายถึง',
+  'The weight of the one you hold. One arm, so it counts once.': 'น้ำหนักของอันที่ถืออยู่ แขนเดียว จึงนับครั้งเดียว',
+  'The weight of one, so 20 means 20 in each hand. Volume counts both.': 'น้ำหนักของหนึ่งอัน 20 คือมือละ 20 ปริมาณรวมนับทั้งสองอัน',
+  'Both together, so 40 means two 20s.': 'ทั้งสองอันรวมกัน 40 คือ 20 สองอัน',
+  'Counted as you type it, the way it always was.': 'นับตามที่คุณกรอก เหมือนที่ผ่านมา',
 }

@@ -8,6 +8,7 @@ import { isWarmupRow } from './workout-model.js'
 import { nextPrescription, applyPrescription, defaultIncrement, weightIncrement, plannedOf } from './progression.js'
 import { dropGrid } from './plates.js'
 import { backoffStepOf, applyBackoff } from './backoff.js'
+import { dbLoadFor, historyAs } from './dumbbells.js'
 
 /**
  * Where a planned session's reps come from (Settings → During a workout). 'plan', the default:
@@ -26,7 +27,12 @@ export const startsFromLast = st => st?.startFrom === 'last'
  * the exercise is planned in: its own history comes first (#216) and its policy applies.
  * `noProg` builds the routine's own numbers with no prescription, as an excluded routine does.
  */
-export function buildPlannedEntry(st, cfg, routine, { noProg = false } = {}) {
+export function buildPlannedEntry(stored, cfg, routine, { noProg = false } = {}) {
+  // What a dumbbell weight means for this exercise today (lib/dumbbells.js): the history it
+  // progresses from is read in that meaning, so a switch from "40 total" to per bell opens at
+  // 20, not at 40 a hand. Only a switch between the two explicit meanings converts anything.
+  const meaning = dbLoadFor(stored, cfg)
+  const st = historyAs(stored, cfg.id, meaning)
   // `plan` is kept on the entry purely so the workout can explain the number it chose.
   const plan = noProg ? { policy: 'off', kind: 'off' } : nextPrescription(st, cfg, routine)
   // The warm-up ramp and the prescription snap to the exercise's own increment (1.25 kg
@@ -40,6 +46,8 @@ export function buildPlannedEntry(st, cfg, routine, { noProg = false } = {}) {
   const rows = backoffStep ? applyBackoff(built, backoffStep) : built
   const sets = applyIntensifierPlan(rows, cfg, dropGrid(st, cfg))
   const target = { ...cfg }
+  // Stamped on the session, so the meaning it was logged with stays with it (dumbbells.js).
+  if (meaning !== 'as') target.dbLoad = meaning
   if (plan.weight != null) target.weight = plan.weight
   if (plan.reps != null) target.reps = plan.reps
   if (plan.sec != null) target.sec = plan.sec

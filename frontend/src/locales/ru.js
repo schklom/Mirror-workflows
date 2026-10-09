@@ -2162,4 +2162,17 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'Похожие упражнения',
   'No exact match. These come close:': 'Точного совпадения нет. Вот что близко:',
+  // --- dumbbell weight meaning (#474) ---
+  '{0} each': '{0} каждая',
+  '{0} total': '{0} всего',
+  'Each ({0})': 'Каждая ({0})',
+  'Both ({0})': 'Обе ({0})',
+  'As entered': 'Как введено',
+  'Each': 'Каждая',
+  'Both': 'Обе',
+  'Weight means': 'Вес означает',
+  'The weight of the one you hold. One arm, so it counts once.': 'Вес той, что у вас в руке. Одна рука, поэтому считается один раз.',
+  'The weight of one, so 20 means 20 in each hand. Volume counts both.': 'Вес одной: 20 значит по 20 в каждой руке. В объём идут обе.',
+  'Both together, so 40 means two 20s.': 'Обе вместе: 40 значит две по 20.',
+  'Counted as you type it, the way it always was.': 'Считается так, как вы вводите, как и всегда.',
 }

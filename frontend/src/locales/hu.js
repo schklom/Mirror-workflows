@@ -2161,4 +2161,17 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'Hasonló gyakorlatok',
   'No exact match. These come close:': 'Nincs pontos találat. Ezek közel állnak:',
+  // --- dumbbell weight meaning (#474) ---
+  '{0} each': '{0} darabonként',
+  '{0} total': '{0} összesen',
+  'Each ({0})': 'Darabonként ({0})',
+  'Both ({0})': 'Együtt ({0})',
+  'As entered': 'Ahogy beírtad',
+  'Each': 'Darabonként',
+  'Both': 'Együtt',
+  'Weight means': 'A súly jelentése',
+  'The weight of the one you hold. One arm, so it counts once.': 'Annak az egynek a súlya, amit tartasz. Egy kar, így egyszer számít.',
+  'The weight of one, so 20 means 20 in each hand. Volume counts both.': 'Egy darab súlya, tehát a 20 kezenként 20-at jelent. A volumen mindkettőt számolja.',
+  'Both together, so 40 means two 20s.': 'A kettő együtt, tehát a 40 két 20-ast jelent.',
+  'Counted as you type it, the way it always was.': 'Úgy számít, ahogy beírod, mint eddig mindig.',
 }

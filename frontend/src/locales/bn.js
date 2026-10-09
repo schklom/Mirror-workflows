@@ -2237,4 +2237,17 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'একই ধরনের ব্যায়াম',
   'No exact match. These come close:': 'হুবহু মিল নেই। এগুলো কাছাকাছি:',
+  // --- dumbbell weight meaning (#474) ---
+  '{0} each': 'প্রতিটি {0}',
+  '{0} total': 'মোট {0}',
+  'Each ({0})': 'প্রতিটি ({0})',
+  'Both ({0})': 'দুটো মিলে ({0})',
+  'As entered': 'যেমন লেখা',
+  'Each': 'প্রতিটি',
+  'Both': 'দুটো মিলে',
+  'Weight means': 'ওজনের মানে',
+  'The weight of the one you hold. One arm, so it counts once.': 'হাতে থাকা একটির ওজন। এক হাত, তাই একবার গোনা হয়।',
+  'The weight of one, so 20 means 20 in each hand. Volume counts both.': 'একটির ওজন, তাই 20 মানে প্রতি হাতে 20। ভলিউমে দুটোই গোনা হয়।',
+  'Both together, so 40 means two 20s.': 'দুটো মিলে, তাই 40 মানে দুটো 20।',
+  'Counted as you type it, the way it always was.': 'যেমন লেখেন তেমনই গোনা হয়, আগের মতোই।',
 }

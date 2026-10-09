@@ -2213,4 +2213,17 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'تمارين مشابهة',
   'No exact match. These come close:': 'لا تطابق تام. هذه قريبة:',
+  // --- dumbbell weight meaning (#474) ---
+  '{0} each': '{0} لكل واحد',
+  '{0} total': '{0} إجمالًا',
+  'Each ({0})': 'لكل واحد ({0})',
+  'Both ({0})': 'معًا ({0})',
+  'As entered': 'كما أُدخل',
+  'Each': 'لكل واحد',
+  'Both': 'معًا',
+  'Weight means': 'معنى الوزن',
+  'The weight of the one you hold. One arm, so it counts once.': 'وزن الواحد الذي تمسكه. ذراع واحدة، لذا يُحسب مرة واحدة.',
+  'The weight of one, so 20 means 20 in each hand. Volume counts both.': 'وزن الواحد، أي أن 20 تعني 20 في كل يد. الحجم يحسب الاثنين.',
+  'Both together, so 40 means two 20s.': 'الاثنان معًا، أي أن 40 تعني اثنين بوزن 20.',
+  'Counted as you type it, the way it always was.': 'يُحسب كما تكتبه، كما كان دائمًا.',
 }

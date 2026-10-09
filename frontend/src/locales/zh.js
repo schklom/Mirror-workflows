@@ -2158,4 +2158,17 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': '相似动作',
   'No exact match. These come close:': '没有完全匹配，这些比较接近：',
+  // --- dumbbell weight meaning (#474) ---
+  '{0} each': '每只 {0}',
+  '{0} total': '共 {0}',
+  'Each ({0})': '每只 ({0})',
+  'Both ({0})': '两只合计 ({0})',
+  'As entered': '按输入',
+  'Each': '每只',
+  'Both': '合计',
+  'Weight means': '重量表示',
+  'The weight of the one you hold. One arm, so it counts once.': '你手里那一只的重量。单臂，所以只算一次。',
+  'The weight of one, so 20 means 20 in each hand. Volume counts both.': '一只的重量，20 就是每只手 20。容量会算两只。',
+  'Both together, so 40 means two 20s.': '两只加起来，40 就是两只 20。',
+  'Counted as you type it, the way it always was.': '按你输入的算，一直都是这样。',
 }

@@ -2178,4 +2178,17 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'Ähnliche Übungen',
   'No exact match. These come close:': 'Kein genauer Treffer. Die hier kommen nah ran:',
+  // --- dumbbell weight meaning (#474) ---
+  '{0} each': '{0} je',
+  '{0} total': '{0} gesamt',
+  'Each ({0})': 'Je Hantel ({0})',
+  'Both ({0})': 'Beide ({0})',
+  'As entered': 'Wie eingegeben',
+  'Each': 'Je Hantel',
+  'Both': 'Beide',
+  'Weight means': 'Gewicht bedeutet',
+  'The weight of the one you hold. One arm, so it counts once.': 'Das Gewicht der einen Hantel in deiner Hand. Ein Arm, also zählt sie einmal.',
+  'The weight of one, so 20 means 20 in each hand. Volume counts both.': 'Das Gewicht einer Hantel: 20 heißt 20 in jeder Hand. Das Volumen zählt beide.',
+  'Both together, so 40 means two 20s.': 'Beide zusammen: 40 heißt zwei 20er.',
+  'Counted as you type it, the way it always was.': 'Gezählt, wie du es eintippst, so wie immer.',
 }

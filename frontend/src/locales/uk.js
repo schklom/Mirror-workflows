@@ -2155,4 +2155,17 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'Схожі вправи',
   'No exact match. These come close:': 'Точного збігу немає. Ось що близько:',
+  // --- dumbbell weight meaning (#474) ---
+  '{0} each': '{0} кожна',
+  '{0} total': '{0} разом',
+  'Each ({0})': 'Кожна ({0})',
+  'Both ({0})': 'Обидві ({0})',
+  'As entered': 'Як введено',
+  'Each': 'Кожна',
+  'Both': 'Обидві',
+  'Weight means': 'Вага означає',
+  'The weight of the one you hold. One arm, so it counts once.': 'Вага тієї, що в руці. Одна рука, тож рахується один раз.',
+  'The weight of one, so 20 means 20 in each hand. Volume counts both.': 'Вага однієї: 20 означає 20 у кожній руці. В обсяг ідуть обидві.',
+  'Both together, so 40 means two 20s.': 'Обидві разом: 40 означає дві по 20.',
+  'Counted as you type it, the way it always was.': 'Рахується так, як ти вводиш, як завжди.',
 }

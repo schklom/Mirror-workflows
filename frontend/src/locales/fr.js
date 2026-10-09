@@ -2158,4 +2158,17 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'Exercices similaires',
   'No exact match. These come close:': 'Rien d’exact. Ceux-ci s’en approchent :',
+  // --- dumbbell weight meaning (#474) ---
+  '{0} each': '{0} chacun',
+  '{0} total': '{0} au total',
+  'Each ({0})': 'Chacun ({0})',
+  'Both ({0})': 'Les deux ({0})',
+  'As entered': 'Tel que saisi',
+  'Each': 'Chacun',
+  'Both': 'Les deux',
+  'Weight means': 'Le poids indique',
+  'The weight of the one you hold. One arm, so it counts once.': 'Le poids de celui que tu tiens. Un seul bras, donc il compte une fois.',
+  'The weight of one, so 20 means 20 in each hand. Volume counts both.': 'Le poids d’un seul, donc 20 veut dire 20 dans chaque main. Le volume compte les deux.',
+  'Both together, so 40 means two 20s.': 'Les deux ensemble, donc 40 veut dire deux de 20.',
+  'Counted as you type it, the way it always was.': 'Compté comme tu le tapes, comme toujours.',
 }

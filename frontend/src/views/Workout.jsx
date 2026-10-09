@@ -43,6 +43,7 @@ import { canMoveActiveWorkoutUnit, moveActiveWorkoutUnit, canMoveActiveWorkoutEn
 import { nextOpenSet, workoutKeyAction } from '../lib/workout-keys.js'
 import { MUSCLE_NAME } from '../lib/muscles.js'
 import FocusView from './FocusView.jsx'
+import { withMeaning, historyAs, dbLoadFor, entryDbLoad, bellsIn } from '../lib/dumbbells.js'
 
 // How long after a key starts a hold the same key is not yet its "Done" (#133). A USB button
 // that bounces, or a double press, sends two presses a moment apart: the first starts the hold,
@@ -188,7 +189,10 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
   // The number is the heaviest logged set, or the working weight you kept.
   // On an assistance machine the best is the least help, and a 0 on either side means "nothing
   // logged" rather than a record (issue #232).
-  const bestHist = bestWeightFor(H, entry.id)
+  // Read in the meaning this session logs a dumbbell weight in (lib/dumbbells.js), so a past
+  // "40 total" is not a record a "22 each" set has to beat.
+  const meaning = entryDbLoad(entry)
+  const bestHist = bestWeightFor(H, entry.id, meaning)
   const bestKept = (H.exWeights[entry.id] || {}).w || 0
   const best = cardio ? 0
     : bestHist > 0 && bestKept > 0 ? betterWeight(entry.id, bestHist, bestKept) : Math.max(bestHist, bestKept)
@@ -224,7 +228,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
   // the number to beat. Tapping the line switches between the two, and the choice is the
   // profile's (S.logRef), so every exercise and the next session follow it.
   const refBest = S.logRef === 'best'
-  const ref = refBest ? bestSetFor(H, entry.id, mode) : last
+  const ref = refBest ? bestSetFor(H, entry.id, mode, meaning) : last
   // An exercise logged before only in another mode (reps then, a hold today) has a last time but
   // no best set to hold today's rows against. The line stays and says so: gone, it took the
   // switch back to "Last time" with it, reachable then only from Settings or another card.
@@ -255,7 +259,11 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
   // R sub-row, each with its own weight/reps/effort and done tick. Warm-ups stay single.
   const perSide = mode === 'reps' && isPerSide(cfg)
   const loadStep = mode === 'reps' ? weightIncrement(cfg, S.unit) : 2.5
-  const loadCol = { f: 'w', step: loadStep, dec: true, hd: bw ? t('Added ({0})', S.unit) : t('Weight ({0})', S.unit) }
+  // The weight column says what a dumbbell weight means when the exercise has said (#474): one
+  // bell or both together. A one-arm exercise holds one bell, so its plain heading is already true.
+  const bells = !bw && bellsIn(cfg) === 2 ? meaning : 'as'
+  const loadCol = { f: 'w', step: loadStep, dec: true, hd: bw ? t('Added ({0})', S.unit)
+    : bells === 'each' ? t('Each ({0})', S.unit) : bells === 'total' ? t('Both ({0})', S.unit) : t('Weight ({0})', S.unit) }
   // The reps column is the total in every mode, unilateral included — the stepper walks in
   // twos there so the number you land on is one you can actually split evenly.
   const repCol = { f: 'r', step: repStep(cfg), dec: false, hd: t('Reps') }
@@ -1351,8 +1359,10 @@ function ActiveWorkout() {
         // source, target); freestyle reproduces what you did last time.
         // Read from before the session's day when it is logged into the past (sessionHistory).
         const past = sessionHistory(s)
+        // Freestyle stamps the meaning of a dumbbell weight and reads last time in it, the way
+        // buildPlannedEntry does for a planned exercise (lib/dumbbells.js).
         const built = freestyle
-          ? { target: { ...cfg }, plan: null, sets: applyIntensifierPlan(buildSets(past, full, {
+          ? { target: withMeaning(s, cfg, ex.id), plan: null, sets: applyIntensifierPlan(buildSets(historyAs(past, ex.id, dbLoadFor(s, full)), full, {
             step: modeOf(full) === 'reps' ? weightIncrement(full, s.unit) : defaultIncrement(ex.id, s.unit), preferLast: true,
           }), full, dropGrid(s, full)) }
           : buildPlannedEntry(past, full, routine, { noProg })

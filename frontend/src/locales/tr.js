@@ -2158,4 +2158,17 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'Benzer egzersizler',
   'No exact match. These come close:': 'Tam eşleşme yok. Bunlar yakın:',
+  // --- dumbbell weight meaning (#474) ---
+  '{0} each': '{0} tanesi',
+  '{0} total': '{0} toplam',
+  'Each ({0})': 'Tanesi ({0})',
+  'Both ({0})': 'İkisi ({0})',
+  'As entered': 'Girildiği gibi',
+  'Each': 'Tanesi',
+  'Both': 'İkisi',
+  'Weight means': 'Ağırlığın anlamı',
+  'The weight of the one you hold. One arm, so it counts once.': 'Tuttuğun tek ağırlığın kilosu. Tek kol, yani bir kez sayılır.',
+  'The weight of one, so 20 means 20 in each hand. Volume counts both.': 'Bir tanesinin ağırlığı, yani 20 her elde 20 demek. Hacim ikisini de sayar.',
+  'Both together, so 40 means two 20s.': 'İkisi birlikte, yani 40 iki tane 20 demek.',
+  'Counted as you type it, the way it always was.': 'Yazdığın gibi sayılır, her zamanki gibi.',
 }

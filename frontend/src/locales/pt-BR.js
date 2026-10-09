@@ -1331,6 +1331,12 @@ export const PT_BR_OVERRIDES = {
   'Where an exercise is drawn on both figures. Your workouts stay exactly as they are.': 'Que figura mostra um exercício quando está desenhado nas duas. Seus treinos ficam exatamente como estão.',
   'Enter the address of the server this token is for': 'Informe o endereço do servidor a que este token pertence',
   'No exact match. These come close:': 'Nada exato. Estes chegam perto:',
+  // --- dumbbell weight meaning (#474) ---
+  'As entered': 'Como digitado',
+  'The weight of the one you hold. One arm, so it counts once.': 'O peso do que você segura. Um braço só, então conta uma vez.',
+  'The weight of one, so 20 means 20 in each hand. Volume counts both.': 'O peso de um, então 20 significa 20 em cada mão. O volume conta os dois.',
+  'Both together, so 40 means two 20s.': 'Os dois juntos, então 40 significa dois de 20.',
+  'Counted as you type it, the way it always was.': 'Contado como você digita, como sempre foi.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

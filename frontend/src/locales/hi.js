@@ -2158,4 +2158,17 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'मिलते-जुलते व्यायाम',
   'No exact match. These come close:': 'सटीक मेल नहीं मिला। ये करीब हैं:',
+  // --- dumbbell weight meaning (#474) ---
+  '{0} each': '{0} हर एक',
+  '{0} total': '{0} कुल',
+  'Each ({0})': 'हर एक ({0})',
+  'Both ({0})': 'दोनों ({0})',
+  'As entered': 'जैसा लिखा',
+  'Each': 'हर एक',
+  'Both': 'दोनों',
+  'Weight means': 'वज़न का मतलब',
+  'The weight of the one you hold. One arm, so it counts once.': 'हाथ में एक का वज़न। एक हाथ है, इसलिए एक बार गिना जाता है।',
+  'The weight of one, so 20 means 20 in each hand. Volume counts both.': 'एक का वज़न, यानी 20 मतलब हर हाथ में 20। वॉल्यूम दोनों को गिनता है।',
+  'Both together, so 40 means two 20s.': 'दोनों मिलाकर, यानी 40 मतलब दो 20 वाले।',
+  'Counted as you type it, the way it always was.': 'जैसा आप लिखते हैं वैसा ही गिना जाता है, हमेशा की तरह।',
 }

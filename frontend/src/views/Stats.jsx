@@ -16,6 +16,7 @@ import { fatigueOf, strengthOf, STRENGTH_FLOOR, LB_TO_KG } from '../lib/recovery
 import { strengthExerciseRowsForMuscle } from '../lib/strength-exercises.js'
 import { fatigueStateOf } from '../lib/recovery-view.js'
 import { e1rmSeries, best1RM, formulaOf } from '../lib/onerm.js'
+import { currentDbLoad, workoutAs } from '../lib/dumbbells.js'
 import { maxRepsSeries } from '../lib/pyramid.js'
 import { perSetSessions, perSetLines, dropOffSet } from '../lib/per-set.js'
 import {
@@ -421,8 +422,11 @@ export default function Stats() {
   const workouts = S.workouts
   const monthW = workouts.filter(w => workoutDay(w)?.slice(0, 7) === todayISO().slice(0, 7)).length
 
+  // Dumbbell weights are read in each exercise's current meaning (lib/dumbbells.js), so the
+  // chart and its best compare like with like across a switch between per bell and total.
+  const meantIn = {}
   const metricDataOf = (workout, id) => {
-    const entries = metricEntriesForExercise(workout, id)
+    const entries = metricEntriesForExercise(workoutAs(workout, id, meantIn[id] ??= currentDbLoad(S, id)), id)
     const mode = entries.at(-1)?.mode || null
     const sameMode = entries.filter(item => item.mode === mode)
     const best = mode === 'reps' ? sameMode.reduce((value, item) => {

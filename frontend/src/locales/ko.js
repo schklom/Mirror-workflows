@@ -2158,4 +2158,17 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': '비슷한 운동',
   'No exact match. These come close:': '정확히 일치하는 항목이 없어요. 이건 비슷해요:',
+  // --- dumbbell weight meaning (#474) ---
+  '{0} each': '개당 {0}',
+  '{0} total': '합계 {0}',
+  'Each ({0})': '개당 ({0})',
+  'Both ({0})': '합계 ({0})',
+  'As entered': '입력한 그대로',
+  'Each': '개당',
+  'Both': '합계',
+  'Weight means': '무게 기준',
+  'The weight of the one you hold. One arm, so it counts once.': '들고 있는 하나의 무게예요. 한 팔이라 한 번만 셉니다.',
+  'The weight of one, so 20 means 20 in each hand. Volume counts both.': '하나의 무게라서 20은 양손에 20씩이에요. 볼륨은 두 개를 셉니다.',
+  'Both together, so 40 means two 20s.': '두 개를 합친 무게라서 40은 20짜리 두 개예요.',
+  'Counted as you type it, the way it always was.': '입력한 그대로 계산해요. 늘 그랬듯이.',
 }

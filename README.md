@@ -84,7 +84,7 @@ if you want to try it before installing anything.
 **Progress**
 
 - Progression rules per routine or per exercise: linear, Greyskull LP, double progression through a
-  visible rep range, or adding time. Each target explains why it is that number; missed reps never
+  visible rep range, triple progression (reps, then sets, then load), or adding time. Each target explains why it is that number; missed reps never
   add load, stalls trigger a deload.
 - Estimated 1RM per exercise with its own curve, Structural Balance ratios (Poliquin, Thibaudeau,
   ATG), a year-long activity heatmap.

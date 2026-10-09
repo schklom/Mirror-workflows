@@ -5,7 +5,7 @@ import { fmtSpeed } from './speed.js'
 import { hasIncline, inclineFrom } from './incline.js'
 import { isCardio, isBodyweightEq, isAssisted, betterWeight } from './exercises.js'
 import { barWeightFor } from './bar.js'
-import { phaseForSet, modeForSet, modeForEntry, isWarmupRow, isDropSet, isRestPauseSet, normalizeMode, completedVolumeOf, hasCompletedWork, nextDropWeight, splitBurstReps, makeSideSet, isSideSet, syncSideAggregate, WEIGHT_ORIGIN_MANUAL, dropsOf, clustersOf } from './workout-model.js'
+import { phaseForSet, modeForSet, modeForEntry, isWarmupRow, isFailureSet, isDropSet, isRestPauseSet, normalizeMode, completedVolumeOf, hasCompletedWork, nextDropWeight, splitBurstReps, makeSideSet, isSideSet, syncSideAggregate, WEIGHT_ORIGIN_MANUAL, dropsOf, clustersOf } from './workout-model.js'
 import { backoffAt, backoffStepOf, backoffWeights } from './backoff.js'
 import { dbLoadOf, bellsIn, volumeFactor, historyAs, ownedFloor } from './dumbbells.js'
 const objectOf = value => value && typeof value === 'object' && !Array.isArray(value) ? value : {}
@@ -152,7 +152,10 @@ export function setLabel(id, s, cfg, speedUnit) {
   if (!EXPLICIT_MODES.has(cfg?.mode) && mode !== 'reps' && s.r > 0 && !(s.min > 0 || s.speed > 0 || s.sec > 0)) mode = 'reps'
   // A treadmill grade rides along when the set has one (lib/incline.js); a flat set reads as it did.
   if (mode === 'cardio') return `${s.min || 0} min @ ${fmtSpeed(s.speed || 0, speedUnit)}` + (hasIncline(s) ? ' · ' + t('{0}% incline', fmtNum(Number(s.incline))) : '')
-  if (mode === 'time') return fmtSec(s.sec) + (s.w > 0 ? ` · ${fmtNum(s.w)}` : '')
+  // A set taken to failure carries its "F" behind the numbers, the mark lifting logs use for it;
+  // the history, the text export and the set menu all read it from here.
+  const fail = isFailureSet(s) ? ' ' + t('F') : ''
+  if (mode === 'time') return fmtSec(s.sec) + (s.w > 0 ? ` · ${fmtNum(s.w)}` : '') + fail
   const bw = isBw(c)
   // A dumbbell weight that says what it means (lib/dumbbells.js, issue #474) says it here too:
   // "20 each × 8" is one 20 in each hand, "40 total × 8" both together. Spaced like the "+10 × 12"
@@ -195,11 +198,11 @@ export function setLabel(id, s, cfg, speedUnit) {
     return ['L', 'R'].map(key => {
       const side = s.sides[key]
       return `${t(key)} ${partial && !side.done ? '–' : oneSide(side) + effortTail(side)}`
-    }).join(' · ')
+    }).join(' · ') + fail
   }
   // Bodyweight reads as what you did — "12", or "+10 × 12" once there is a belt involved —
   // rather than "0×12", which says a set was performed with no weight and means nothing.
-  return oneSide(s) + effortTail(s)
+  return oneSide(s) + fail + effortTail(s)
 }
 // Default config for a freshly added exercise.
 export function defaultConfig(id, mode) {
@@ -224,7 +227,9 @@ export function setsRepsOf(cfg) {
   if (mode === 'cardio') return `${n} × ${cfg.min || 20} min`
   if (mode === 'time') return `${n} × ${fmtSec(cfg.sec || 45)}`
   if (isPyramid(cfg)) return pyramidLabel(cfg.pyramid)
-  return `${n} × ${repsOf(cfg)}`
+  // Triple progression's set range reads as a range too: "3–5 × 8–12".
+  const sets = cfg.setsMax > n ? `${n}–${cfg.setsMax}` : n
+  return `${sets} × ${repsOf(cfg)}`
 }
 
 // One-line summary of a planned exercise ("3 × 10 · 60 kg"), shared by the routine editor
@@ -654,6 +659,27 @@ function seedSideFromLast(row, prev, planReps) {
  * drops sitting underneath it. `grid` puts each drop on a loadable weight (nextDropWeight).
  */
 export function applyIntensifierPlan(sets, cfg, grid) {
+  return applyFailurePlan(shapeRows(sets, cfg, grid), cfg)
+}
+
+/**
+ * "Last set to failure" (`cfg.lastToFailure`, written only when on): the last work row of a
+ * freshly built exercise is marked as taken to failure, the way Greyskull's final set is an
+ * AMRAP. Only that one row, and only a row not logged yet; every other row keeps what it had, so
+ * a plan without the flag builds exactly the rows it always did. Runs inside applyIntensifierPlan,
+ * the step every way of building an exercise's rows ends with, so none of them can forget it.
+ */
+export function applyFailurePlan(sets, cfg) {
+  if (!cfg || cfg.lastToFailure !== true || modeOf(cfg) === 'cardio') return sets
+  let last = -1
+  sets.forEach((s, i) => { if (!isWarmupRow(s)) last = i })
+  // A timed per-side hold is an L row and an R row that read as one set: both halves are the set.
+  const from = last > 0 && sets[last]?.side === 'R' && sets[last - 1]?.side === 'L' ? last - 1 : last
+  if (last < 0) return sets
+  return sets.map((s, i) => (i >= from && i <= last && !s.done ? { ...s, failure: true } : s))
+}
+
+function shapeRows(sets, cfg, grid) {
   const kind = cfg && cfg.intensifier && cfg.intensifier.type
   if (kind !== 'dropset' && kind !== 'restpause') return sets
   if (kind === 'dropset') {

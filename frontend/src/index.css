@@ -1327,6 +1327,9 @@ body.chips-dragging *{cursor:inherit}
 .plateline .moves{margin-inline-start:auto;color:var(--label-3);font-variant-numeric:tabular-nums;white-space:nowrap}
 /* The number is the set's menu (drop / burst / remove); a 24px circle needs a finger-sized hit area. */
 .setrow .n::before{content:'';position:absolute;inset:-10px}
+/* A set taken to failure: a small "F" on the number's corner, in the colour the effort scale
+   gives "nothing left" (effort.js EFFORT_BANDS). */
+.setrow .n .failmark,.setrow-side>.n .failmark{position:absolute;top:-5px;inset-inline-end:-6px;min-width:13px;height:13px;padding:0 2px;border-radius:7px;background:var(--purple);color:#fff;font-size:9px;font-weight:700;line-height:13px;text-align:center;pointer-events:none}
 /* No +/- buttons: the number field takes the whole cell and is the tap target. */
 .stp.plain{grid-template-columns:1fr}
 .stp.plain .val{width:100%}

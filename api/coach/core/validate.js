@@ -35,7 +35,7 @@ export const CHANGE_TYPES = [
   'add-routine', 'remove-routine', 'rename-routine',
   'week'
 ];
-const POLICIES = ['off', 'linear', 'greyskull', 'double', 'time'];
+const POLICIES = ['off', 'linear', 'greyskull', 'double', 'triple', 'time'];
 const MODES = ['reps', 'time', 'cardio'];
 const MAX_INC = 50;
 // A prescription, not a world record. Anything past this is a model slip or a hostile answer,
@@ -150,6 +150,8 @@ export function validatePlan(data, ctx = {}) {
       // adds a set and restarts the reps. Without it the Coach can neither see nor prescribe
       // how a push-up is meant to get harder.
       if (isInt(e.repsMax, 1, 100)) clean.repsMax = e.repsMax;
+      // Triple progression's set ceiling (frontend/src/lib/progression.js tripleSetsOf).
+      if (isInt(e.setsMax, 1, 10)) clean.setsMax = e.setsMax;
       if (clean.repsMax != null && clean.repsMin != null && clean.repsMax < clean.repsMin) {
         errors.push(INVERTED_RANGE(where)); return;
       }
@@ -347,6 +349,7 @@ export function validateReview(data, plan, ctx = {}) {
           ...(POLICIES.includes(a.prog) ? { prog: a.prog } : {}),
           ...(isInt(a.repsMin, 1, 100) ? { repsMin: a.repsMin } : {}),
           ...(isInt(a.repsMax, 1, 100) ? { repsMax: a.repsMax } : {}),
+          ...(isInt(a.setsMax, 1, 10) ? { setsMax: a.setsMax } : {}),
           ...(a.bodyweight != null ? { bodyweight: !!a.bodyweight } : {}),
           ...(perSide ? { side: true } : {}),
           ...(isInt(a.position, 0, MAX_EX_PER_ROUTINE) ? { position: a.position } : {})
@@ -453,6 +456,7 @@ export function validateReview(data, plan, ctx = {}) {
             ...(isInt(e.sec, 5, 3600) ? { sec: e.sec } : {}),
             ...(isInt(e.repsMin, 1, 100) ? { repsMin: e.repsMin } : {}),
             ...(isInt(e.repsMax, 1, 100) ? { repsMax: e.repsMax } : {}),
+            ...(isInt(e.setsMax, 1, 10) ? { setsMax: e.setsMax } : {}),
             ...(POLICIES.includes(e.prog) ? { prog: e.prog } : {}),
             ...(isNum(e.inc) && e.inc > 0 && e.inc <= MAX_INC ? { inc: e.inc } : {}),
             ...(e.bodyweight != null ? { bodyweight: !!e.bodyweight } : {}),

@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+**Training**
+
+- **Sets to failure**: mark any set as taken to failure from its set menu and it gets a little
+  purple "F". It counts as RIR 0 in your effort stats and the fatigue map (unless you rated it
+  yourself) and stays a normal work set for volume and records. Plan it too: "Last set to failure"
+  in an exercise's settings makes the final set an all-out one every session, and Greyskull
+  switches it on for you. The "F" shows in history, the finish summary and Copy as text, and Hevy
+  and CSV imports keep it.
+- **Triple progression** (#179): reps climb to the top of the range, then a set is added (one at a
+  time, each climbing on its own), up to the most sets you allow. When every set sits at the top,
+  the weight goes up and you start over at your first sets and reps. Pick it like any other rule
+  in an exercise's settings and set "Sets up to". Misses repeat the same sets and reps, more reps
+  than last time still counts as progress, and three real stalls deload you back to the start.
+
 **Languages**
 
 - 🇵🇱 **Polish exercise names**: all 1,324 of them, with the same switch to show the English name

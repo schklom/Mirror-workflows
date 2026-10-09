@@ -10,7 +10,7 @@ import { effortColor, rirOf } from '../lib/effort.js'
 import { progressionGuidance } from '../lib/progression-copy.js'
 import {
   addCluster, addDrop, addSideCluster, addSideDrop, clustersOf, dropsOf,
-  isSideSet, isWarmupRow, nextBurstReps, nextDropWeight, setClusterAt,
+  isFailureSet, isSideSet, isWarmupRow, nextBurstReps, toggleFailure, nextDropWeight, setClusterAt,
   setDropAt, setSideClusterAt, setSideDropAt, setSideField,
 } from '../lib/workout-model.js'
 import { weightIncrement, stepWeight } from '../lib/progression.js'
@@ -40,7 +40,12 @@ const toggleWarmup = row => {
   if (isWarmupRow(next)) {
     delete next.phase
     delete next.warmup
-  } else next.phase = 'warmup'
+  } else {
+    next.phase = 'warmup'
+    // A warm-up is never taken to failure (isFailureSet ignores it anyway); dropping the mark
+    // keeps it from coming back if the row is made a work set again.
+    delete next.failure
+  }
   return next
 }
 
@@ -234,6 +239,7 @@ export default function FocusView({
       { icon: 'flame', label: isWarmupRow(set) ? t('Mark as work set') : t('Mark as warm-up'), onClick: () => onMutateSet(setIdx, toggleWarmup) },
       { icon: 'arrowDown', label: t('Add drop set'), onClick: () => onMutateSet(setIdx, row => addDropTo(row, entry.target)) },
       { icon: 'bolt', label: t('Add burst'), onClick: () => onMutateSet(setIdx, row => addBurstTo(row, entry.target?.intensifier?.type === 'restpause' ? entry.target.intensifier.restSec : (S.restPauseSec || 15))) },
+      !isWarmupRow(set) && mode !== 'cardio' && { icon: 'gauge', label: t('Taken to failure'), sub: t('Nothing left in the tank'), on: isFailureSet(set), onClick: () => onMutateSet(setIdx, toggleFailure) },
       { icon: 'trash', label: t('Delete set'), danger: true, disabled: entry.sets.length <= 1, onClick: () => onRemoveSetAt(setIdx) },
     ],
   })
@@ -254,6 +260,7 @@ export default function FocusView({
         <h2>{exerciseNameFor(ex)}</h2>
         <button className="iconbtn" aria-label={t('Details')} onClick={() => exerciseDetailSheet(ex)}><Icon name="info" /></button>
         {isWarmupRow(set) && <span className="focus-warmup" aria-label={t('Warm-up')}>🔥</span>}
+        {isFailureSet(set) && <span className="focus-failure" role="img" aria-label={t('Taken to failure')}>{t('F')}</span>}
         <button className="iconbtn" aria-label={t('More')} onClick={openExerciseMenu}><Icon name="more" /></button>
       </header>
 

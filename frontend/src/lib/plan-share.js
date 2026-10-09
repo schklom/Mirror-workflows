@@ -15,6 +15,7 @@ import { deriveSessionName } from './session-merge.js'
 import { isPyramid, normalizePyramid, normalizePyramidRest, normalizePyramidWeight } from './pyramid.js'
 import { isBackoff } from './backoff.js'
 import { dbLoadOf } from './dumbbells.js'
+import { MAX_TRIPLE_SETS } from './progression.js'
 import { uid, todayISO, DAYN, weekOrder, weekStartOf, exCount } from './format.js'
 import { t, exerciseNameFor, exerciseNameClass, getLang, RTL_LANGS } from './i18n-core.js'
 import { convertWeight } from './units.js'
@@ -101,6 +102,8 @@ function cleanEx(e) {
   if (e.inc > 0) o.inc = e.inc
   // Back-off sets step down by that same step; written only when on (lib/backoff.js).
   if (isBackoff(e)) o.backoff = true
+  // "Last set to failure" is how the exercise is prescribed too; only when on, never on cardio.
+  if (e.lastToFailure === true && mode !== 'cardio') o.lastToFailure = true
   // Epley deload factor is a per-occurrence progression setting. Omit the default so older
   // exports remain compact and importing them preserves the default 90% behaviour.
   if (e.deloadFactor != null && Number(e.deloadFactor) !== 0.9) o.deloadFactor = e.deloadFactor
@@ -108,6 +111,8 @@ function cleanEx(e) {
   // as a bare 20 and the other end counts half the volume.
   if (dbLoadOf(e.dbLoad)) o.dbLoad = dbLoadOf(e.dbLoad)
   if (e.repsMin != null) o.repsMin = e.repsMin
+  // Triple progression's set ceiling (progression.js tripleSetsOf), rep work only.
+  if (mode === 'reps' && e.setsMax > 0) o.setsMax = Math.min(MAX_TRIPLE_SETS, Math.round(e.setsMax))
   if (e.repsMax != null) o.repsMax = e.repsMax
   // The exercise's own rest (issue #10) is part of how it is prescribed, so it travels too —
   // only when set, so a plan that never asked for one leaves the recipient's own default
@@ -332,8 +337,8 @@ function scheme(e, unit, speedUnit) {
     return sets > 1 ? `${sets} × ${body}` : body
   }
   const line = exLine({ ...e, reps: e.reps ?? 10 }, unit, speedUnit)
-  const intens = intensifierLine(e.intensifier)
-  return intens ? `${line} · ${intens}` : line
+  const extras = [intensifierLine(e.intensifier), e.lastToFailure === true ? t('Last set to failure') : ''].filter(Boolean)
+  return [line, ...extras].join(' · ')
 }
 
 // A drop-set or rest-pause is how the exercise is prescribed, so the printout names it — the

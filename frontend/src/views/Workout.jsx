@@ -39,7 +39,7 @@ import { sessionNoProg, setSessionNoProg, setEntryNoProg, joinSessionNoProg } fr
 import { glyphOf } from '../lib/glyphs.js'
 import { markAllSetsDone, sessionHistory } from '../lib/backfill.js'
 import { bestSetFor } from '../lib/exercise-history.js'
-import { isWarmupRow, isDropSet, isRestPauseSet, dropsOf, clustersOf, addDrop, addCluster, removeDropAt, removeClusterAt, setDropAt, setClusterAt, nextDropWeight, nextBurstReps, isSideSet, makeSideSet, setSideField, toggleSide, addSideDrop, removeSideDropAt, setSideDropAt, addSideCluster, removeSideClusterAt, setSideClusterAt, WEIGHT_ORIGIN_MANUAL } from '../lib/workout-model.js'
+import { isWarmupRow, isFailureSet, toggleFailure, isDropSet, isRestPauseSet, dropsOf, clustersOf, addDrop, addCluster, removeDropAt, removeClusterAt, setDropAt, setClusterAt, nextDropWeight, nextBurstReps, isSideSet, makeSideSet, setSideField, toggleSide, addSideDrop, removeSideDropAt, setSideDropAt, addSideCluster, removeSideClusterAt, setSideClusterAt, WEIGHT_ORIGIN_MANUAL } from '../lib/workout-model.js'
 import { canMoveActiveWorkoutUnit, moveActiveWorkoutUnit, canMoveActiveWorkoutEntry, moveActiveWorkoutEntry } from '../lib/active-workout-order.js'
 import { nextOpenSet, workoutKeyAction } from '../lib/workout-keys.js'
 import { MUSCLE_NAME } from '../lib/muscles.js'
@@ -119,6 +119,12 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
   const setPhaseAt = (i, warm) => update(s => {
     const e = s.active.entries[entryIdx]
     e.sets = warm ? makeWarmupAt(e.sets, i) : makeWorkAt(e.sets, i)
+  }, true)
+  const toggleFailureAt = i => update(s => {
+    const e = s.active.entries[entryIdx]
+    const [start, count] = setSpanAt(e.sets, i)
+    const on = !isFailureSet(e.sets[i])
+    for (let j = start; j < start + count; j++) if (isFailureSet(e.sets[j]) !== on) e.sets[j] = toggleFailure(e.sets[j])
   }, true)
   const addDropRow = i => mutSet(i, row => {
     // A unilateral set drops per side (issue #60): addSideDrop seeds each side from its own weight.
@@ -438,6 +444,10 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
         { items: [
           !warm && mode === 'reps' && canBeWarmup(s) && entry.sets.some((x, j) => j !== i && !isWarmupRow(x)) && { icon: 'sunrise', label: t('Make it a warm-up set'), onClick: () => setPhaseAt(i, true) },
           warm && mode === 'reps' && !perSide && { icon: 'dumbbell', label: t('Count it as a working set'), onClick: () => setPhaseAt(i, false) },
+          // Taken to failure: a toggle with its check, like the menu's other on/off rows. It counts
+          // as RIR 0 wherever effort is read, unless a rating was logged on the set. A timed
+          // per-side pair is one set, so both halves get it.
+          !warm && mode !== 'cardio' && { icon: 'gauge', label: t('Taken to failure'), sub: t('Nothing left in the tank'), on: isFailureSet(s), onClick: () => toggleFailureAt(i) },
         ] },
         { title: t('Add to this set'), items: [
           !warm && mode === 'reps' && !isRestPauseSet(s) && { icon: 'arrowDown', label: t('Drop set'), sub: t('+ Drop'), onClick: () => addDropRow(i) },
@@ -572,9 +582,13 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
   )
   // A plain set row (anything but a reps L/R stack). Its own function since a timed per-side
   // hold draws two of them, L then R, inside one swipe so the pair slides as the one set it is.
+  // A set taken to failure wears a small "F" on its number, the button every row's menu opens
+  // from. The button's own label speaks for it, so a screen reader hears it with the set number.
+  const failMark = s => isFailureSet(s) ? <span className="failmark" aria-hidden="true">{t('F')}</span> : null
+  const failSay = (s, label) => isFailureSet(s) ? label + ', ' + t('Taken to failure') : label
   const plainRow = (s, i) => (
     <div ref={el => onSetRowRef?.(i, el)} className={'setrow' + (s.done ? ' done' : '') + (col3 ? ' eff3' : '') + (timed ? ' timed' : '')}>
-      <button type="button" className="n" aria-label={sideTagOf(s) ? t('Set {0} ({1})', setNumOf(s, i), sideTagOf(s)) : t('Set {0}', setNumOf(s, i))} aria-describedby={optsId} title={t('More')} onClick={() => openSetMenu(s, i)}>{setNumOf(s, i)}</button>
+      <button type="button" className="n" aria-label={failSay(s, sideTagOf(s) ? t('Set {0} ({1})', setNumOf(s, i), sideTagOf(s)) : t('Set {0}', setNumOf(s, i)))} aria-describedby={optsId} title={t('More')} onClick={() => openSetMenu(s, i)}>{setNumOf(s, i)}{failMark(s)}</button>
       {/* Both words sit in the pill's one grid cell (::before/::after, hidden), so Left and
           Right are as wide as the longer of the two in every language and the inputs
           after them line up (#322). */}
@@ -701,7 +715,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
             // ticked on its own (issue #60). Warm-ups split the same way as the work sets they
             // ramp toward, so a warm-up side set shows L/R too (#388).
             <div ref={el => onSetRowRef?.(i, el)} className={'setrow-side' + (s.done ? ' done' : '')}>
-              <button type="button" className="n" aria-label={t('Set {0}', phaseNum)} aria-describedby={optsId} title={t('More')} onClick={() => openSetMenu(s, i)}>{phaseNum}</button>
+              <button type="button" className="n" aria-label={failSay(s, t('Set {0}', phaseNum))} aria-describedby={optsId} title={t('More')} onClick={() => openSetMenu(s, i)}>{phaseNum}{failMark(s)}</button>
               <div className="side-rows">
                 {sideRow(s, i, 'L', col1, col2, col3)}
                 {sideExtras(s, i, 'L')}

@@ -231,6 +231,19 @@ test('a debrief payload carries one session, its predecessors of the same routin
   assert.ok(p.bodyweight.series.every(b => b.d <= '2026-07-20'));
 });
 
+test('a set taken to failure reaches the coach as failure, a warm-up never does', () => {
+  const S = debriefState();
+  const w2 = S.workouts.find(w => w.id === 'w2');
+  w2.entries[0].sets[0].failure = true;
+  w2.entries[0].sets[2].failure = true;
+  const p = payload.build(S, { handle: handleFor('u'), kind: 'debrief', workoutId: 'w2' });
+  const sets = p.session.entries[0].sets;
+  assert.equal(sets[0].warmup, true);
+  assert.equal('failure' in sets[0], false);
+  assert.equal('failure' in sets[1], false);
+  assert.equal(sets[2].failure, true);
+});
+
 test('an unknown workout id falls back to the latest session', () => {
   const p = payload.build(debriefState(), { handle: handleFor('u'), kind: 'debrief', workoutId: 'nope' });
   assert.equal(p.session.id, 'w2');

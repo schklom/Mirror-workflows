@@ -1819,7 +1819,12 @@ describe('workout focus view', () => {
     expect(mocks.S.active.entries[0].sets[0].r).toBe(9)
     await click(buttonNamed('Set menu'))
     const labels = mocks.menuSheet.mock.calls.at(-1)[0].items.filter(Boolean).map(item => item.label)
-    expect(labels).toEqual(['Mark as warm-up', 'Add drop set', 'Add burst', 'Delete set'])
+    expect(labels).toEqual(['Mark as warm-up', 'Add drop set', 'Add burst', 'Taken to failure', 'Delete set'])
+    // Taken to failure toggles the mark, and the focus card shows its F.
+    await act(async () => { mocks.menuSheet.mock.calls.at(-1)[0].items.filter(Boolean).find(item => item.label === 'Taken to failure').onClick() })
+    expect(mocks.S.active.entries[0].sets[0].failure).toBe(true)
+    await rerender()
+    expect(container.querySelector('.focus-failure').textContent).toBe('F')
   })
 
   it('does not expose a Focus-only set note action', async () => {
@@ -2607,7 +2612,7 @@ describe('workout controls: the more menu and the set menu', () => {
   it('opens a per-set menu from the set number with drop, burst and remove', async () => {
     await mount([exercise('plain-bench', [false, false])])
     await act(async () => { container.querySelector('button[aria-label="Set 2"]').dispatchEvent(new dom.Event('click', { bubbles: true })) })
-    expect(menuItemsOf(lastMenu()).map(it => it.label)).toEqual(['Make it a warm-up set', 'Drop set', 'Rest-pause burst', 'Copy this set', 'Remove this set'])
+    expect(menuItemsOf(lastMenu()).map(it => it.label)).toEqual(['Make it a warm-up set', 'Taken to failure', 'Drop set', 'Rest-pause burst', 'Copy this set', 'Remove this set'])
     expect(item('Make it a warm-up set').icon).toBe('sunrise')
 
     await act(async () => { item('Drop set').onClick() })
@@ -2616,6 +2621,23 @@ describe('workout controls: the more menu and the set menu', () => {
     await act(async () => { container.querySelector('button[aria-label="Set 2"]').dispatchEvent(new dom.Event('click', { bubbles: true })) })
     await act(async () => { item('Remove this set').onClick() })
     expect(mocks.S.active.entries[0].sets.length).toBe(1)
+  })
+
+  it('marks a set as taken to failure from its menu, with an F on its number, and back', async () => {
+    await mount([exercise('plain-bench', [false, false])])
+    const openSet = async label => { await act(async () => { container.querySelector(`button[aria-label="${label}"]`).dispatchEvent(new dom.Event('click', { bubbles: true })) }) }
+    await openSet('Set 2')
+    expect(item('Taken to failure').on).toBe(false)
+    await act(async () => { item('Taken to failure').onClick() })
+    expect(mocks.S.active.entries[0].sets[1].failure).toBe(true)
+    expect(mocks.S.active.entries[0].sets[0].failure).toBeUndefined()
+    await rerender()
+    const n = container.querySelector('button[aria-label="Set 2, Taken to failure"]')
+    expect(n.querySelector('.failmark').textContent).toBe('F')
+    await openSet('Set 2, Taken to failure')
+    expect(item('Taken to failure').on).toBe(true)
+    await act(async () => { item('Taken to failure').onClick() })
+    expect('failure' in mocks.S.active.entries[0].sets[1]).toBe(false)
   })
 
   it('makes a work set a warm-up and back, and keeps one work set', async () => {

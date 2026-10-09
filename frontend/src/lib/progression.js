@@ -24,11 +24,11 @@ import { isPyramid } from './pyramid.js'
 import { backoffAt } from './backoff.js'
 import { ownedWeightsFor, ownedUp, ownedDeload, ownedAround } from './dumbbells.js'
 
-export const POLICIES = ['off', 'linear', 'greyskull', 'double', 'time']
+export const POLICIES = ['off', 'linear', 'greyskull', 'double', 'triple', 'time']
 
 // Which policies can sensibly drive which logging mode.
 export const POLICIES_FOR = {
-  reps: ['off', 'linear', 'greyskull', 'double'],
+  reps: ['off', 'linear', 'greyskull', 'double', 'triple'],
   time: ['off', 'time'],
   cardio: ['off']
 }
@@ -38,6 +38,7 @@ export const POLICY_NAME = {
   linear: 'Linear progression',
   greyskull: 'Greyskull LP',
   double: 'Double progression',
+  triple: 'Triple progression',
   time: 'Add time'
 }
 export const POLICY_DESC = {
@@ -45,13 +46,14 @@ export const POLICY_DESC = {
   linear: 'Hit every rep in every set and the weight goes up. Repeated misses trigger a deload.',
   greyskull: 'Two straight sets plus a final set taken to failure. Beat the target on that set and the weight goes up (twice as much if you double the reps). One failure resets 10 %.',
   double: 'Work up through a rep range at the same weight. Reach the top of the range in every set and the weight goes up, reps back to the bottom.',
+  triple: 'Reps climb to the top of the range, then a set is added, up to your most sets. All of them at the top and the weight goes up, back to your first sets and reps.',
   time: 'Hold every set for the full duration and the target goes up.'
 }
 
 // The Epley target is a soft objective mapped onto the exercise's real load grid. Keep the
 // default out of saved configs so plans written before this policy stays byte-for-byte compatible.
 export const DELOAD_FACTOR = 0.9
-export const DELOAD_AFTER = { linear: 3, greyskull: 1, double: 3, time: 3 }
+export const DELOAD_AFTER = { linear: 3, greyskull: 1, double: 3, triple: 3, time: 3 }
 export const DELOAD_FACTOR_MIN = 0.5
 export const DELOAD_FACTOR_MAX = 0.95
 
@@ -219,6 +221,8 @@ export function plannedOf(cfg) {
   if (mode === 'reps' && c.reps > 0) out.reps = c.reps
   if (mode === 'reps' && c.repsMin > 0) out.repsMin = c.repsMin
   if (mode === 'time' && c.sec > 0) out.sec = c.sec
+  // Triple progression's set ceiling is part of the plan: raising it changes where a cycle ends.
+  if (mode === 'reps' && c.setsMax > 0) out.setsMax = c.setsMax
   if (c.weight != null) out.weight = c.weight
   return out
 }
@@ -229,7 +233,7 @@ export function plannedOf(cfg) {
 // progression leads (issue #232), and from there the work is a plain pull-up or dip.
 const climbsReps = cfg => isBw(cfg) || !isLoadedEq(cfg.id) || isAssisted(cfg)
 
-const PLAN_KEYS = ['sets', 'reps', 'repsMin', 'sec']
+const PLAN_KEYS = ['sets', 'reps', 'repsMin', 'sec', 'setsMax']
 const samePlan = (a, b) => PLAN_KEYS.every(k => (a[k] ?? null) === (b[k] ?? null))
 /** Did the routine's sets or reps change since the session that stamped `planned`? */
 export function planChanged(planned, cfg) {
@@ -265,7 +269,12 @@ export function readSession(entry, fallback) {
   // L row and an R row) — `target.sets` is still the plan's pre-doubling number, so it has to
   // double here too, or `sets` below stops after the first side's rows and the other side's
   // holds never reach `ok`/`held`/`best`.
-  const plannedRows = target.sets || logged.length
+  // Triple progression asks each set for its own reps (`target.rowReps`, issue #179): the base
+  // sets climb together and an added set climbs on its own, so "12, 12, 12, 9" is one session's
+  // plan. Only a session built under triple carries it; every other one reads exactly as before.
+  const rowGoals = mode === 'reps' && entry && entry.target && Array.isArray(target.rowReps) && target.rowReps.length
+    ? target.rowReps.map(r => Math.max(0, Number(r) || 0)) : null
+  const plannedRows = rowGoals ? rowGoals.length : (target.sets || logged.length)
   const planned = mode === 'time' && isPerSide(target) ? plannedRows * 2 : plannedRows
   const enough = logged.length >= planned
   // Only the sets the plan asked for decide what happens next (issue #233). A set added on top
@@ -291,7 +300,7 @@ export function readSession(entry, fallback) {
       ok: goal > 0 && enough && held.length > 0 && held.every(h => h >= goal)
     }
   }
-  const goal = target.reps || 0
+  const goal = rowGoals ? Math.max(...rowGoals) : (target.reps || 0)
   // Back-off sets (lib/backoff.js): each planned set after the first is held to its own weight,
   // stepped down from the top set as logged. Taking a back-off set lighter to get its reps is
   // not the sequence done, so it reads like a set short of its reps. Only a session that was
@@ -306,7 +315,7 @@ export function readSession(entry, fallback) {
     count: reps.length,                                   // the dimension bodyweight work grows (#33)
     low: reps.length ? Math.min(...reps) : 0,
     amrap: reps.length ? reps[reps.length - 1] : 0,       // Greyskull's final set
-    ok: goal > 0 && enough && reps.length > 0 && reps.every(r => r >= goal)
+    ok: goal > 0 && enough && reps.length > 0 && reps.every((r, k) => r >= (rowGoals ? rowGoals[k] ?? goal : goal))
   }
 }
 
@@ -346,6 +355,44 @@ function sessionsIn(S, exId, fallback, rid) {
   return out
 }
 
+// --- triple progression (issue #179) ---------------------------------------------------------
+//
+// Reps, then sets, then load. `sets` is where a cycle starts (the base sets), `setsMax` where it
+// tops out, and the rep range is double progression's (`repsMin`..`reps`). The base sets climb
+// together from the bottom of the range to the top; then one set is added at the bottom and
+// climbs alone to the top, then the next, until `setsMax` sets all sit at the top. Then the
+// weight goes up and it starts over at the base sets and the bottom of the range:
+//   3 × 8 → … → 3 × 12 → 12, 12, 12, 8 → … → 4 × 12 → … → 5 × 12 → +2.5 kg, 3 × 8
+// Like everything here it is derived, never stored: each session carries the per-set aim it was
+// built with (`target.rowReps`), and the next one is read off that and what was lifted.
+// Without a `setsMax` above the base sets it is double progression with per-set aims.
+export const MAX_TRIPLE_SETS = 10
+export function tripleSetsOf(cfg) {
+  const setsMin = Math.max(1, Math.round(Number(cfg?.sets)) || 1)
+  const setsMax = Math.max(setsMin, Math.min(MAX_TRIPLE_SETS, Math.round(Number(cfg?.setsMax)) || setsMin))
+  return { setsMin, setsMax }
+}
+// The per-set aim a session was asked for. A session from before triple (or a policy switch with
+// no plan stamped to tell) has only its flat target: that many sets at those reps.
+function tripleRowsOf(session, setsMin, setsMax, range) {
+  const own = session?.target?.rowReps
+  if (Array.isArray(own) && own.length) return own.map(r => Math.max(0, Number(r) || 0))
+  const n = Math.min(setsMax, Math.max(setsMin, session?.target?.sets || setsMin))
+  const reps = Math.min(range.reps, Math.max(range.repsMin, session?.target?.reps || session?.goal || range.repsMin))
+  return Array(n).fill(reps)
+}
+// The number a session moves under triple progression: the weakest base set while the base sets
+// climb together (all aims equal), else the set that was added last. More of it at the same
+// weight is progress even when the session fell short of its aims.
+function tripleActive(session) {
+  const rows = session?.target?.rowReps
+  const reps = session?.reps || []
+  if (!Array.isArray(rows) || !rows.length) return session?.low || 0
+  if (rows.every(r => r === rows[0])) return Math.min(...rows.map((_, k) => reps[k] || 0))
+  return reps[rows.length - 1] || 0
+}
+const sameRows = (a, b) => JSON.stringify(a?.target?.rowReps || null) === JSON.stringify(b?.target?.rowReps || null)
+
 // Checks how many sessions in a row ended in a miss, counting back from the most recent. 
 // Now two things end a stall streak (besides a hit of course):
 //   - A change of weight ends the streak (per pr !93). 
@@ -371,6 +418,14 @@ export function stallCount(sessions, policy) {
       const run = []
       for (let j = i - 1; j >= 0 && sessions[j].weight === sessions[i].weight; j--) run.push(sessions[j].low) // Checks the lowest rep count of each session in the run
       if (run.length && sessions[i].low > Math.max(...run)) break // Beating the best of the current run is progress
+    }
+    // Triple asks for less than the top as well, one set at a time once sets are being added, so
+    // the same escape applies to the number it is moving (tripleActive), against the sessions
+    // that asked for the same thing at this weight.
+    if (policy === 'triple') {
+      const run = []
+      for (let j = i - 1; j >= 0 && sessions[j].weight === sessions[i].weight && sameRows(sessions[j], sessions[i]); j--) run.push(tripleActive(sessions[j]))
+      if (run.length && tripleActive(sessions[i]) > Math.max(...run)) break
     }
     n++ // increment stall count when no escape conditions were met
   }
@@ -417,7 +472,16 @@ export function nextPrescription(S, cfg, routine) {
   // routine has none yet (issue #216) — see sessionsFor.
   const sessions = sessionsFor(S, cfg.id, cfg, routine?.id).filter(s => s.mode === mode)
   const last = sessions[sessions.length - 1]
-  if (!last) return { policy, kind: 'first', why: ['Nothing logged yet, so this session sets the baseline.'] }
+  // Triple progression starts a cycle at the base sets and the bottom of the range, so its first
+  // session does too; the weight is still the plan's.
+  const triple = policy === 'triple' && mode === 'reps'
+  const range3 = triple ? normalizeRepRange(cfg.reps || 10, cfg.repsMin, repStep(cfg)) : null
+  const sets3 = triple ? tripleSetsOf(cfg) : null
+  const startRows = reps => Array(sets3.setsMin).fill(reps)
+  if (!last) {
+    if (triple) return { policy, kind: 'first', reps: range3.repsMin, sets: sets3.setsMin, rowReps: startRows(range3.repsMin), why: ['Nothing logged yet, so this session sets the baseline.'] }
+    return { policy, kind: 'first', why: ['Nothing logged yet, so this session sets the baseline.'] }
+  }
 
   // Start again from the plan (issue #275) when the last session was built from a different one:
   // the routine's sets or reps were edited since, or the session is borrowed from another routine
@@ -439,6 +503,12 @@ export function nextPrescription(S, cfg, routine) {
     if (!set && last.weight <= 0 && climbsReps(cfg)) return { policy, kind: 'hold', weight: 0, reps: cfg.reps || undefined, why }
     // A loaded lift logged at 0 had no weight typed in (see below): the plan's, if it has one.
     const held = set || (last.weight > 0 ? { weight: last.weight } : cfg.weight > 0 ? { weight: cfg.weight } : {})
+    if (triple) {
+      // The base sets, at the reps managed (as double progression aims), or the bottom with a
+      // new weight. Sets added under the old plan say nothing about the new set range.
+      const aim = set ? range3.repsMin : Math.min(range3.reps, Math.max(range3.repsMin, last.low + repStep(cfg)))
+      return { policy, kind: 'hold', ...held, reps: aim, sets: sets3.setsMin, rowReps: startRows(aim), why }
+    }
     if (policy === 'double') {
       const range = normalizeRepRange(cfg.reps || last.goal || 10, cfg.repsMin, repStep(cfg))
       // A new weight starts at the bottom of the range, the way a raise does: the reps managed
@@ -555,6 +625,55 @@ export function nextPrescription(S, cfg, routine) {
     }
   }
 
+  if (triple) {
+    const top = range3.reps
+    const bottom = range3.repsMin
+    const { setsMin, setsMax } = sets3
+    const step = repStep(cfg)
+    const rows = tripleRowsOf(last, setsMin, setsMax, range3)
+    const out = (kind, weight, next, why) => ({ policy, kind, weight, reps: next[0], sets: next.length, rowReps: next, why })
+    if (stalls >= deloadAt) {
+      // Back to the start of a cycle at a lighter load. Epley picks it: the estimated max from
+      // the stalled session's top aim, less the deload factor, at the bottom of the range, on
+      // the weight grid and below what was lifted. An assistance machine takes more help instead.
+      let dw = null
+      if (!assisted) {
+        const perSide = isPerSide(cfg)
+        const target1RM = deloadTarget1RM(w, Math.max(...rows), deloadFactorOf(cfg), perSide)
+        const ideal = target1RM == null ? null : target1RM / (1 + (perSide ? bottom / 2 : bottom) / 30)
+        const grid = ideal == null ? [] : positiveGridAround(ideal, inc, w, true)
+        if (grid.length) dw = grid.reduce((a, b) => (Math.abs(b - ideal) < Math.abs(a - ideal) ? b : a))
+      }
+      if (dw == null) dw = easier(w)
+      return out('deload', dw, startRows(bottom), assisted
+        ? ['Stuck for {0} sessions. Back to {1} {2} of help, start again at {3} sets of {4}.', stalls, dw, unit, setsMin, bottom]
+        : ['Stuck for {0} sessions. Deload to {1} {2} and start again at {3} sets of {4}.', stalls, dw, unit, setsMin, bottom])
+    }
+    // Short of the aims: the same sets and reps again. Unlike double progression nothing is cut,
+    // and an added set is not taken away; more reps than before still counts (stallCount).
+    if (!last.ok) return out('hold', w, rows, stalls === 0
+      ? ['Short of the target, but more reps than before. Same sets and reps again.']
+      : ['Missed reps last time. Same sets and reps again ({0} of {1} to go).', deloadAt - stalls, deloadAt])
+    // Hit: read on from what was lifted, capped at the top, so reps beyond the aim count.
+    const got = rows.map((r, k) => Math.min(top, Math.max(r, last.reps[k] || 0)))
+    const climb = v => Math.min(top, Math.max(bottom, v + step))
+    const n = got.length
+    const baseLow = Math.min(...got.slice(0, Math.min(n, setsMin)))
+    if (n <= setsMin && baseLow < top) {
+      const aim = climb(baseLow)
+      return out('hold', w, Array(Math.max(n, setsMin)).fill(aim), ['Same weight, aim for {0} reps in every set.', aim])
+    }
+    const active = got[n - 1]
+    if (n > setsMin && active < top) {
+      const aim = climb(active)
+      return out('hold', w, [...got.slice(0, n - 1).map(() => top), aim], ['Same weight, aim for {0} reps on the last set.', aim])
+    }
+    if (n < setsMax) return out('up', w, [...got.map(() => top), bottom], ['{0} reps in every set! Add a set at {1} reps.', top, bottom])
+    return out('up', harder(w, inc), startRows(bottom), assisted
+      ? ['Top of the range on all {0} sets. {1} {2} less help, back to {3} sets of {4}.', n, inc, unit, setsMin, bottom]
+      : ['Top of the range on all {0} sets. {1} {2} more, back to {3} sets of {4}.', n, inc, unit, setsMin, bottom])
+  }
+
   if (policy === 'double') {
     const range = normalizeRepRange(cfg.reps || last.goal || 10, cfg.repsMin, repStep(cfg))
     const top = range.reps
@@ -631,7 +750,8 @@ export function nextPrescription(S, cfg, routine) {
  * (history.js barFloor), which the re-ramped warm-ups never go under.
  */
 export function applyPrescription(sets, p, step = 2.5, floor = 0) {
-  if (!p || p.kind === 'off' || p.kind === 'first') return sets
+  // A first session has nothing to prescribe from, except triple progression's start of a cycle.
+  if (!p || p.kind === 'off' || (p.kind === 'first' && !p.rowReps)) return sets
   const out = sets.map(s => {
     // Never rewrite a logged set (a ticked warm-up falling through here would be the data-loss
     // the cascade fix removed, two files over). The prescription speaks to the work rows; an
@@ -677,6 +797,20 @@ export function applyPrescription(sets, p, step = 2.5, floor = 0) {
       out.push(isSideSet(seed) ? makeSideSet({
         w: p.weight ?? seed.w, r: p.reps ?? seed.r,
       }) : { ...plainSeed, done: false })
+    }
+  }
+  // Triple progression's per-set aims, one per open work row in order (the rows grown above
+  // included). A logged row keeps what it logged.
+  if (Array.isArray(p.rowReps)) {
+    let k = -1
+    for (let i = 0; i < out.length; i++) {
+      if (isWarmupRow(out[i])) continue
+      k++
+      const r = p.rowReps[k]
+      if (out[i].done || !(r > 0)) continue
+      out[i] = isSideSet(out[i])
+        ? syncSideAggregate({ ...out[i], sides: Object.fromEntries(['L', 'R'].map(side => [side, out[i].sides[side].done ? out[i].sides[side] : { ...out[i].sides[side], r: r / 2 }])) })
+        : { ...out[i], r }
     }
   }
   // Last, because the work rows now carry their final weight: the warm-up block ramps toward

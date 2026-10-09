@@ -55,6 +55,11 @@ export function buildPlannedEntry(stored, cfg, routine, { noProg = false } = {})
   if (plan.reps != null) target.reps = plan.reps
   if (plan.sec != null) target.sec = plan.sec
   if (plan.sets != null) target.sets = plan.sets
+  // Triple progression's per-set aim (progression.js readSession grades by it). Only a session
+  // whose prescription set it carries one: a config that picked one up from a copied target
+  // must not have a later session graded against an old day's aims.
+  if (Array.isArray(plan.rowReps)) target.rowReps = plan.rowReps
+  else delete target.rowReps
   // The step the back-off sets were built with, kept on the session so reading it back
   // (progression.js readSession) holds each set to its own weight even after the plan changes.
   if (backoffStep) target.backoffStep = backoffStep

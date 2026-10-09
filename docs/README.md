@@ -12,7 +12,7 @@ Pick the part that matches what you're doing. If you just have a question, try t
 | [Importing data](DATA_IMPORTS.md) | You're coming from FitNotes, Strong, Hevy or Apple Health, or sharing a plan with someone |
 | [AI coach](AI_COACH.md) | Your instance has the coach switched on and you want to know what it sees and can change |
 
-The [live demo](https://opengym.duarte-santos.ch/demo/) is the real app with example data, nothing
+The [live demo](https://opengym.ch/demo/) is the real app with example data, nothing
 to install.
 
 ## Hosting it

@@ -1211,7 +1211,7 @@ export default {
   "You have the latest version.": "У тебе остання версія.",
   'Couldn’t check for updates. Are you online?': 'Не вдалося перевірити оновлення. Ти онлайн?',
   "Get the Android app": "Отримати застосунок для Android",
-  "Download the APK from opengym.duarte-santos.ch": "Завантаж APK з opengym.duarte-santos.ch",
+  "Download the APK from opengym.ch": "Завантаж APK з opengym.ch",
   "Releases are checked on gitlab.com. The download is verified against its checksum before the installer opens.": "Релізи перевіряються на gitlab.com. Перед відкриттям встановлювача завантаження звіряється з контрольною сумою.",
   "The web app updates together with your server. The Android app installs its own updates from here.": "Веб-застосунок оновлюється разом із сервером. Застосунок для Android встановлює свої оновлення звідси.",
   "Starting download…": "Починаю завантаження…",

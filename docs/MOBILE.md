@@ -195,7 +195,7 @@ accounts, no store rules, no yearly fees between you and an open-source app.
 
 The official signed APK is in four places, all the same file:
 
-- **[opengym.duarte-santos.ch](https://opengym.duarte-santos.ch)** — the download page.
+- **[opengym.ch](https://opengym.ch)** — the download page.
 - **[GitLab's package registry](https://gitlab.com/DuarteSantos8/opengym/-/packages)** — every
   build under `opengym-android/<version>/`, with a `.sha256` beside it. Direct link, no login:
   `https://gitlab.com/api/v4/projects/85678327/packages/generic/opengym-android/<version>/openGym-<version>.apk`

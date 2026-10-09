@@ -17,8 +17,8 @@ on your phone, synced across your devices, behind your own passkey login.
 [![Coverage](https://gitlab.com/DuarteSantos8/opengym/badges/main/coverage.svg?job=test:frontend&style=flat-square)](https://gitlab.com/DuarteSantos8/opengym/-/pipelines?ref=main)
 [![License: AGPL v3](https://img.shields.io/badge/license-AGPL--3.0-a3e635?style=flat-square)](LICENSE)
 
-[Website](https://opengym.duarte-santos.ch) ·
-[Live demo](https://opengym.duarte-santos.ch/demo/) ·
+[Website](https://opengym.ch) ·
+[Live demo](https://opengym.ch/demo/) ·
 [Android APK](https://github.com/DuarteSantos8/openGym/releases/latest) ·
 [Self-hosting guide](docs/SELF_HOSTING.md) ·
 [Roadmap](ROADMAP.md) ·
@@ -46,7 +46,7 @@ sign-in, works offline, syncs between your phone and your laptop.
 No account on someone else's server, no subscription, no ads, no telemetry. One
 `docker compose up` and it's running.
 
-The [in-browser demo](https://opengym.duarte-santos.ch/demo/) is the real app with example data,
+The [in-browser demo](https://opengym.ch/demo/) is the real app with example data,
 if you want to try it before installing anything.
 
 ## Features
@@ -183,7 +183,7 @@ The same codebase builds a standalone app with Capacitor: no account, no server,
 on the phone, with native reminders and a rest countdown in the notification shade.
 
 - **Android:** download the signed APK from the [latest release](https://github.com/DuarteSantos8/openGym/releases/latest)
-  or the [website](https://opengym.duarte-santos.ch). Each build sits next to its `.sha256`, and
+  or the [website](https://opengym.ch). Each build sits next to its `.sha256`, and
   the app checks for updates itself. openGym is deliberately not on the Play Store.
 - **iPhone:** Apple doesn't allow installs outside the App Store. Self-host and add the PWA to your
   home screen from Safari, or build the native app onto your own device with Xcode.
@@ -208,7 +208,7 @@ Details and build instructions: [docs/MOBILE.md](docs/MOBILE.md).
 The training logic (progression rules, 1RM, how a logged session is read back) lives in pure
 functions under `frontend/src/lib/` with tests beside them. The HTTP API is documented as an
 OpenAPI spec in [`api/openapi.yaml`](api/openapi.yaml), browsable at
-[opengym.duarte-santos.ch/api.html](https://opengym.duarte-santos.ch/api.html).
+[opengym.ch/api.html](https://opengym.ch/api.html).
 
 ### How sync works
 

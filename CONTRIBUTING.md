@@ -13,7 +13,7 @@ api/       Backend: server.js on plain node:http, two dependencies (@simplewebau
 web/       Multi-stage Dockerfile (builds the frontend, serves it with nginx) and the nginx template.
 mcp/       Optional read-only MCP server for LLM clients (Claude Desktop, Cursor, ...). Not in the
            Docker build; it only runs when a client spawns it. See mcp/README.md.
-website/   The static project site at opengym.duarte-santos.ch.
+website/   The static project site at opengym.ch.
 kubernetes/ Example manifests (docs/SELF_HOSTING_KUBERNETES.md).
 docs/      User and operator guides (index: docs/README.md); docs/dev/ has feature design notes.
 media/     Exercise images and GIFs, gitignored and fetched at runtime.

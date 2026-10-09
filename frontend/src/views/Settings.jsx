@@ -780,8 +780,8 @@ export default function Settings({ page = null, find = null, via = null }) {
               accessory="chevron"
               onClick={() => (updateInfo?.hasUpdate ? onUpdateRowClick() : checkNow())} />
           : <Row icon="download" iconTint="var(--green)" title={t('Get the Android app')}
-              subtitle={t('Download the APK from opengym.duarte-santos.ch')} accessory="chevron"
-              onClick={() => window.open('https://opengym.duarte-santos.ch/#download', '_blank', 'noopener')} />}
+              subtitle={t('Download the APK from opengym.ch')} accessory="chevron"
+              onClick={() => window.open('https://opengym.ch/#download', '_blank', 'noopener')} />}
       </Section>
       {/* "Add to Home screen": not inside the phone app, and not once it is installed. */}
       {!MOBILE && !standalone() && <Section title={t('Tip')}>

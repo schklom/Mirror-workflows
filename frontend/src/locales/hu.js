@@ -1366,7 +1366,7 @@ export default {
   'You have the latest version.': 'A legújabb verziód van.',
   'Couldn’t check for updates. Are you online?': 'Nem sikerült frissítéseket keresni. Online vagy?',
   'Get the Android app': 'Android-alkalmazás letöltése',
-  'Download the APK from opengym.duarte-santos.ch': 'Töltsd le az APK-t az opengym.duarte-santos.ch oldalról',
+  'Download the APK from opengym.ch': 'Töltsd le az APK-t az opengym.ch oldalról',
   'Releases are checked on gitlab.com. The download is verified against its checksum before the installer opens.': 'A kiadásokat a gitlab.com-on ellenőrizzük. A letöltést a telepítő megnyitása előtt az ellenőrzőösszeggel vetjük össze.',
   'The web app updates together with your server. The Android app installs its own updates from here.': 'A webalkalmazás a szerverrel együtt frissül. Az Android-alkalmazás innen telepíti a frissítéseit.',
   'Starting download…': 'Letöltés indítása…',

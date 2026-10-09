@@ -495,10 +495,12 @@ function tokenScore(entry, tok, ctx) {
   let best = 0
   for (const form of formsOf(tok)) {
     const c = ctx && ctx.get(form)
-    const exact = form === tok ? 0 : 5   // a shorthand or singular counts a little less than typed
+    // A singular or a spelling variant counts a little less than what was typed; the meaning of
+    // a short abbreviation ("rdl", "ohp", "db") is exactly what was meant and counts in full.
+    const exact = form === tok || (tok.length <= 4 && SYNONYMS[tok]?.includes(form)) ? 0 : 5
     const words = form.split(' ')
     if (words.length > 1) {
-      if (entry.name.includes(form)) best = Math.max(best, 90 - exact)
+      if (entry.name.includes(form)) best = Math.max(best, 100 - exact)
       else if (entry.s.includes(form)) best = Math.max(best, 20 - exact)
       continue
     }
@@ -525,9 +527,15 @@ const priorOf = e => (CLASSIC.has(e.id) ? 3 : 0) + (EQ_PRIOR[e.eq] || 0) + (CAT_
 // exercises, which callers put first, stay first among equal matches.
 function rankByRelevance(found, tokens) {
   const ctx = queryContext(tokens)
+  const typed = tokens.join(' ')
   const scored = found.map((e, i) => {
     const entry = corpusOf(e)
-    return { e, i, score: tokens.reduce((sum, tok) => sum + tokenScore(entry, tok, ctx), 0) + priorOf(e), len: entry.nameWords.length }
+    // The name exactly as typed wins outright ("burpee" before "dumbbell burpee"), and every
+    // word the name has beyond the query costs a little, more than the equipment preference.
+    const plain = entry.name.split(' (')[0].replace(/[-‐-―]/g, ' ')
+    const whole = plain === typed.replace(/[-‐-―]/g, ' ') ? 50 : 0
+    const extra = Math.max(0, entry.nameWords.length - tokens.length) * 3
+    return { e, i, score: tokens.reduce((sum, tok) => sum + tokenScore(entry, tok, ctx), 0) + priorOf(e) + whole - extra, len: entry.nameWords.length }
   })
   scored.sort((a, b) => b.score - a.score || a.len - b.len || a.i - b.i)
   return scored.map(x => x.e)

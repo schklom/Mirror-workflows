@@ -127,3 +127,11 @@ it('finds something close when nothing matches exactly', () => {
   expect(close.slice(0, 5).some(e => /dumbbell.*curl/.test(e.n))).toBe(true)
   expect(similarExercises(EXDB, '   ')).toEqual([])
 })
+
+it('puts the exercise named as typed first, typo or plural included', () => {
+  const first = q => searchExercises(EXDB, q)[0]?.n
+  expect(first('sqat')).toBe('squat')
+  expect(first('pull ups')).toBe('pull-up')
+  expect(first('push ups')).toBe('push-up')
+  expect(first('burpee')).toBe('burpee')
+})

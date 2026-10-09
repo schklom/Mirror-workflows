@@ -400,7 +400,8 @@ function formsOfUncached(tok) {
   for (const s of SYNONYMS[tok] || []) out.push(s)
   if (tok.length >= 4 && tok.endsWith('es') && !tok.endsWith('ses')) out.push(tok.slice(0, -2), tok.slice(0, -1))
   else if (tok.length >= 4 && tok.endsWith('ses')) out.push(tok.slice(0, -2))
-  else if (tok.length >= 4 && tok.endsWith('s') && !tok.endsWith('ss')) out.push(tok.slice(0, -1))
+  // Three letters is enough for "ups" ("pull ups" is "pull-up"); "abs" is a word of its own.
+  else if (tok.length >= 3 && tok.endsWith('s') && !tok.endsWith('ss') && tok !== 'abs') out.push(tok.slice(0, -1))
   return [...new Set(out)]
 }
 
@@ -522,18 +523,27 @@ const EQ_PRIOR = { barbell: 4, dumbbell: 4, cable: 3, 'leverage machine': 3, 'bo
 const CAT_PRIOR = { strength: 3, calisthenics: 3, olympic: 2, plyometrics: 1, isometric: 1, stretching: -3, mobility: -3, rehab: -4, yoga: -2, pilates: -2 }
 const priorOf = e => (CLASSIC.has(e.id) ? 3 : 0) + (EQ_PRIOR[e.eq] || 0) + (CAT_PRIOR[e.cat] || 0)
 
+// A name that is the query itself wins outright: as typed or in the singular 50, with the typos
+// the search allows for its length 40 ("sqat" is the exercise called "squat", not "dumbbell squat").
+function wholeNameScore(plain, typedForms) {
+  if (typedForms.includes(plain)) return 50
+  return typedForms.some(q => { const max = typosFor(q); return max && editDistance(q, plain, max) <= max }) ? 40 : 0
+}
+
 // The matches in order of how well they match, shorter names first among equals (the plain
 // "barbell squat" before its six variations), and the list's own order after that: custom
 // exercises, which callers put first, stay first among equal matches.
 function rankByRelevance(found, tokens) {
   const ctx = queryContext(tokens)
-  const typed = tokens.join(' ')
+  // The query as typed, and with each word in its singular: "pull ups" is the name "pull-up".
+  const typedForms = [...new Set([tokens, tokens.map(tok => formsOf(tok).find(f => f !== tok && !f.includes(' ')) || tok)]
+    .map(list => list.join(' ').replace(/[-‐-―]/g, ' ')))]
   const scored = found.map((e, i) => {
     const entry = corpusOf(e)
     // The name exactly as typed wins outright ("burpee" before "dumbbell burpee"), and every
     // word the name has beyond the query costs a little, more than the equipment preference.
     const plain = entry.name.split(' (')[0].replace(/[-‐-―]/g, ' ')
-    const whole = plain === typed.replace(/[-‐-―]/g, ' ') ? 50 : 0
+    const whole = wholeNameScore(plain, typedForms)
     const extra = Math.max(0, entry.nameWords.length - tokens.length) * 3
     return { e, i, score: tokens.reduce((sum, tok) => sum + tokenScore(entry, tok, ctx), 0) + priorOf(e) + whole - extra, len: entry.nameWords.length }
   })

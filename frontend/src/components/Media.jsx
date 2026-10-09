@@ -45,7 +45,7 @@ function BuiltinMedia({ ex, id, compact, minimizable }) {
       {failed === 'all'
         ? <div className="exmedia-x"><Icon name="dumbbell" /></div>
         : showGif && isVideoSrc(gifSrc(ex, body))
-          ? <video className="catvid" src={gifSrc(ex, body)} poster={imgSrc(ex, body)} autoPlay muted loop playsInline disablePictureInPicture
+          ? <video ref={autoplayMuted} className="catvid" src={gifSrc(ex, body)} poster={imgSrc(ex, body)} autoPlay muted loop playsInline disablePictureInPicture
               aria-label={exerciseNameFor(ex)} onError={onError} />
           : <img decoding="async" draggable={false} src={showGif ? gifSrc(ex, body) : imgSrc(ex, body)} alt={exerciseNameFor(ex)} onError={onError} />}
       {minimizable && (
@@ -60,6 +60,19 @@ function BuiltinMedia({ ex, id, compact, minimizable }) {
       )}
     </div>
   )
+}
+
+// React sets `muted` as a property only, never as the attribute, and Android's WebView (the phone
+// app) allows autoplay only for a video that carries the attribute: the loop sat on its first frame
+// there while every desktop browser played it. Set it before the first frame and start playback
+// ourselves; a refusal leaves the still showing, which a tap can still start.
+export function autoplayMuted(el) {
+  if (!el) return
+  el.muted = true
+  el.defaultMuted = true
+  el.setAttribute('muted', '')
+  const p = el.play?.()
+  if (p && typeof p.catch === 'function') p.catch(() => {})
 }
 
 // A still that will not load (offline and never cached, a lapsed session on a gated instance, a

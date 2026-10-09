@@ -2226,4 +2226,12 @@ export default {
   'The weight of one, so 20 means 20 in each hand. Volume counts both.': 'وزن الواحد، أي أن 20 تعني 20 في كل يد. الحجم يحسب الاثنين.',
   'Both together, so 40 means two 20s.': 'الاثنان معًا، أي أن 40 تعني اثنين بوزن 20.',
   'Counted as you type it, the way it always was.': 'يُحسب كما تكتبه، كما كان دائمًا.',
+  // --- dumbbell inventory (#376) ---
+  'You’ve outgrown the rack: {0} {1} is your heaviest dumbbell, so the weight stays.': 'تجاوزت الرف: أثقل دمبل لديك {0} {1}، لذا يبقى الوزن كما هو.',
+  'Dumbbells': 'الدمبلز',
+  'The weights you own, one bell each. Progression, deloads, warm-ups and the + and − buttons of dumbbell lifts land only on these.': 'الأوزان التي تملكها، دمبل واحد لكل وزن. التدرج والتخفيف والإحماء وزرّا + و − في تمارين الدمبل تقع على هذه فقط.',
+  'No list yet, so dumbbell lifts step by their increment as usual.': 'لا قائمة بعد، لذا تتقدم تمارين الدمبل بزيادتها المعتادة.',
+  'Fill in {0} to {1} {2}, every {3}': 'املأ من {0} إلى {1} {2}، كل {3}',
+  'Clear the list': 'امسح القائمة',
+  'Any weight. Tap to list the ones you own.': 'أي وزن. اضغط لإدراج ما تملكه.',
 }

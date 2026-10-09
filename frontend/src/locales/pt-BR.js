@@ -1337,6 +1337,12 @@ export const PT_BR_OVERRIDES = {
   'The weight of one, so 20 means 20 in each hand. Volume counts both.': 'O peso de um, então 20 significa 20 em cada mão. O volume conta os dois.',
   'Both together, so 40 means two 20s.': 'Os dois juntos, então 40 significa dois de 20.',
   'Counted as you type it, the way it always was.': 'Contado como você digita, como sempre foi.',
+  // --- dumbbell inventory (#376) ---
+  'You’ve outgrown the rack: {0} {1} is your heaviest dumbbell, so the weight stays.': 'Você já superou o rack: {0} {1} é o seu halter mais pesado, então o peso fica.',
+  'Dumbbells': 'Halteres',
+  'The weights you own, one bell each. Progression, deloads, warm-ups and the + and − buttons of dumbbell lifts land only on these.': 'Os pesos que você tem, um halter cada. A progressão, as descargas, o aquecimento e os botões + e − dos exercícios com halteres só caem nestes.',
+  'No list yet, so dumbbell lifts step by their increment as usual.': 'Ainda sem lista, então os exercícios com halteres sobem pelo incremento de sempre.',
+  'Any weight. Tap to list the ones you own.': 'Qualquer peso. Toque para listar os seus.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

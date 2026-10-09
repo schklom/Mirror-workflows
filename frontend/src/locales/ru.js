@@ -2175,4 +2175,12 @@ export default {
   'The weight of one, so 20 means 20 in each hand. Volume counts both.': 'Вес одной: 20 значит по 20 в каждой руке. В объём идут обе.',
   'Both together, so 40 means two 20s.': 'Обе вместе: 40 значит две по 20.',
   'Counted as you type it, the way it always was.': 'Считается так, как вы вводите, как и всегда.',
+  // --- dumbbell inventory (#376) ---
+  'You’ve outgrown the rack: {0} {1} is your heaviest dumbbell, so the weight stays.': 'Стойка вам уже мала: ваша самая тяжёлая гантель весит {0} {1}, так что вес остаётся.',
+  'Dumbbells': 'Гантели',
+  'The weights you own, one bell each. Progression, deloads, warm-ups and the + and − buttons of dumbbell lifts land only on these.': 'Веса, которые у вас есть, по одной гантели. Прогрессия, разгрузки, разминка и кнопки + и − в упражнениях с гантелями попадают только на них.',
+  'No list yet, so dumbbell lifts step by their increment as usual.': 'Списка пока нет, так что упражнения с гантелями растут на свой обычный шаг.',
+  'Fill in {0} to {1} {2}, every {3}': 'Заполнить от {0} до {1} {2}, шаг {3}',
+  'Clear the list': 'Очистить список',
+  'Any weight. Tap to list the ones you own.': 'Любой вес. Нажмите, чтобы перечислить свои.',
 }

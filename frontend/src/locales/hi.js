@@ -2171,4 +2171,12 @@ export default {
   'The weight of one, so 20 means 20 in each hand. Volume counts both.': 'एक का वज़न, यानी 20 मतलब हर हाथ में 20। वॉल्यूम दोनों को गिनता है।',
   'Both together, so 40 means two 20s.': 'दोनों मिलाकर, यानी 40 मतलब दो 20 वाले।',
   'Counted as you type it, the way it always was.': 'जैसा आप लिखते हैं वैसा ही गिना जाता है, हमेशा की तरह।',
+  // --- dumbbell inventory (#376) ---
+  'You’ve outgrown the rack: {0} {1} is your heaviest dumbbell, so the weight stays.': 'आप रैक से आगे निकल चुके हैं: आपका सबसे भारी डम्बल {0} {1} है, इसलिए वज़न वही रहेगा।',
+  'Dumbbells': 'डम्बल',
+  'The weights you own, one bell each. Progression, deloads, warm-ups and the + and − buttons of dumbbell lifts land only on these.': 'आपके पास जो वज़न हैं, हर एक डम्बल। डम्बल एक्सरसाइज़ में प्रोग्रेशन, डीलोड, वॉर्म-अप और + और − बटन सिर्फ़ इन्हीं पर आते हैं।',
+  'No list yet, so dumbbell lifts step by their increment as usual.': 'अभी कोई सूची नहीं, इसलिए डम्बल एक्सरसाइज़ हमेशा की तरह अपने स्टेप से बढ़ती हैं।',
+  'Fill in {0} to {1} {2}, every {3}': '{0} से {1} {2} तक भरें, हर {3}',
+  'Clear the list': 'सूची खाली करें',
+  'Any weight. Tap to list the ones you own.': 'कोई भी वज़न। अपने वाले लिखने के लिए टैप करें।',
 }

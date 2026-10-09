@@ -2171,4 +2171,12 @@ export default {
   'The weight of one, so 20 means 20 in each hand. Volume counts both.': 'Il peso di uno, quindi 20 vuol dire 20 in ogni mano. Il volume li conta entrambi.',
   'Both together, so 40 means two 20s.': 'Entrambi insieme, quindi 40 vuol dire due da 20.',
   'Counted as you type it, the way it always was.': 'Contato come lo scrivi, come sempre.',
+  // --- dumbbell inventory (#376) ---
+  'You’ve outgrown the rack: {0} {1} is your heaviest dumbbell, so the weight stays.': 'Hai superato la rastrelliera: {0} {1} è il tuo manubrio più pesante, quindi il peso resta.',
+  'Dumbbells': 'Manubri',
+  'The weights you own, one bell each. Progression, deloads, warm-ups and the + and − buttons of dumbbell lifts land only on these.': 'I pesi che hai, un manubrio ciascuno. Progressione, scarichi, riscaldamento e i tasti + e − degli esercizi con manubri cadono solo su questi.',
+  'No list yet, so dumbbell lifts step by their increment as usual.': 'Ancora nessuna lista, quindi gli esercizi con manubri salgono col loro incremento solito.',
+  'Fill in {0} to {1} {2}, every {3}': 'Compila da {0} a {1} {2}, ogni {3}',
+  'Clear the list': 'Svuota la lista',
+  'Any weight. Tap to list the ones you own.': 'Qualsiasi peso. Tocca per elencare i tuoi.',
 }

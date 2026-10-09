@@ -2168,4 +2168,12 @@ export default {
   'The weight of one, so 20 means 20 in each hand. Volume counts both.': 'Вага однієї: 20 означає 20 у кожній руці. В обсяг ідуть обидві.',
   'Both together, so 40 means two 20s.': 'Обидві разом: 40 означає дві по 20.',
   'Counted as you type it, the way it always was.': 'Рахується так, як ти вводиш, як завжди.',
+  // --- dumbbell inventory (#376) ---
+  'You’ve outgrown the rack: {0} {1} is your heaviest dumbbell, so the weight stays.': 'Стійка тобі вже замала: твоя найважча гантель важить {0} {1}, тож вага лишається.',
+  'Dumbbells': 'Гантелі',
+  'The weights you own, one bell each. Progression, deloads, warm-ups and the + and − buttons of dumbbell lifts land only on these.': 'Ваги, які в тебе є, по одній гантелі. Прогресія, розвантаження, розминка і кнопки + та − у вправах з гантелями потрапляють тільки на них.',
+  'No list yet, so dumbbell lifts step by their increment as usual.': 'Списку ще немає, тож вправи з гантелями ростуть на свій звичний крок.',
+  'Fill in {0} to {1} {2}, every {3}': 'Заповнити від {0} до {1} {2}, крок {3}',
+  'Clear the list': 'Очистити список',
+  'Any weight. Tap to list the ones you own.': 'Будь-яка вага. Торкнися, щоб перелічити свої.',
 }

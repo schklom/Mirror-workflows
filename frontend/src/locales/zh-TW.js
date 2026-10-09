@@ -2164,4 +2164,12 @@ export default {
   'The weight of one, so 20 means 20 in each hand. Volume counts both.': '一支的重量，20 就是每隻手 20。訓練量會算兩支。',
   'Both together, so 40 means two 20s.': '兩支加起來，40 就是兩支 20。',
   'Counted as you type it, the way it always was.': '照你輸入的算，一直都是這樣。',
+  // --- dumbbell inventory (#376) ---
+  'You’ve outgrown the rack: {0} {1} is your heaviest dumbbell, so the weight stays.': '架子已經不夠用了：你最重的啞鈴是 {0} {1}，所以重量不變。',
+  'Dumbbells': '啞鈴',
+  'The weights you own, one bell each. Progression, deloads, warm-ups and the + and − buttons of dumbbell lifts land only on these.': '你擁有的重量，每個一支。啞鈴動作的加重、減量、熱身以及 + 和 − 按鈕都只會落在這些重量上。',
+  'No list yet, so dumbbell lifts step by their increment as usual.': '還沒有清單，所以啞鈴動作照常按增量遞增。',
+  'Fill in {0} to {1} {2}, every {3}': '填入 {0} 到 {1} {2}，每隔 {3}',
+  'Clear the list': '清空清單',
+  'Any weight. Tap to list the ones you own.': '任意重量。點一下列出你有的啞鈴。',
 }

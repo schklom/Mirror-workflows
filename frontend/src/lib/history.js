@@ -6,7 +6,7 @@ import { isCardio, isBodyweightEq, isAssisted, betterWeight } from './exercises.
 import { barWeightFor } from './bar.js'
 import { phaseForSet, modeForSet, modeForEntry, isWarmupRow, isDropSet, isRestPauseSet, normalizeMode, completedVolumeOf, hasCompletedWork, nextDropWeight, splitBurstReps, makeSideSet, isSideSet, syncSideAggregate, WEIGHT_ORIGIN_MANUAL, dropsOf, clustersOf } from './workout-model.js'
 import { backoffAt, backoffStepOf, backoffWeights } from './backoff.js'
-import { dbLoadOf, bellsIn, volumeFactor, historyAs } from './dumbbells.js'
+import { dbLoadOf, bellsIn, volumeFactor, historyAs, ownedFloor } from './dumbbells.js'
 const objectOf = value => value && typeof value === 'object' && !Array.isArray(value) ? value : {}
 // Completed-state-independent work rows whose authoritative mode matches the requested mode.
 const workRowsForMode = (entry = {}, mode = 'reps') => {
@@ -947,6 +947,11 @@ export function cascadeWeight(rows, from, value, side, backoffStep = 0) {
  * — cardio, bodyweight, an unloaded hold — are returned untouched. `floor` is the lift's bar
  * (barFloor): no open warm-up is ramped under it.
  */
+// A warm-up rung rounded down to something loadable: the step's grid, or — when `step` is the
+// list of dumbbells the profile owns (lib/dumbbells.js ownedWeightsFor, issue #376) — the
+// heaviest bell at or under it.
+const rungDown = (x, step) => (Array.isArray(step) ? ownedFloor(step, x) : Math.floor(x / step) * step)
+
 export function rerampWarmups(rows, step = 2.5, floor = 0) {
   const firstWork = rows.findIndex(x => !isWarmupRow(x))
   if (firstWork <= 0) return rows
@@ -957,7 +962,7 @@ export function rerampWarmups(rows, step = 2.5, floor = 0) {
   for (let i = 0; i < firstWork; i++) {
     if (out[i].done) { from = out[i].w || 0; continue }
     const w = target > from
-      ? Math.min(target, Math.max(0, floor, Math.floor((from + (target - from) / 2) / step) * step))
+      ? Math.min(target, Math.max(0, floor, rungDown(from + (target - from) / 2, step)))
       : target
     // A per-side warm-up ramps the same bar for both limbs: set each side's weight and resync
     // the aggregate, so the L/R rows and the row's own `w` agree. A straight row sets `w` alone.
@@ -985,7 +990,7 @@ export function insertWarmupRow(rows, mode, target, step = 2.5, floor = 0) {
     // Rounded DOWN to the step: a warm-up that lands a notch light costs nothing, one that
     // lands a notch heavy is a set you have to strip plates off before you can use it. Never
     // under `floor` (barFloor), and never over the work weight even when the bar is heavier.
-    return Math.min(to, Math.max(0, floor, Math.floor((from + (to - from) / 2) / step) * step))
+    return Math.min(to, Math.max(0, floor, rungDown(from + (to - from) / 2, step)))
   }
   const warm = mode === 'cardio'
     ? {

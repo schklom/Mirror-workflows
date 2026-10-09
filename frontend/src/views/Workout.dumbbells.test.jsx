@@ -1,6 +1,7 @@
 // @vitest-environment happy-dom
 // Dumbbells on the workout screen: the weight column says what the number means when the exercise
-// said (issue #474), and stays "Weight" for one-arm work and for everything as entered.
+// said (issue #474), and stays "Weight" for one-arm work and for everything as entered. With the
+// dumbbells you own listed (#376), + and − walk from bell to bell.
 import React, { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { MemoryRouter } from 'react-router-dom'
@@ -58,5 +59,38 @@ describe('dumbbell weight column', () => {
   it('stays Weight as entered and for one-arm work', () => {
     mount([entry(BENCH, [work(20)]), entry(ROW, [work(30)], { dbLoad: 'each' })])
     expect(heads()).toEqual(['Weight (kg)', 'Weight (kg)'])
+  })
+})
+
+describe('stepper over owned dumbbells', () => {
+  const RACK = [3, 6, 8, 9, 11, 13, 15, 17, 18, 19, 21, 24]
+  const weightOf = () => container.querySelector('.stp input').value
+  const tap = label => act(() => container.querySelector('.stp [aria-label="' + label + '"]').click())
+
+  it('walks the bells you own', () => {
+    mount([entry('0294', [work(9)], { inc: 2 })], { dumbbells: { kg: { weights: RACK, _ts: 1 } } })
+    tap('Increase')
+    expect(useStore.getState().S.active.entries[0].sets[0].w).toBe(11)
+    tap('Increase')
+    expect(useStore.getState().S.active.entries[0].sets[0].w).toBe(13)
+    tap('Decrease')
+    tap('Decrease')
+    tap('Decrease')
+    expect(useStore.getState().S.active.entries[0].sets[0].w).toBe(8)
+    expect(weightOf()).toBe('8')
+  })
+
+  it('keeps the increment without a list', () => {
+    mount([entry('0294', [work(9)], { inc: 2 })], {})
+    tap('Increase')
+    expect(useStore.getState().S.active.entries[0].sets[0].w).toBe(11)
+    tap('Increase')
+    expect(useStore.getState().S.active.entries[0].sets[0].w).toBe(13)
+    tap('Decrease')
+    expect(useStore.getState().S.active.entries[0].sets[0].w).toBe(11)
+    // From an even weight the grid takes over again: 10 + 2 = 12, which no rack above holds.
+    act(() => useStore.setState(st => { const S = clone(st.S); S.active.entries[0].sets[0].w = 10; return { S } }))
+    tap('Increase')
+    expect(useStore.getState().S.active.entries[0].sets[0].w).toBe(12)
   })
 })

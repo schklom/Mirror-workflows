@@ -2171,4 +2171,12 @@ export default {
   'The weight of one, so 20 means 20 in each hand. Volume counts both.': '하나의 무게라서 20은 양손에 20씩이에요. 볼륨은 두 개를 셉니다.',
   'Both together, so 40 means two 20s.': '두 개를 합친 무게라서 40은 20짜리 두 개예요.',
   'Counted as you type it, the way it always was.': '입력한 그대로 계산해요. 늘 그랬듯이.',
+  // --- dumbbell inventory (#376) ---
+  'You’ve outgrown the rack: {0} {1} is your heaviest dumbbell, so the weight stays.': '랙을 졸업했어요: 가장 무거운 덤벨이 {0} {1}이라 무게는 그대로예요.',
+  'Dumbbells': '덤벨',
+  'The weights you own, one bell each. Progression, deloads, warm-ups and the + and − buttons of dumbbell lifts land only on these.': '가지고 있는 무게를 하나씩 적어요. 덤벨 운동의 증량, 디로드, 워밍업, + 와 − 버튼은 이 무게에만 맞춰져요.',
+  'No list yet, so dumbbell lifts step by their increment as usual.': '아직 목록이 없어서 덤벨 운동은 평소 증량 단위대로 올라가요.',
+  'Fill in {0} to {1} {2}, every {3}': '{0}부터 {1} {2}까지 {3} 간격으로 채우기',
+  'Clear the list': '목록 비우기',
+  'Any weight. Tap to list the ones you own.': '아무 무게나 가능해요. 눌러서 가진 덤벨을 적어 보세요.',
 }

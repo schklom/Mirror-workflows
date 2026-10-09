@@ -2171,4 +2171,12 @@ export default {
   'The weight of one, so 20 means 20 in each hand. Volume counts both.': 'Bir tanesinin ağırlığı, yani 20 her elde 20 demek. Hacim ikisini de sayar.',
   'Both together, so 40 means two 20s.': 'İkisi birlikte, yani 40 iki tane 20 demek.',
   'Counted as you type it, the way it always was.': 'Yazdığın gibi sayılır, her zamanki gibi.',
+  // --- dumbbell inventory (#376) ---
+  'You’ve outgrown the rack: {0} {1} is your heaviest dumbbell, so the weight stays.': 'Rafı aştın: en ağır dambılın {0} {1}, bu yüzden ağırlık aynı kalıyor.',
+  'Dumbbells': 'Dambıllar',
+  'The weights you own, one bell each. Progression, deloads, warm-ups and the + and − buttons of dumbbell lifts land only on these.': 'Sahip olduğun ağırlıklar, her biri tek dambıl. Dambıl hareketlerinde progresyon, deload, ısınma ve + ile − düğmeleri yalnızca bunlara düşer.',
+  'No list yet, so dumbbell lifts step by their increment as usual.': 'Henüz liste yok, bu yüzden dambıl hareketleri her zamanki artışla ilerler.',
+  'Fill in {0} to {1} {2}, every {3}': '{0} ile {1} {2} arasını doldur, {3} arayla',
+  'Clear the list': 'Listeyi temizle',
+  'Any weight. Tap to list the ones you own.': 'Her ağırlık. Sahip olduklarını listelemek için dokun.',
 }

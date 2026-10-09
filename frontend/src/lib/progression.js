@@ -22,6 +22,7 @@ import { isWarmupRow, isSideSet, syncSideAggregate, makeSideSet } from './workou
 import { normalizeRepRange } from './rep-range.js'
 import { isPyramid } from './pyramid.js'
 import { backoffAt } from './backoff.js'
+import { ownedWeightsFor, ownedUp, ownedDeload, ownedAround } from './dumbbells.js'
 
 export const POLICIES = ['off', 'linear', 'greyskull', 'double', 'time']
 
@@ -148,7 +149,9 @@ const positiveGridAround = (ideal, step, maxWeight, strictLower) => {
  * hard constraints first, then closest estimated 1RM, fewer rep changes, and greater load. That
  * makes a grid tie predictable without hiding a product decision in arbitrary score weights.
  */
-export function selectDeloadCandidate({ currentWeight, targetWeight, targetReps, step, factor = DELOAD_FACTOR, reps, repsMin, perSide = false }) {
+// `owned`, when given, is the sorted list of weights the lifter can load (a dumbbell inventory,
+// lib/dumbbells.js): candidates come from it instead of from the step's grid.
+export function selectDeloadCandidate({ currentWeight, targetWeight, targetReps, step, factor = DELOAD_FACTOR, reps, repsMin, perSide = false, owned = null }) {
   const current = Number(currentWeight)
   const baseWeight = Number(targetWeight)
   const baseReps = Number(targetReps)
@@ -166,7 +169,7 @@ export function selectDeloadCandidate({ currentWeight, targetWeight, targetReps,
   repValues.forEach(candidateReps => {
     const ideal = target1RM / (1 + (perSide ? candidateReps / 2 : candidateReps) / 30)
     const allowCurrent = repsMin != null && candidateReps < upper
-    const grid = positiveGridAround(ideal, step, current, !allowCurrent)
+    const grid = owned ? ownedAround(ideal, owned, current, !allowCurrent) : positiveGridAround(ideal, step, current, !allowCurrent)
     if (allowCurrent && !grid.includes(current)) grid.push(current)
     grid.forEach(candidateWeight => {
       const epley = epley1RM(candidateWeight, perSide ? candidateReps / 2 : candidateReps)
@@ -396,8 +399,18 @@ export function nextPrescription(S, cfg, routine) {
   // reward for a clean session is less help, and a stall means taking more (issue #232). Only
   // the direction changes — the step, the grid and the stall counting are the same.
   const assisted = isAssisted(cfg)
-  const harder = (weight, step) => (assisted ? Math.max(0, addStep(weight, -step, inc)) : addStep(weight, step, inc))
-  const easier = weight => (assisted ? addStep(weight, inc, inc) : deloadTo(weight, inc))
+  // The dumbbells you own (issue #376, lib/dumbbells.js), when the profile has listed them and
+  // this is a dumbbell lift: a raise goes to the next bell up (a double jump two up), a deload
+  // to the owned bell nearest the deload target, and at the heaviest bell the weight holds.
+  // Without a list, null, and the increment's grid decides as it always did.
+  const owned = mode === 'reps' && !assisted ? ownedWeightsFor(S, cfg) : null
+  const harder = (weight, step) => (assisted ? Math.max(0, addStep(weight, -step, inc))
+    : owned ? ownedUp(owned, weight, step > inc ? 2 : 1) ?? weight
+      : addStep(weight, step, inc))
+  const easier = weight => (assisted ? addStep(weight, inc, inc) : owned ? ownedDeload(owned, weight, DELOAD_FACTOR) : deloadTo(weight, inc))
+  // At the heaviest bell there is nothing to raise to: the weight holds and the line says why.
+  const topped = weight => !!owned && ownedUp(owned, weight) == null
+  const toppedOut = (weight, extra = {}) => ({ policy, kind: 'hold', weight, ...extra, why: ['You’ve outgrown the rack: {0} {1} is your heaviest dumbbell, so the weight stays.', weight, unit] })
 
 
   // The routine's own sessions of this exercise, or the exercise's whole history when the
@@ -523,7 +536,8 @@ export function nextPrescription(S, cfg, routine) {
       factor: deloadFactorOf(cfg),
       reps: target.reps,
       repsMin: policy === 'double' ? target.repsMin : undefined,
-      perSide: isPerSide(target)
+      perSide: isPerSide(target),
+      owned
     })
     if (!candidate) return null
     const held = candidate.weight >= w
@@ -550,11 +564,17 @@ export function nextPrescription(S, cfg, routine) {
     // from before the exercise moved to double progression. Hitting it is compliance with that
     // session, not "reached the top". Double progression must not add weight until every set
     // actually reaches the top of the range (issue #278).
-    if (last.ok && last.low >= top) return {
-      policy, kind: 'up', weight: harder(w, inc), reps: bottom,
-      why: assisted
-        ? ['Top of the rep range in every set. {0} {1} less help, back to {2} reps.', inc, unit, bottom]
-        : ['Top of the rep range in every set. {0} {1} more, back to {2} reps.', inc, unit, bottom]
+    if (last.ok && last.low >= top) {
+      if (topped(w)) return toppedOut(w, { reps: top })
+      const up = harder(w, inc)
+      // Over owned bells the step is whatever the next one is: 9 → 11 is 2 kg, 18 → 19 is 1.
+      const by = owned ? Math.round((up - w) * 100) / 100 : inc
+      return {
+        policy, kind: 'up', weight: up, reps: bottom,
+        why: assisted
+          ? ['Top of the rep range in every set. {0} {1} less help, back to {2} reps.', inc, unit, bottom]
+          : ['Top of the rep range in every set. {0} {1} more, back to {2} reps.', by, unit, bottom]
+      }
     }
     if (stalls >= deloadAt) {
       const selected = epleyDeload()
@@ -576,9 +596,12 @@ export function nextPrescription(S, cfg, routine) {
     // Greyskull's final set is taken to failure: double the target reps there and you have
     // earned a double jump.
     const dbl = policy === 'greyskull' && last.goal > 0 && last.amrap >= last.goal * 2
-    const step = dbl ? inc * 2 : inc
+    if (topped(w)) return toppedOut(w)
+    const up = harder(w, dbl ? inc * 2 : inc)
+    // Over owned bells the jump is the distance to the bell it lands on.
+    const step = owned ? Math.round((up - w) * 100) / 100 : dbl ? inc * 2 : inc
     return {
-      policy, kind: 'up', weight: harder(w, step),
+      policy, kind: 'up', weight: up,
       why: dbl
         ? ['Last set hit {0} reps, twice the target! Take a double jump of {1} {2}.', last.amrap, step, unit]
         : assisted

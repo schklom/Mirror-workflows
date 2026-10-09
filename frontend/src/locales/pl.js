@@ -2171,4 +2171,12 @@ export default {
   'The weight of one, so 20 means 20 in each hand. Volume counts both.': 'Ciężar jednej sztuki: 20 to 20 w każdej dłoni. Objętość liczy obie.',
   'Both together, so 40 means two 20s.': 'Obie razem: 40 to dwie po 20.',
   'Counted as you type it, the way it always was.': 'Liczone tak, jak wpisano, jak zawsze.',
+  // --- dumbbell inventory (#376) ---
+  'You’ve outgrown the rack: {0} {1} is your heaviest dumbbell, so the weight stays.': 'Stojak już nie wystarcza: {0} {1} to najcięższa hantla, więc ciężar zostaje.',
+  'Dumbbells': 'Hantle',
+  'The weights you own, one bell each. Progression, deloads, warm-ups and the + and − buttons of dumbbell lifts land only on these.': 'Ciężary, które masz, po jednej hantli. Progresja, deloady, rozgrzewka i przyciski + i − w ćwiczeniach z hantlami trafiają tylko na nie.',
+  'No list yet, so dumbbell lifts step by their increment as usual.': 'Brak listy, więc ćwiczenia z hantlami rosną jak zwykle o swój krok.',
+  'Fill in {0} to {1} {2}, every {3}': 'Wpisz od {0} do {1} {2}, co {3}',
+  'Clear the list': 'Wyczyść listę',
+  'Any weight. Tap to list the ones you own.': 'Dowolny ciężar. Dotknij, aby wpisać posiadane.',
 }

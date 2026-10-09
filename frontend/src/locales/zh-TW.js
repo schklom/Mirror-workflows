@@ -2200,4 +2200,17 @@ export default {
   'Stuck for {0} sessions. Back to {1} {2} of help, start again at {3} sets of {4}.': '已停滯 {0} 次訓練。回到 {1} {2} 輔助，從 {3} 組 × {4} 下重新開始。',
   'Sets from': '組數下限',
   'Sets up to': '組數上限',
+  // --- exercise chips (#323) ---
+  'Exercises in this workout': '這次訓練的動作',
+  'Exercise {0}: {1} ({2})': '動作 {0}：{1}（{2}）',
+  'Superset {0}: {1} ({2})': '超級組 {0}：{1}（{2}）',
+  'Finished': '已完成',
+  'Started': '已開始',
+  'Not started yet': '還沒開始',
+  'Exercise chips at the top': '頂部動作圓點',
+  'A numbered dot per exercise, filled as you go. Tap one to jump there.': '每個動作一個帶編號的圓點，練著練著就填滿了。點一下就能跳過去。',
+  // --- collapse completed exercises (#241) ---
+  'Fold away': '收起',
+  'Show the sets': '顯示各組',
+  'In List and Compact, a finished exercise folds into one line.': '在清單模式和緊湊模式中，完成的動作會收合成一行。',
 }

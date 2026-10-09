@@ -2262,4 +2262,17 @@ export default {
   'Stuck for {0} sessions. Back to {1} {2} of help, start again at {3} sets of {4}.': 'تعثّر التقدم {0} جلسات. عُد إلى مساعدة {1} {2} وابدأ من جديد بـ{3} مجموعات من {4}.',
   'Sets from': 'المجموعات من',
   'Sets up to': 'المجموعات حتى',
+  // --- exercise chips (#323) ---
+  'Exercises in this workout': 'التمارين في هذه الحصة',
+  'Exercise {0}: {1} ({2})': 'التمرين {0}: {1} ({2})',
+  'Superset {0}: {1} ({2})': 'سوبر سِت {0}: {1} ({2})',
+  'Finished': 'انتهى',
+  'Started': 'بدأ',
+  'Not started yet': 'لم يبدأ بعد',
+  'Exercise chips at the top': 'شارات التمارين في الأعلى',
+  'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'نقطة مرقّمة لكل تمرين تمتلئ كلما تقدّمت. اضغط على واحدة للانتقال إليه.',
+  // --- collapse completed exercises (#241) ---
+  'Fold away': 'اطوِه',
+  'Show the sets': 'اعرض المجموعات',
+  'In List and Compact, a finished exercise folds into one line.': 'في عرض القائمة والمضغوط، يُطوى التمرين المكتمل في سطر واحد.',
 }

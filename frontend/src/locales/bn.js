@@ -2286,4 +2286,17 @@ export default {
   'Stuck for {0} sessions. Back to {1} {2} of help, start again at {3} sets of {4}.': '{0}টি সেশন আটকে আছেন। আবার {1} {2} সাহায্যে ফিরুন, {3} সেট × {4} থেকে শুরু।',
   'Sets from': 'সেট থেকে',
   'Sets up to': 'সেট পর্যন্ত',
+  // --- exercise chips (#323) ---
+  'Exercises in this workout': 'এই ওয়ার্কআউটের ব্যায়ামগুলো',
+  'Exercise {0}: {1} ({2})': 'ব্যায়াম {0}: {1} ({2})',
+  'Superset {0}: {1} ({2})': 'সুপারসেট {0}: {1} ({2})',
+  'Finished': 'শেষ',
+  'Started': 'শুরু হয়েছে',
+  'Not started yet': 'এখনও শুরু হয়নি',
+  'Exercise chips at the top': 'উপরে ব্যায়ামের চিপ',
+  'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'প্রতিটি ব্যায়ামের জন্য একটি নম্বরওয়ালা বিন্দু, এগোতে এগোতে ভরে ওঠে। ট্যাপ করলেই সেখানে চলে যাবেন।',
+  // --- collapse completed exercises (#241) ---
+  'Fold away': 'গুটিয়ে রাখুন',
+  'Show the sets': 'সেটগুলো দেখান',
+  'In List and Compact, a finished exercise folds into one line.': 'তালিকা ও কমপ্যাক্টে শেষ হওয়া ব্যায়াম এক লাইনে গুটিয়ে যায়।',
 }

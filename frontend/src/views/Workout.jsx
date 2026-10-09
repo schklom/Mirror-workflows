@@ -20,6 +20,7 @@ import { pyramidRestFor, maxRecordAt, isPyramid, pyramidLabel } from '../lib/pyr
 import { insertionIndexAfterCurrentUnit, nextUnfinishedUnit, setProgressHighWater, supersetFlowStep, restAfterSet, restOnRecheck, restSecFor, warmupRestSecFor } from '../lib/supersetFlow.js'
 import Media from '../components/Media.jsx'
 import WorkoutScrollAnchor from '../components/WorkoutScrollAnchor.jsx'
+import WorkoutChips from '../components/WorkoutChips.jsx'
 import { supersetMeta } from '../lib/superset-meta.js'
 import WorkoutThumb, { hasWorkoutMedia } from '../components/WorkoutThumb.jsx'
 import { workoutSettingsSheet } from '../components/WorkoutSettingsSheet.jsx'
@@ -952,10 +953,25 @@ function ActiveWorkout() {
     return m.name ? t('{0} · do these back-to-back, rest when done', m.name) : t('Superset · do these back-to-back, rest when done')
   }
   // Collapse finished exercises in the list (#241). The current unit stays open, superset
-  // members included, until you move on; an empty exercise or a half-done warm-up or side does too.
-  const collapsed = new Set(listMode && A.collapseCompleted ? units.filter(u =>
-    !u.includes(cur) && u.every(idx => A.entries[idx].sets.length > 0 && A.entries[idx].sets.every(s => s.done)),
+  // members included, until you move on (ticking its last set does that, see toggle); an empty
+  // exercise or a half-done warm-up or side stays open too.
+  // The session's own choice (the Layout menu) wins over the saved one (Settings → Workout), the
+  // way the layout itself does, so someone who always wants it switches it on once.
+  const collapseOn = listMode && !!(A.collapseCompleted ?? S.collapseCompleted)
+  // A finished unit you tapped open again to look at or fix (Discord: "minimize completed exercises
+  // so I view only what I have yet to do"). This screen's own memory: a reload folds it back.
+  // Keyed by index like the units, so a different number of exercises starts over.
+  const [openedState, setOpenedState] = useState(() => ({ len: A.entries.length, keys: new Set() }))
+  const opened = openedState.len === A.entries.length ? openedState.keys : new Set()
+  const finished = u => u.every(idx => A.entries[idx].sets.length > 0 && A.entries[idx].sets.every(s => s.done))
+  const collapsed = new Set(collapseOn ? units.filter(u =>
+    !u.includes(cur) && !opened.has(u.join('-')) && finished(u),
   ).map(u => u.join('-')) : [])
+  const setUnitOpen = (key, open) => setOpenedState(prev => {
+    const keys = new Set(prev.len === A.entries.length ? prev.keys : [])
+    if (open) keys.add(key); else keys.delete(key)
+    return { len: A.entries.length, keys }
+  })
   const wc = workoutControls(S)
   // Superset flow: center the actionable row when completing a set moves to the partner or
   // back to the first exercise of the next round. Entry-bound maps keep repeated exercise IDs
@@ -1102,16 +1118,8 @@ function ActiveWorkout() {
     const cancel = frame => window.cancelAnimationFrame
       ? window.cancelAnimationFrame(frame)
       : window.clearTimeout(frame)
-    const frame = schedule(() => {
-      const list = listRef.current
-      const el = list?.querySelector('.wl-unit.cur')
-      if (!el || typeof el.scrollIntoView !== 'function') return
-      // The sticky header grows when the workout name wraps; the unit's scroll margin (index.css)
-      // clears whatever height it has right now, with a one-line height as the fallback.
-      const hdrH = hdrRef.current?.offsetHeight
-      if (hdrH) list.style.setProperty('--whdr-h', hdrH + 'px')
-      el.scrollIntoView({ block: 'start' })
-    })
+    // scrollToUnit (below) clears the sticky header at whatever height it has right now.
+    const frame = schedule(() => scrollToUnit(listRef.current?.querySelector('.wl-unit.cur')))
     return () => cancel(frame)
   }, [workoutView])
 
@@ -1343,8 +1351,8 @@ function ActiveWorkout() {
       { icon: 'compact', label: t('Compact'), on: workoutView === 'compact', onClick: () => setWorkoutView('compact') },
       { icon: 'target', label: t('Focus'), on: workoutView === 'focus', onClick: () => setWorkoutView('focus') },
       listMode && { icon: 'minimize', label: t('Collapse completed exercises'),
-        sub: t('Keep the current exercise open'), on: !!A.collapseCompleted,
-        onClick: () => update(s => { if (s.active) s.active.collapseCompleted = !s.active.collapseCompleted }) },
+        sub: t('Keep the current exercise open'), on: collapseOn,
+        onClick: () => update(s => { if (s.active) s.active.collapseCompleted = !collapseOn }) },
     ],
   })
   // Logging a past workout (#284): the sets were done days ago, so one tap ticks them all and
@@ -1689,6 +1697,16 @@ function ActiveWorkout() {
         return
       }
 
+      // With finished exercises folding away in the list, the one you just finished does too: the
+      // marker moves on to what is left, so the open unit is the next thing to do (Discord: "view
+      // only what I have yet to do"). The scroll anchor holds what is on screen while it folds,
+      // and revealCur brings the next exercise up if it was left low on the screen. Only on new
+      // progress, never on a re-tick, and never in the other layouts, where the marker stays put.
+      if (collapseOn && freshUnitDone && nextUnit && freshUnit?.includes(fresh.cur)) {
+        revealCur.current = true
+        update(s => { if (s.active) s.active.cur = nextUnit[0] })
+      }
+
       // Between the two sides of one timed per-side set (a side plank's left, then its right):
       // a short "Switch sides" pause instead of the set's whole rest, which comes once both
       // sides are held (owner's call). A rest switched Off stays off.
@@ -1723,6 +1741,55 @@ function ActiveWorkout() {
     }
   }
 
+  // After the finished exercise folded away (toggle, above): the new current one is the next thing
+  // to do, so if it now sits under the header or low on the screen with little more than its title
+  // showing, it glides up under the header. Where it is already in reach the page stays put. Run
+  // after a closing sheet has put the page back (the effort picker ticks the set as it closes).
+  const revealCur = useRef(false)
+  useEffect(() => {
+    if (!revealCur.current) return
+    revealCur.current = false
+    if (!listMode) return
+    return afterScrollRestore(() => {
+      const el = listRef.current?.querySelector('.wl-unit.cur')
+      if (!el || typeof el.getBoundingClientRect !== 'function') return
+      const top = el.getBoundingClientRect().top
+      const under = hdrRef.current?.getBoundingClientRect?.().bottom || 0
+      const screen = window.innerHeight || 0
+      if (!screen || (top >= under && top <= screen * 0.55)) return
+      scrollToUnit(el, true)
+    })
+  }, [cur])
+  // Brings a list unit to the top of the screen, under the pinned header. The header grows when
+  // the name wraps and by the chip row, so the unit's scroll margin (index.css) is fed its height
+  // as it is right now. A jump the eye should follow glides, unless the system asks for less motion.
+  const scrollToUnit = (el, glide) => {
+    if (!el || typeof el.scrollIntoView !== 'function') return
+    const hdrH = hdrRef.current?.offsetHeight
+    if (hdrH) listRef.current?.style.setProperty('--whdr-h', hdrH + 'px')
+    const still = typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    el.scrollIntoView(glide && !still ? { block: 'start', behavior: 'smooth' } : { block: 'start' })
+  }
+  // A tap on a chip at the top (#323). Cards and Focus show one unit, so the chip makes it the one
+  // on screen: the marker moves because you asked it to, never on its own. The list already shows
+  // every unit, so there the chip only scrolls to it and leaves "Current" where it was, the same
+  // as scrolling there by hand; the frame wait is the one opening the list uses (above).
+  const pickChip = chip => {
+    if (listMode) {
+      // A folded unit opens as you jump to it: you tapped it to see it.
+      if (collapsed.has(chip.key)) setUnitOpen(chip.key, true)
+      const go = () => scrollToUnit(listRef.current?.querySelector(`.wl-unit[data-unit-key="${chip.key}"]`), true)
+      if (window.requestAnimationFrame) window.requestAnimationFrame(go)
+      else window.setTimeout(go, 0)
+      return
+    }
+    if (chip.unit.includes(cur)) return
+    update(s => { if (s.active) s.active.cur = chip.unit[0] })
+  }
+  const chipRow = wc.exerciseChips && A.entries.length > 0
+    ? <WorkoutChips entries={A.entries} cur={cur} onPick={pickChip} />
+    : null
+
   // Hardware keys (issue #133, lib/workout-keys.js): Space or Enter ticks the next set, ← and →
   // switch exercise. The listener is added once and calls the handler of the latest render, so
   // toggle() and navigateUnit() always see the session as it is now.
@@ -1732,10 +1799,7 @@ function ActiveWorkout() {
   // view the way opening the list does; ticking and tapping never scroll it (see above).
   const showCurrent = () => {
     if (!listMode) return
-    const scroll = () => {
-      const el = listRef.current?.querySelector('.wl-unit.cur')
-      if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ block: 'start' })
-    }
+    const scroll = () => scrollToUnit(listRef.current?.querySelector('.wl-unit.cur'))
     // After the render that moves the marker, as the effect above waits for its frame.
     if (window.requestAnimationFrame) window.requestAnimationFrame(scroll)
     else window.setTimeout(scroll, 0)
@@ -1838,7 +1902,7 @@ function ActiveWorkout() {
     }
   }, [])
 
-  return <WorkoutScrollAnchor enabled={listMode && !!A.collapseCompleted} collapsed={[...collapsed].join(',')}>
+  return <WorkoutScrollAnchor enabled={collapseOn} collapsed={[...collapsed].join(',')}>
     {/* In list mode the whole session scrolls under the header, so the header (name, clock,
         set counter, discard/finish, progress) stays pinned — the one thing you want in view
         while you are somewhere in the middle of a long stack. Cards mode never scrolls far. */}
@@ -1857,6 +1921,9 @@ function ActiveWorkout() {
         onClick={() => (editing ? finishWorkout() : finishWorkoutSheet({ onDiscard: discardWorkout }))}>{editing ? t('Save') : t('Finish')}</button>
     </div>
     <div className="wprog"><i style={{ width: (total ? done / total * 100 : 0) + '%' }} /></div>
+    {/* In the list the chips ride in the pinned header, so any exercise is one tap away from
+        anywhere in a long stack. */}
+    {listMode && chipRow}
     </div>
     {editing && <p className="muted small">{t('Editing a saved workout. Date and duration stay unchanged.')}</p>}
     {A.backfill && <div className="muted small" style={{ marginBottom: 8 }}>{t('Logging a past workout, so no rest timers.')}</div>}
@@ -1867,21 +1934,29 @@ function ActiveWorkout() {
           const multi = u.length > 1
           const isCur = u.includes(cur)
           const isCollapsed = collapsed.has(u.join('-'))
+          // Finished and tapped open again: it says it can fold back, and does on a tap.
+          const reopened = collapseOn && !isCur && !isCollapsed && opened.has(u.join('-')) && finished(u)
           return <section key={u.join('-')} className={'wl-unit' + (isCur ? ' cur' : '')} data-exidx={u[0]} data-unit-key={u.join('-')}>
             <div className="wl-hd">
               <span className="muted small">{multi ? t('Superset {0} / {1}', ui + 1, units.length) : t('Exercise {0} / {1}', ui + 1, units.length)}</span>
-              {isCur
-                ? <span className="tag acc">{t('Current')}</span>
-                : <button className="chip" aria-expanded={!isCollapsed} aria-controls={'workout-unit-' + u.join('-')}
-                    onClick={() => focusUnit(u[0])}>{t('Set current')}</button>}
+              <span className="row" style={{ gap: 6 }}>
+                {reopened && <button className="chip" aria-expanded="true" aria-controls={'workout-unit-' + u.join('-')}
+                  onClick={() => setUnitOpen(u.join('-'), false)}>{t('Fold away')}</button>}
+                {isCur
+                  ? <span className="tag acc">{t('Current')}</span>
+                  : <button className="chip" onClick={() => focusUnit(u[0])}>{t('Set current')}</button>}
+              </span>
             </div>
             <div id={'workout-unit-' + u.join('-')}>
-            {isCollapsed ? <div className="wl-summary">
-              {u.map(idx => <div key={idx} className="row between" style={{ gap: 8 }}>
+            {/* One line per exercise, and the line is the way back in: a tap opens the sets again
+                to fix a number, without making it the current exercise. */}
+            {isCollapsed ? <button type="button" className="wl-summary" aria-expanded="false" title={t('Show the sets')}
+              onClick={() => setUnitOpen(u.join('-'), true)}>
+              {u.map(idx => <span key={idx} className="row between" style={{ gap: 8 }}>
                 <span style={{ fontWeight: 600, textTransform: 'capitalize' }}>{exerciseNameFor(exOr(A.entries[idx].id))}</span>
                 <span className="tag acc nocap"><Icon name="check" />{t('{0} sets', A.entries[idx].sets.length)}</span>
-              </div>)}
-            </div> : multi ? (
+              </span>)}
+            </button> : multi ? (
               <div className="ss-card">
                 <div className="ss-hd" style={{ justifyContent: 'space-between' }}>
                   <span className="row" style={{ gap: 5 }}><Icon name="link" />{ssTitle(u)}</span>
@@ -1907,7 +1982,9 @@ function ActiveWorkout() {
         })}
       </div>
     ) : <>
-      <div className="muted small" style={{ marginBottom: 6 }}>{isSuperset ? t('Superset {0} / {1}', unitIdx + 1, units.length) : t('Exercise {0} / {1}', unitIdx + 1, units.length)}</div>
+      {/* The chips stand in for "Exercise 2 / 5": the number is on the current chip, and the
+          others say what is done and what is waiting (#323). */}
+      {chipRow || <div className="muted small" style={{ marginBottom: 6 }}>{isSuperset ? t('Superset {0} / {1}', unitIdx + 1, units.length) : t('Exercise {0} / {1}', unitIdx + 1, units.length)}</div>}
       <SwipeCards index={unitIdx} count={units.length} revision={A}
         timerKey={timer && `${timer.endsAt}:${timer.forIdx ?? ''}`} workKey={work?.endsAt}
         onNavigate={navigateUnit} renderPreview={direction => {

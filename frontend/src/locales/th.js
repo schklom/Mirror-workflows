@@ -2218,4 +2218,17 @@ export default {
   'Stuck for {0} sessions. Back to {1} {2} of help, start again at {3} sets of {4}.': 'ตันมา {0} ครั้งแล้ว กลับไปใช้ตัวช่วย {1} {2} และเริ่มใหม่ที่ {3} เซ็ต × {4}',
   'Sets from': 'เซ็ตเริ่มจาก',
   'Sets up to': 'เซ็ตสูงสุด',
+  // --- exercise chips (#323) ---
+  'Exercises in this workout': 'ท่าในการฝึกนี้',
+  'Exercise {0}: {1} ({2})': 'ท่า {0}: {1} ({2})',
+  'Superset {0}: {1} ({2})': 'ซูเปอร์เซ็ต {0}: {1} ({2})',
+  'Finished': 'เสร็จแล้ว',
+  'Started': 'เริ่มแล้ว',
+  'Not started yet': 'ยังไม่เริ่ม',
+  'Exercise chips at the top': 'ชิปท่าฝึกด้านบน',
+  'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'จุดมีหมายเลขหนึ่งจุดต่อท่า เติมเต็มไปเรื่อยๆ ตามที่คุณฝึก แตะเพื่อไปที่ท่านั้นได้เลย',
+  // --- collapse completed exercises (#241) ---
+  'Fold away': 'ย่อเก็บ',
+  'Show the sets': 'แสดงเซ็ต',
+  'In List and Compact, a finished exercise folds into one line.': 'ในมุมมองรายการและแบบย่อ ท่าที่เสร็จแล้วจะย่อเหลือบรรทัดเดียว',
 }

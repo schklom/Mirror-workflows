@@ -480,6 +480,14 @@ export default function Settings({ page = null, find = null, via = null }) {
             options={[{ value: 'cards', label: t('Cards') }, { value: 'list', label: t('List') }, { value: 'compact', label: t('Compact') }, { value: 'focus', label: t('Focus') }]}
             value={layout} onChange={v => update(s => { s.workoutView = v })} />
         </Row>
+        {/* The saved side of the Layout menu's "Collapse completed exercises" (#241): on here, every
+            session starts with it, and the menu still flips it for one session. Setting it here
+            also drops a running session's own choice, so the switch does what it says right away. */}
+        <Row icon="minimize" iconTint="var(--teal)" title={t('Collapse completed exercises')}
+          subtitle={t('In List and Compact, a finished exercise folds into one line.')}>
+          <Switch aria-label={t('Collapse completed exercises')} checked={!!S.collapseCompleted}
+            onChange={v => update(s => { s.collapseCompleted = v; if (s.active) delete s.active.collapseCompleted })} />
+        </Row>
       </Section>
       <Section title={t('Before and during')}>
         {/* The quick weigh-in that opens on Start (sheets.jsx startFlow, issue #137); off skips
@@ -545,6 +553,11 @@ export default function Settings({ page = null, find = null, via = null }) {
               one switch covers Plan's lists too; the stored key keeps its old name, swipeSets. */}
           <Row icon="swap" iconTint="var(--indigo)" title={t('Swipe actions')} subtitle={t('Sets, routines and the loop: left removes, right copies')}>
             <Switch aria-label={t('Swipe actions')} checked={wc.swipeSets} onChange={v => setWc('swipeSets', v)} />
+          </Row>
+          {/* The chip row at the top of a workout (#323): not a button row, but the same question of
+              what the workout screen shows. On by default, it is about one line tall. */}
+          <Row icon="more" iconTint="var(--mint)" title={t('Exercise chips at the top')} subtitle={t('A numbered dot per exercise, filled as you go. Tap one to jump there.')}>
+            <Switch aria-label={t('Exercise chips at the top')} checked={wc.exerciseChips} onChange={v => setWc('exerciseChips', v)} />
           </Row>
           <Row icon="link" iconTint="var(--blue)" title={t('Superset buttons in the exercise header')}>
             <Switch checked={wc.pairButtons} onChange={v => setWc('pairButtons', v)} />

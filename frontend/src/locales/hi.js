@@ -2207,4 +2207,17 @@ export default {
   'Stuck for {0} sessions. Back to {1} {2} of help, start again at {3} sets of {4}.': '{0} सेशन से अटके हुए। फिर से {1} {2} मदद, {3} सेट × {4} से शुरू।',
   'Sets from': 'सेट से',
   'Sets up to': 'सेट तक',
+  // --- exercise chips (#323) ---
+  'Exercises in this workout': 'इस वर्कआउट के व्यायाम',
+  'Exercise {0}: {1} ({2})': 'व्यायाम {0}: {1} ({2})',
+  'Superset {0}: {1} ({2})': 'सुपरसेट {0}: {1} ({2})',
+  'Finished': 'पूरा',
+  'Started': 'शुरू हुआ',
+  'Not started yet': 'अभी शुरू नहीं हुआ',
+  'Exercise chips at the top': 'ऊपर व्यायाम चिप्स',
+  'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'हर व्यायाम के लिए एक नंबर वाला बिंदु, जो आगे बढ़ते हुए भरता है। किसी पर टैप करें और वहीं पहुँच जाएँ।',
+  // --- collapse completed exercises (#241) ---
+  'Fold away': 'समेटें',
+  'Show the sets': 'सेट दिखाएँ',
+  'In List and Compact, a finished exercise folds into one line.': 'सूची और संक्षिप्त में पूरा हुआ व्यायाम एक लाइन में सिमट जाता है।',
 }

@@ -1367,6 +1367,19 @@ export const PT_BR_OVERRIDES = {
   'Short of the target, but more reps than before. Same sets and reps again.': 'Ficou abaixo da meta, mas com mais repetições do que antes. As mesmas séries e repetições de novo.',
   'Stuck for {0} sessions. Deload to {1} {2} and start again at {3} sets of {4}.': 'Travado há {0} sessões. Reduza a carga para {1} {2} e recomece com {3} séries de {4}.',
   'Stuck for {0} sessions. Back to {1} {2} of help, start again at {3} sets of {4}.': 'Travado há {0} sessões. Volte para {1} {2} de ajuda e recomece com {3} séries de {4}.',
+  // --- exercise chips (#323) ---
+  'Exercises in this workout': 'Exercícios deste treino',
+  'Exercise {0}: {1} ({2})': 'Exercício {0}: {1} ({2})',
+  'Superset {0}: {1} ({2})': 'Superset {0}: {1} ({2})',
+  'Finished': 'Concluído',
+  'Started': 'Começado',
+  'Not started yet': 'Ainda não começou',
+  'Exercise chips at the top': 'Marcadores de exercícios no topo',
+  'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'Um ponto numerado por exercício, que vai enchendo conforme você treina. Toque em um para ir até lá.',
+  // --- collapse completed exercises (#241) ---
+  'Fold away': 'Recolher',
+  'Show the sets': 'Mostrar as séries',
+  'In List and Compact, a finished exercise folds into one line.': 'Em Lista e Compacta, um exercício concluído vira uma linha só.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

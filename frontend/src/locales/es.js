@@ -2207,4 +2207,17 @@ export default {
   'Stuck for {0} sessions. Back to {1} {2} of help, start again at {3} sets of {4}.': '{0} sesiones estancado. Vuelve a {1} {2} de ayuda y empieza de nuevo con {3} series de {4}.',
   'Sets from': 'Series desde',
   'Sets up to': 'Series hasta',
+  // --- exercise chips (#323) ---
+  'Exercises in this workout': 'Ejercicios de este entreno',
+  'Exercise {0}: {1} ({2})': 'Ejercicio {0}: {1} ({2})',
+  'Superset {0}: {1} ({2})': 'Superserie {0}: {1} ({2})',
+  'Finished': 'Terminado',
+  'Started': 'Empezado',
+  'Not started yet': 'Sin empezar',
+  'Exercise chips at the top': 'Chips de ejercicios arriba',
+  'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'Un punto numerado por ejercicio que se llena sobre la marcha. Toca uno para saltar ahí.',
+  // --- collapse completed exercises (#241) ---
+  'Fold away': 'Plegar',
+  'Show the sets': 'Ver las series',
+  'In List and Compact, a finished exercise folds into one line.': 'En Lista y Compacta, un ejercicio terminado se pliega en una sola línea.',
 }

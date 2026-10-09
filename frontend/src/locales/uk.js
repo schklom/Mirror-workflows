@@ -2204,4 +2204,17 @@ export default {
   'Stuck for {0} sessions. Back to {1} {2} of help, start again at {3} sets of {4}.': 'Застій уже {0} тренування. Знову {1} {2} допомоги і знову з {3} підходів по {4}.',
   'Sets from': 'Підходів від',
   'Sets up to': 'Підходів до',
+  // --- exercise chips (#323) ---
+  'Exercises in this workout': 'Вправи цього тренування',
+  'Exercise {0}: {1} ({2})': 'Вправа {0}: {1} ({2})',
+  'Superset {0}: {1} ({2})': 'Суперсет {0}: {1} ({2})',
+  'Finished': 'Готово',
+  'Started': 'Розпочато',
+  'Not started yet': 'Ще не розпочато',
+  'Exercise chips at the top': 'Позначки вправ угорі',
+  'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'Пронумерована крапка для кожної вправи, заповнюється по ходу. Торкніться її, щоб перейти до вправи.',
+  // --- collapse completed exercises (#241) ---
+  'Fold away': 'Згорнути',
+  'Show the sets': 'Показати підходи',
+  'In List and Compact, a finished exercise folds into one line.': 'У режимах «Список» і «Компактно» виконана вправа згортається в один рядок.',
 }

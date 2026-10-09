@@ -110,6 +110,9 @@ export const DEF = {
   // 'cards' behaviour. beginWorkout copies the value onto s.active, so the header ⋮ menu can
   // override it for the running session without touching this saved default.
   workoutView: 'cards',
+  // List and Compact fold a finished exercise into one line (Settings → Workout; #241). The
+  // workout's Layout menu can flip it for the running session (s.active.collapseCompleted).
+  collapseCompleted: false,
   // How the Library, the exercise picker and the muscle explorer show exercises — 'list' (rows
   // with a small thumbnail) or 'cards' (a grid of pictures with the name underneath). Switched
   // by the button in those headers (ExerciseViewToggle); older profiles overlay onto the list.

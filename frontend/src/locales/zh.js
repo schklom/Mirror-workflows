@@ -2207,4 +2207,17 @@ export default {
   'Stuck for {0} sessions. Back to {1} {2} of help, start again at {3} sets of {4}.': '已停滞 {0} 次训练。回到 {1} {2} 助力，从 {3} 组 × {4} 次重新开始。',
   'Sets from': '组数下限',
   'Sets up to': '组数上限',
+  // --- exercise chips (#323) ---
+  'Exercises in this workout': '本次训练的动作',
+  'Exercise {0}: {1} ({2})': '动作 {0}：{1}（{2}）',
+  'Superset {0}: {1} ({2})': '超级组 {0}：{1}（{2}）',
+  'Finished': '已完成',
+  'Started': '已开始',
+  'Not started yet': '还没开始',
+  'Exercise chips at the top': '顶部动作圆点',
+  'A numbered dot per exercise, filled as you go. Tap one to jump there.': '每个动作一个带编号的圆点，练着练着就填满了。点一下就能跳过去。',
+  // --- collapse completed exercises (#241) ---
+  'Fold away': '收起',
+  'Show the sets': '显示各组',
+  'In List and Compact, a finished exercise folds into one line.': '在列表和紧凑视图中，完成的动作会折叠成一行。',
 }

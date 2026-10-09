@@ -2207,4 +2207,17 @@ export default {
   'Stuck for {0} sessions. Back to {1} {2} of help, start again at {3} sets of {4}.': '{0}번의 세션 동안 정체. 보조를 {1} {2}(으)로 되돌리고 {3}세트 × {4}회부터 다시 시작해요.',
   'Sets from': '최소 세트',
   'Sets up to': '최대 세트',
+  // --- exercise chips (#323) ---
+  'Exercises in this workout': '이 운동의 종목',
+  'Exercise {0}: {1} ({2})': '운동 {0}: {1} ({2})',
+  'Superset {0}: {1} ({2})': '슈퍼세트 {0}: {1} ({2})',
+  'Finished': '완료',
+  'Started': '진행 중',
+  'Not started yet': '아직 시작 안 함',
+  'Exercise chips at the top': '위쪽 운동 칩',
+  'A numbered dot per exercise, filled as you go. Tap one to jump there.': '운동마다 번호 점이 하나씩 있고, 진행할수록 채워져요. 누르면 바로 그 운동으로 가요.',
+  // --- collapse completed exercises (#241) ---
+  'Fold away': '접기',
+  'Show the sets': '세트 보기',
+  'In List and Compact, a finished exercise folds into one line.': '목록과 간략 보기에서 끝낸 운동은 한 줄로 접혀요.',
 }

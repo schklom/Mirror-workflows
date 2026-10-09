@@ -2211,4 +2211,17 @@ export default {
   'Stuck for {0} sessions. Back to {1} {2} of help, start again at {3} sets of {4}.': 'Застой {0} тренировки. Снова {1} {2} помощи и заново с {3} подходов по {4}.',
   'Sets from': 'Подходов от',
   'Sets up to': 'Подходов до',
+  // --- exercise chips (#323) ---
+  'Exercises in this workout': 'Упражнения этой тренировки',
+  'Exercise {0}: {1} ({2})': 'Упражнение {0}: {1} ({2})',
+  'Superset {0}: {1} ({2})': 'Суперсет {0}: {1} ({2})',
+  'Finished': 'Готово',
+  'Started': 'Начато',
+  'Not started yet': 'Ещё не начато',
+  'Exercise chips at the top': 'Метки упражнений сверху',
+  'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'По пронумерованной точке на каждое упражнение, заполняется по ходу. Нажмите на точку, чтобы перейти к упражнению.',
+  // --- collapse completed exercises (#241) ---
+  'Fold away': 'Свернуть',
+  'Show the sets': 'Показать подходы',
+  'In List and Compact, a finished exercise folds into one line.': 'В режимах «Список» и «Компактный» завершённое упражнение сворачивается в одну строку.',
 }

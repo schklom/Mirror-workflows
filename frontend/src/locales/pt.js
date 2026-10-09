@@ -2158,4 +2158,11 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'Exercícios semelhantes',
   'No exact match. These come close:': 'Nada exato. Estes andam perto:',
+  // --- cardio: treadmill incline ---
+  'Incline (%)': 'Inclinação (%)',
+  '{0}% incline': '{0}% de inclinação',
+  // --- workout detail: Garmin .fit export ---
+  'Export as .fit file': 'Exportar como ficheiro .fit',
+  'Could not create the file': 'Não foi possível criar o ficheiro',
+  'Saved. Garmin Connect can take it from here.': 'Guardado. Daqui para a frente é com o Garmin Connect.',
 }

@@ -2237,4 +2237,11 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'একই ধরনের ব্যায়াম',
   'No exact match. These come close:': 'হুবহু মিল নেই। এগুলো কাছাকাছি:',
+  // --- cardio: treadmill incline ---
+  'Incline (%)': 'ঢাল (%)',
+  '{0}% incline': '{0}% ঢাল',
+  // --- workout detail: Garmin .fit export ---
+  'Export as .fit file': '.fit ফাইল হিসেবে এক্সপোর্ট করুন',
+  'Could not create the file': 'ফাইলটি তৈরি করা যায়নি',
+  'Saved. Garmin Connect can take it from here.': 'সেভ হয়েছে। বাকিটা Garmin Connect সামলে নেবে।',
 }

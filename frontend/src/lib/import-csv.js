@@ -22,6 +22,7 @@ import { EXDB, EXIDX, canonicalExId, isCardio as isCardioEx } from './exercises.
 import { uid } from './format.js'
 import { isWarmupRow } from './workout-model.js'
 import { HEVY_TITLE_MAP } from './hevy-id-map.js'
+import { clampIncline, inclineFrom } from './incline.js'
 
 /* ----------------------------------------------------------------- CSV ---- */
 
@@ -89,6 +90,8 @@ const COLUMNS = [
   ['distanceM', ['distance meters', 'distance m', 'distance metres']],
   ['distance', ['distance']],
   ['distanceUnit', ['distance unit']],
+  // gravl writes a treadmill's grade per set; "Incline (%)" normalises to the same name.
+  ['incline', ['incline', 'incline percent']],
   ['seconds', ['seconds', 'duration seconds', 'set duration sec']],
   ['time', ['time', 'duration']],
   // Strong's current export: the whole workout's length, in seconds, on every row.
@@ -577,7 +580,7 @@ export function parseWorkoutCSV(text, { unit = 'kg', customEx = [] } = {}) {
     const set = timed
       ? { sec: Math.round(secs), w, done: true, u: rowUnit, ...(warmup ? { phase: 'warmup' } : {}) }
       : isCardio
-        ? { min: mins || 0, speed: mins > 0 ? Math.round(km / (mins / 60) * 10) / 10 : 0, done: true, ...(warmup ? { phase: 'warmup' } : {}) }
+        ? { min: mins || 0, speed: mins > 0 ? Math.round(km / (mins / 60) * 10) / 10 : 0, ...inclineFrom({ incline: clampIncline(num(cell(r, 'incline'))) }), done: true, ...(warmup ? { phase: 'warmup' } : {}) }
         : { w, r: reps || 0, done: true, u: rowUnit, ...(warmup ? { phase: 'warmup' } : {}) }
     // Effort rides along only where the app can show it again: a weighted rep set. A treadmill
     // row with an RPE would have nowhere to put it. A set is kept on one scale, so a file

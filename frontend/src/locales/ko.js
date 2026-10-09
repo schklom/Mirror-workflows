@@ -2158,4 +2158,11 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': '비슷한 운동',
   'No exact match. These come close:': '정확히 일치하는 항목이 없어요. 이건 비슷해요:',
+  // --- cardio: treadmill incline ---
+  'Incline (%)': '경사 (%)',
+  '{0}% incline': '경사 {0}%',
+  // --- workout detail: Garmin .fit export ---
+  'Export as .fit file': '.fit 파일로 내보내기',
+  'Could not create the file': '파일을 만들 수 없어요',
+  'Saved. Garmin Connect can take it from here.': '저장했어요. 이제 Garmin Connect에 맡기세요.',
 }

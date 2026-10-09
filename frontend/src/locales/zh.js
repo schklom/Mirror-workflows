@@ -2158,4 +2158,11 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': '相似动作',
   'No exact match. These come close:': '没有完全匹配，这些比较接近：',
+  // --- cardio: treadmill incline ---
+  'Incline (%)': '坡度 (%)',
+  '{0}% incline': '坡度 {0}%',
+  // --- workout detail: Garmin .fit export ---
+  'Export as .fit file': '导出为 .fit 文件',
+  'Could not create the file': '无法创建文件',
+  'Saved. Garmin Connect can take it from here.': '已保存。接下来交给 Garmin Connect 吧。',
 }

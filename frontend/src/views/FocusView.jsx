@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { exOr } from '../lib/exercises.js'
+import { clampIncline, hasIncline, inclineFits, INCLINE_MAX, INCLINE_STEP } from '../lib/incline.js'
 import { exerciseNameFor, t } from '../lib/i18n.js'
 import { fmtDate, fmtNum, fmtPlate } from '../lib/format.js'
 import { EFFORT, effortOf, modeOf } from '../lib/history.js'
@@ -279,6 +280,9 @@ export default function FocusView({
               onChange={value => onField(setIdx, 'min', value)} />
             <Stepper label={t('Speed (km/h)')} ariaLabel="speed" value={set.speed || 0} step={0.5} disabled={readOnly}
               onChange={value => onField(setIdx, 'speed', value)} />
+            {/* The treadmill's grade, where the exercise has one (lib/incline.js). */}
+            {(inclineFits(ex) || entry.sets.some(hasIncline)) && <Stepper label={t('Incline (%)')} ariaLabel="incline" value={set.incline || 0} step={INCLINE_STEP} max={INCLINE_MAX} disabled={readOnly}
+              onChange={value => onField(setIdx, 'incline', clampIncline(value))} />}
           </> : <>
             <Stepper label={t('Load ({0})', S.unit)} ariaLabel="load" value={set.w || 0} step={loadStep} onStep={stepWeight} disabled={readOnly}
               onChange={value => onField(setIdx, 'w', value)} />

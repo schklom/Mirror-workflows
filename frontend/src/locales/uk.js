@@ -2155,4 +2155,11 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'Схожі вправи',
   'No exact match. These come close:': 'Точного збігу немає. Ось що близько:',
+  // --- cardio: treadmill incline ---
+  'Incline (%)': 'Нахил (%)',
+  '{0}% incline': 'нахил {0}%',
+  // --- workout detail: Garmin .fit export ---
+  'Export as .fit file': 'Експортувати як файл .fit',
+  'Could not create the file': 'Не вдалося створити файл',
+  'Saved. Garmin Connect can take it from here.': 'Збережено. Далі справа за Garmin Connect.',
 }

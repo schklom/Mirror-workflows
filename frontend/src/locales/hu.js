@@ -2161,4 +2161,11 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'Hasonló gyakorlatok',
   'No exact match. These come close:': 'Nincs pontos találat. Ezek közel állnak:',
+  // --- cardio: treadmill incline ---
+  'Incline (%)': 'Emelkedő (%)',
+  '{0}% incline': '{0}% emelkedő',
+  // --- workout detail: Garmin .fit export ---
+  'Export as .fit file': 'Exportálás .fit fájlként',
+  'Could not create the file': 'Nem sikerült létrehozni a fájlt',
+  'Saved. Garmin Connect can take it from here.': 'Elmentve. Innen a Garmin Connect viszi tovább.',
 }

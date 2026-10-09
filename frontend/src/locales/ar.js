@@ -2213,4 +2213,11 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'تمارين مشابهة',
   'No exact match. These come close:': 'لا تطابق تام. هذه قريبة:',
+  // --- cardio: treadmill incline ---
+  'Incline (%)': 'الميل (%)',
+  '{0}% incline': 'ميل {0}%',
+  // --- workout detail: Garmin .fit export ---
+  'Export as .fit file': 'تصدير كملف .fit',
+  'Could not create the file': 'تعذّر إنشاء الملف',
+  'Saved. Garmin Connect can take it from here.': 'تم الحفظ. Garmin Connect يتولى الباقي.',
 }

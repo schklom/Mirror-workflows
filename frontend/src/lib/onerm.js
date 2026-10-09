@@ -1,6 +1,7 @@
 import { isAssisted } from './exercises.js'
 import { isSideSet } from './workout-model.js'
 import { entriesForExercise, metricRowsForEntry, workoutAt } from './history.js'
+import { currentDbLoad, entryDbLoad, workoutAs } from './dumbbells.js'
 // Estimated one-rep max (issue #18, extended issue #155).
 //
 // Deliberately knows nothing about the exercise database: an estimate needs a weight AND a
@@ -164,11 +165,13 @@ function bestSetOfEntries(entries, formula = DEFAULT_FORMULA) {
 
 // One point per workout in which the exercise produced an estimate — feeds the trend chart.
 // Chronological, matching the order workouts are appended in.
-export function e1rmSeries(S, exId, formula = formulaOf(S)) {
+// `as` is the meaning a dumbbell weight is read in (lib/dumbbells.js): the exercise's own by
+// default, so a session logged as "40 total" sits on the same curve as one logged as "20 each".
+export function e1rmSeries(S, exId, formula = formulaOf(S), as = currentDbLoad(S, exId)) {
   if (isAssisted(exId)) return []
   const pts = []
   ;(S.workouts || []).forEach(w => {
-    const best = bestSetOfEntries(entriesForExercise(w, exId), formula)
+    const best = bestSetOfEntries(entriesForExercise(workoutAs(w, exId, as), exId), formula)
     if (best) pts.push({ t: workoutAt(w), d: w.d, y: best.est, w: best.w, r: best.r })
   })
   return pts
@@ -176,9 +179,9 @@ export function e1rmSeries(S, exId, formula = formulaOf(S)) {
 
 // All-time best estimate for an exercise, with the set and date it came from — the source
 // matters, because "142.5 kg est. from 100×10" is a very different claim from "from 140×1".
-export function best1RM(S, exId, formula = formulaOf(S)) {
+export function best1RM(S, exId, formula = formulaOf(S), as) {
   let best = null
-  e1rmSeries(S, exId, formula).forEach(p => { if (!best || p.y > best.est) best = { est: p.y, w: p.w, r: p.r, d: p.d, t: p.t } })
+  e1rmSeries(S, exId, formula, as ?? currentDbLoad(S, exId)).forEach(p => { if (!best || p.y > best.est) best = { est: p.y, w: p.w, r: p.r, d: p.d, t: p.t } })
   return best
 }
 
@@ -187,7 +190,8 @@ export function best1RM(S, exId, formula = formulaOf(S)) {
 export function is1RMRecord(S, exId, entry, formula = formulaOf(S)) {
   const now = bestSetOf(entry, formula)
   if (!now) return null
-  const prev = best1RM(S, exId, formula)
+  // Held against history read the way this session logged its weight (lib/dumbbells.js).
+  const prev = best1RM(S, exId, formula, entryDbLoad(entry))
   return !prev || now.est > prev.est ? { ...now, prev: prev ? prev.est : 0 } : null
 }
 

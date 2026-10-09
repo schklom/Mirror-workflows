@@ -16,6 +16,7 @@ import {
 import { weightIncrement, stepWeight } from '../lib/progression.js'
 import { effortPickerSheet, exerciseDetailSheet, exerciseHistorySheet, exerciseNoteSheet, menuSheet, barWeightSheet } from '../sheets.jsx'
 import { baseWeightFor, inventoryFor, loadKindFor, rowLoad } from '../lib/plates.js'
+import { ownedWeightsFor, stepOwned } from '../lib/dumbbells.js'
 import Icon from '../components/Icon.jsx'
 import { Button, Stepper } from '../components/ui.jsx'
 import './FocusView.css'
@@ -126,6 +127,9 @@ export default function FocusView({
   const effortValue = effortField ? set[effortField] ?? null : null
   const effortTint = effortValue == null ? null : effortColor(rirOf({ [effortField]: effortValue }))
   const loadStep = weightIncrement({ ...(entry.target || {}), id: entry.id }, S.unit)
+  // Bell to bell over the dumbbells you own, when the profile lists them (issue #376).
+  const owned = mode === 'reps' ? ownedWeightsFor(S, { ...(entry.target || {}), id: entry.id }) : null
+  const stepLoad = owned ? (v, _step, dir) => stepOwned(owned, v, dir) : stepWeight
   const selectSet = index => setPointerState(current => {
     const next = new Map(current.epoch === pointerEpoch ? current.pointers : [])
     next.set(entryIdx, clampSet(entry, index))
@@ -166,14 +170,14 @@ export default function FocusView({
           onClick={() => onToggleSide(setIdx, side,
             !sideSet.done && (set.sides.L.done || set.sides.R.done) ? onProgress : undefined)}><Icon name="check" /></button>
       </div>
-      <Stepper label={t('Load ({0})', S.unit)} ariaLabel="load" value={sideSet.w || 0} step={loadStep} onStep={stepWeight} disabled={readOnly || sideSet.done}
+      <Stepper label={t('Load ({0})', S.unit)} ariaLabel="load" value={sideSet.w || 0} step={loadStep} onStep={stepLoad} disabled={readOnly || sideSet.done}
         onChange={value => change('w', value)} />
       <Stepper label={t('Reps')} ariaLabel="reps" value={sideSet.r || 0} step={1} decimal={false} disabled={readOnly || sideSet.done}
         onChange={value => change('r', value)} />
       <div className="focus-extras">
         {sideDrops.map((drop, index) => <div className="focus-extra" key={`drop-${index}`}>
           <span>{t('Drop {0}', index + 1)}</span>
-          <Stepper label={t('Load')} ariaLabel="load" value={drop.w || 0} step={loadStep} onStep={stepWeight} disabled={readOnly || sideSet.done}
+          <Stepper label={t('Load')} ariaLabel="load" value={drop.w || 0} step={loadStep} onStep={stepLoad} disabled={readOnly || sideSet.done}
             onChange={value => onMutateSet(setIdx, row => setSideDropAt(row, side, index, { w: value }))} />
           <Stepper label={t('Reps')} ariaLabel="reps" value={drop.r || 0} step={1} decimal={false} disabled={readOnly || sideSet.done}
             onChange={value => onMutateSet(setIdx, row => setSideDropAt(row, side, index, { r: value }))} />
@@ -284,7 +288,7 @@ export default function FocusView({
             {(inclineFits(ex) || entry.sets.some(hasIncline)) && <Stepper label={t('Incline (%)')} ariaLabel="incline" value={set.incline || 0} step={INCLINE_STEP} max={INCLINE_MAX} disabled={readOnly}
               onChange={value => onField(setIdx, 'incline', clampIncline(value))} />}
           </> : <>
-            <Stepper label={t('Load ({0})', S.unit)} ariaLabel="load" value={set.w || 0} step={loadStep} onStep={stepWeight} disabled={readOnly}
+            <Stepper label={t('Load ({0})', S.unit)} ariaLabel="load" value={set.w || 0} step={loadStep} onStep={stepLoad} disabled={readOnly}
               onChange={value => onField(setIdx, 'w', value)} />
           {mode === 'time' ? <div className="focus-timed">
             <strong>{t('{0}s hold', set.sec || entry.target?.sec || 45)}</strong>
@@ -296,7 +300,7 @@ export default function FocusView({
         <div className="focus-extras">
           {drops.map((drop, index) => <div className="focus-extra" key={`drop-${index}`}>
             <span>{t('Drop {0}', index + 1)}</span>
-            <Stepper label={t('Load')} ariaLabel="load" value={drop.w || 0} step={loadStep} onStep={stepWeight} disabled={readOnly}
+            <Stepper label={t('Load')} ariaLabel="load" value={drop.w || 0} step={loadStep} onStep={stepLoad} disabled={readOnly}
               onChange={value => onMutateSet(setIdx, row => setDropAt(row, index, { w: value }))} />
             <Stepper label={t('Reps')} ariaLabel="reps" value={drop.r || 0} step={1} decimal={false} disabled={readOnly}
               onChange={value => onMutateSet(setIdx, row => setDropAt(row, index, { r: value }))} />

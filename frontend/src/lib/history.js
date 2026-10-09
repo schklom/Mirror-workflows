@@ -7,6 +7,7 @@ import { isCardio, isBodyweightEq, isAssisted, betterWeight } from './exercises.
 import { barWeightFor } from './bar.js'
 import { phaseForSet, modeForSet, modeForEntry, isWarmupRow, isDropSet, isRestPauseSet, normalizeMode, completedVolumeOf, hasCompletedWork, nextDropWeight, splitBurstReps, makeSideSet, isSideSet, syncSideAggregate, WEIGHT_ORIGIN_MANUAL, dropsOf, clustersOf } from './workout-model.js'
 import { backoffAt, backoffStepOf, backoffWeights } from './backoff.js'
+import { dbLoadOf, bellsIn, volumeFactor, historyAs, ownedFloor } from './dumbbells.js'
 const objectOf = value => value && typeof value === 'object' && !Array.isArray(value) ? value : {}
 // Completed-state-independent work rows whose authoritative mode matches the requested mode.
 const workRowsForMode = (entry = {}, mode = 'reps') => {
@@ -153,7 +154,15 @@ export function setLabel(id, s, cfg, speedUnit) {
   if (mode === 'cardio') return `${s.min || 0} min @ ${fmtSpeed(s.speed || 0, speedUnit)}` + (hasIncline(s) ? ' · ' + t('{0}% incline', fmtNum(Number(s.incline))) : '')
   if (mode === 'time') return fmtSec(s.sec) + (s.w > 0 ? ` · ${fmtNum(s.w)}` : '')
   const bw = isBw(c)
-  const load = (w, reps) => (bw ? (w > 0 ? `+${fmtNum(w)} × ` : '') + reps : `${fmtNum(w || 0)}×${reps}`)
+  // A dumbbell weight that says what it means (lib/dumbbells.js, issue #474) says it here too:
+  // "20 each × 8" is one 20 in each hand, "40 total × 8" both together. Spaced like the "+10 × 12"
+  // of added weight, since the number is no longer the whole load on its own. As entered, and a
+  // one-arm exercise (one bell, so both meanings are the same number), read as they always did.
+  const meaning = !bw && bellsIn(c) === 2 ? dbLoadOf(c.dbLoad) : null
+  const load = (w, reps) => (bw ? (w > 0 ? `+${fmtNum(w)} × ` : '') + reps
+    : meaning === 'each' ? `${t('{0} each', fmtNum(w || 0))} × ${reps}`
+      : meaning === 'total' ? `${t('{0} total', fmtNum(w || 0))} × ${reps}`
+        : `${fmtNum(w || 0)}×${reps}`)
   // A rest-pause set's reps read as its bursts, "60×10+4+2", the way the protocol is written
   // down. The row's own `r` is the total either way; a planned set's bursts already add up to it
   // (applyIntensifierPlan), while bursts added live sit on top of the activation set, which is
@@ -417,17 +426,24 @@ export const exNoteFor = (S, exId) => ((S?.exNotes || {})[exId] || '').trim() ||
 export function freestyleConfig(S, cfg) {
   const last = lastEntryFor(S, cfg.id)
   if (!last) return { ...cfg }
+  // What a dumbbell weight meant last time is that session's stamp, not a choice to copy: a
+  // freestyle add follows the exercise's own setting as it is now (lib/dumbbells.js).
+  const { dbLoad: _meant, ...lastTarget } = last.target || {}
   return {
     ...cfg,
-    ...(last.target || {}),
+    ...lastTarget,
     id: cfg.id,
     sets: Math.max(1, last.sets.length)
   }
 }
-export function bestWeightFor(S, exId) {
+export function bestWeightFor(S, exId, as) {
+  // `as`: the meaning of a dumbbell weight to compare in (lib/dumbbells.js) — the session's own
+  // when a set is judged as a record — so a past "40 total" is the 20 each it was. Without one,
+  // every weight counts as logged, as it always did.
+  const H = as ? historyAs(S, exId, as) : S
   // 0 means "nothing logged with a load yet" and must not win a min() for an assisted machine.
   let best = 0
-  S.workouts.forEach(w => w.entries.forEach(e => {
+  H.workouts.forEach(w => w.entries.forEach(e => {
     if (e.id !== exId) return
     const entryBest = bestWeightForEntry(e)
     if (entryBest > 0) best = best > 0 ? betterWeight(exId, best, entryBest) : entryBest
@@ -698,9 +714,14 @@ export function workoutVolume(w) {
   // A per-side row's mirror is `w = max(L, R), r = L + R` (workout-model syncSideAggregate) —
   // right for a headline, wrong for a product: 14×10 left and 12.5×6 right is 215, not 14×16.
   // Each side is its own weight × reps, with its own drops and bursts.
-  ;(Array.isArray(w?.entries) ? w.entries : []).forEach(e => (Array.isArray(e?.sets) ? e.sets : []).forEach(s => {
-    if (!isWarmupRow(s)) v += completedVolumeOf(s)
-  }))
+  // A dumbbell entry logged per bell counts both bells (volumeFactor, lib/dumbbells.js); every
+  // other entry, and every one saved before the setting existed, counts its weight once.
+  ;(Array.isArray(w?.entries) ? w.entries : []).forEach(e => {
+    const f = volumeFactor(e)
+    ;(Array.isArray(e?.sets) ? e.sets : []).forEach(s => {
+      if (!isWarmupRow(s)) v += completedVolumeOf(s) * f
+    })
+  })
   return v
 }
 // Finished sessions carry their canonical local calendar day in `d`. Keep it aligned with
@@ -928,6 +949,11 @@ export function cascadeWeight(rows, from, value, side, backoffStep = 0) {
  * — cardio, bodyweight, an unloaded hold — are returned untouched. `floor` is the lift's bar
  * (barFloor): no open warm-up is ramped under it.
  */
+// A warm-up rung rounded down to something loadable: the step's grid, or — when `step` is the
+// list of dumbbells the profile owns (lib/dumbbells.js ownedWeightsFor, issue #376) — the
+// heaviest bell at or under it.
+const rungDown = (x, step) => (Array.isArray(step) ? ownedFloor(step, x) : Math.floor(x / step) * step)
+
 export function rerampWarmups(rows, step = 2.5, floor = 0) {
   const firstWork = rows.findIndex(x => !isWarmupRow(x))
   if (firstWork <= 0) return rows
@@ -938,7 +964,7 @@ export function rerampWarmups(rows, step = 2.5, floor = 0) {
   for (let i = 0; i < firstWork; i++) {
     if (out[i].done) { from = out[i].w || 0; continue }
     const w = target > from
-      ? Math.min(target, Math.max(0, floor, Math.floor((from + (target - from) / 2) / step) * step))
+      ? Math.min(target, Math.max(0, floor, rungDown(from + (target - from) / 2, step)))
       : target
     // A per-side warm-up ramps the same bar for both limbs: set each side's weight and resync
     // the aggregate, so the L/R rows and the row's own `w` agree. A straight row sets `w` alone.
@@ -966,7 +992,7 @@ export function insertWarmupRow(rows, mode, target, step = 2.5, floor = 0) {
     // Rounded DOWN to the step: a warm-up that lands a notch light costs nothing, one that
     // lands a notch heavy is a set you have to strip plates off before you can use it. Never
     // under `floor` (barFloor), and never over the work weight even when the bar is heavier.
-    return Math.min(to, Math.max(0, floor, Math.floor((from + (to - from) / 2) / step) * step))
+    return Math.min(to, Math.max(0, floor, rungDown(from + (to - from) / 2, step)))
   }
   const warm = mode === 'cardio'
     ? {

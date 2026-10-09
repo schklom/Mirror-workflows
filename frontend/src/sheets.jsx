@@ -35,6 +35,7 @@ import { importHevyData, HevyApiError, HEVY_DEV_SETTINGS, mergeHevyRoutines } fr
 import { buildPlanBundle, parsePlan, mergePlan, printPlan, planPrintHTML } from './lib/plan-share.js'
 import { estimate1RM, best1RM, is1RMRecord, REP_CAP, formulaOf, FORMULA_NAMES } from './lib/onerm.js'
 import { exerciseHistory } from './lib/exercise-history.js'
+import { isBellEx, dbLoadOf, dbLoadFor, withDbLoad, withMeaning, historyAs, entryDbLoad, currentDbLoad, isOneArm, ownedWeightsFor, dumbbellsOf, ownsDumbbells, withDumbbells, presetWeights, cleanWeights } from './lib/dumbbells.js'
 import { policyFor, defaultIncrement, POLICIES_FOR, POLICY_NAME, POLICY_DESC, MAX_BW_SETS, weightIncrement } from './lib/progression.js'
 import { normalizeRepRange } from './lib/rep-range.js'
 import { isBackoff, backoffWeights } from './lib/backoff.js'
@@ -808,6 +809,23 @@ function BarWeightEditor({ ex, cfg, extra }) {
   </>
 }
 
+// What a dumbbell or kettlebell weight means (issue #474, lib/dumbbells.js): as entered (the
+// default, how every set before this was counted), one bell, or both together. `value` is the
+// meaning in force and `onChange` stores a pick; the caller decides where (the routine's slot or
+// the exercise's own default). The line under it says what the pick does to the numbers.
+function DbLoadPicker({ ex, cfg, value, onChange }) {
+  const one = isOneArm({ ...(cfg || {}), id: ex.id })
+  return <>
+    <Segmented className="seg-inline" value={value} onChange={onChange}
+      options={[{ value: 'as', label: t('As entered') }, { value: 'each', label: t('Each') }, { value: 'total', label: t('Both') }]} />
+    <div className="small dim" style={{ margin: '8px 0 18px' }}>
+      {value === 'each' ? (one ? t('The weight of the one you hold. One arm, so it counts once.') : t('The weight of one, so 20 means 20 in each hand. Volume counts both.'))
+        : value === 'total' ? t('Both together, so 40 means two 20s.')
+          : t('Counted as you type it, the way it always was.')}
+    </div>
+  </>
+}
+
 // Mid-workout sheet behind the ⋯ menu's "Plate loading" — same values, same editor.
 function BarWeightSheet({ exId, cfg, close }) {
   const ex = exOr(exId)
@@ -848,6 +866,49 @@ function PlateInventorySheet({ close }) {
   </>
 }
 export const plateInventorySheet = () => ui().openSheet(close => <PlateInventorySheet close={close} />)
+
+// The dumbbells you own, for the profile's unit (Settings → Equipment → Dumbbells, issue #376):
+// a list of single bells, kept per unit like the plates (lib/dumbbells.js). With one, progression,
+// deloads, warm-ups, drops and the stepper of every dumbbell lift land on these; an empty list
+// puts them back on the increment. Tapping a weight takes it off, the field adds one, and the
+// quick fill writes the usual rack for the unit to edit from. Every change is stamped.
+function DumbbellInventorySheet({ close }) {
+  const st = useStore(s => s.S)
+  const unit = st.unit === 'lb' ? 'lb' : 'kg'
+  const list = dumbbellsOf(st)
+  const [draft, setDraft] = useState(null)
+  const save = ws => update(s => { s.dumbbells = withDumbbells(s, ws) })
+  const preset = presetWeights(unit)
+  const add = () => {
+    const w = cleanWeights([draft])[0]
+    if (!w) { toast(t('Enter a valid weight')); return }
+    save([...list, w])
+    setDraft(null)
+  }
+  return <>
+    <h3>{t('Dumbbells')}</h3>
+    <div className="muted small" style={{ marginBottom: 14 }}>
+      {t('The weights you own, one bell each. Progression, deloads, warm-ups and the + and − buttons of dumbbell lifts land only on these.')}
+    </div>
+    {list.length > 0
+      ? <div className="chips" style={{ flexWrap: 'wrap', overflow: 'visible', touchAction: 'auto', marginBottom: 12 }}>
+        {list.map(w => <button key={w} className="chip on nocap" aria-label={t('Remove {0}', fmtPlate(w) + ' ' + unit)}
+          onClick={() => save(list.filter(x => x !== w))}>{fmtPlate(w)} <Icon name="xmark" /></button>)}
+      </div>
+      : <div className="small dim" style={{ marginBottom: 12 }}>{t('No list yet, so dumbbell lifts step by their increment as usual.')}</div>}
+    <div className="row" style={{ gap: 8, marginBottom: 12 }}>
+      <NumberField className="input" decimal value={draft ?? ''} onChange={v => setDraft(v)}
+        aria-label={t('Weight ({0})', unit)} placeholder={t('Weight ({0})', unit)} onKeyDown={e => { if (e.key === 'Enter') add() }} />
+      <Button icon="plus" onClick={add} style={{ flex: '0 0 auto', width: 'auto' }}>{t('Add')}</Button>
+    </div>
+    <Button onClick={() => save(preset)} style={{ marginBottom: 8 }}>
+      {t('Fill in {0} to {1} {2}, every {3}', fmtPlate(preset[0]), fmtPlate(preset.at(-1)), unit, fmtPlate(preset[1] - preset[0]))}
+    </Button>
+    {list.length > 0 && <Button variant="danger" onClick={() => save([])} style={{ marginBottom: 8 }}>{t('Clear the list')}</Button>}
+    <Button variant="primary" onClick={close}>{t('Done')}</Button>
+  </>
+}
+export const dumbbellInventorySheet = () => ui().openSheet(close => <DumbbellInventorySheet close={close} />)
 
 /* ============================ exercise detail ============================ */
 // Estimated 1RM for one exercise (issue #18): what the log already implies, plus a calculator
@@ -912,7 +973,7 @@ function ExerciseDetail({ ex, close }) {
   useLang() // the description and steps arrive in their own chunk the first time a sheet asks
   const st = useStore(s => s.S)
   const last = lastEntryFor(st, ex.id)
-  const best = bestWeightFor(st, ex.id)
+  const best = bestWeightFor(st, ex.id, currentDbLoad(st, ex.id))
   const fav = isFav(st, ex.id)
   const flipFav = () => {
     let on = false
@@ -942,6 +1003,13 @@ function ExerciseDetail({ ex, close }) {
     {modeOf({ id: ex.id }) === 'reps' && <>
       <h4 className="sec">{t('Plate loading')}</h4>
       <BarWeightEditor ex={ex} extra={t('You still log the total weight. This only feeds the plate line under each set.')} />
+    </>}
+    {/* The exercise's own default meaning of its weight (S.dbLoad), stamped like the loading
+        above. A routine can still pick its own on the exercise's settings. */}
+    {isBellEx(ex) && <>
+      <h4 className="sec">{t('Weight means')}</h4>
+      <DbLoadPicker ex={ex} value={dbLoadFor(st, ex.id)}
+        onChange={v => update(s => { s.dbLoad = withDbLoad(s.dbLoad, ex.id, v) })} />
     </>}
     {/* No one-rep max on an assistance machine: the load is the help you were given, so the
         calculator would answer "your 1RM is 23 kg" about a number that gets smaller as you get
@@ -1352,8 +1420,10 @@ export function swapActiveWorkoutExercise(index) {
     // Built from what came before the session's day when it is logged into the past (sessionHistory).
     const step = modeOf(full) === 'reps' ? weightIncrement(full, st.unit) : defaultIncrement(ex.id, st.unit)
     const past = sessionHistory(st)
+    // A freestyle swap logs dumbbell weights the way the exercise means them now, and starts
+    // from last time read in that meaning (lib/dumbbells.js), as a planned one does.
     const built = freestyle
-      ? { target: { ...cfg }, plan: null, sets: applyIntensifierPlan(buildSets(past, full, { step, preferLast: true }), full, dropGrid(st, full)) }
+      ? { target: withMeaning(st, cfg, ex.id), plan: null, sets: applyIntensifierPlan(buildSets(historyAs(past, ex.id, dbLoadFor(st, full)), full, { step: (modeOf(full) === 'reps' && ownedWeightsFor(st, full)) || step, preferLast: true }), full, dropGrid(st, full)) }
       : buildPlannedEntry(past, full, slotRoutine, { noProg: builtOutOfProgression(current, slotRoutine) })
     const replacement = {
       id: ex.id,
@@ -1549,6 +1619,9 @@ function ExConfig({ ex, existing, onSave, onDelete, onReplace, close, routine, i
   const seed = existing || initial || defaultConfig(ex.id)
   const [c, setC] = useState(() => {
     const cfg = { ...seed }
+    // A session's target carries the meaning of its dumbbell weight as a stamp (lib/dumbbells.js);
+    // one that only repeats the exercise's own default is not the slot's choice, so it is not kept.
+    if (cfg.dbLoad != null && dbLoadOf(cfg.dbLoad) === dbLoadFor(st, ex.id)) delete cfg.dbLoad
     return policyFor({ ...cfg, id: ex.id }, routine, modeOf({ ...cfg, id: ex.id })) === 'double'
       ? { ...cfg, ...normalizeRepRange(cfg.reps, cfg.repsMin, isPerSide(cfg) ? 2 : 1) }
       : cfg
@@ -1610,8 +1683,12 @@ function ExConfig({ ex, existing, onSave, onDelete, onReplace, close, routine, i
     // was. Mode-independent — a heavy triple, a plank and a cardio interval all rest.
     const restSec = Math.max(0, Math.round(c.restSec) || 0)
     const withRest = restSec ? { restSec } : {}
+    // What a dumbbell weight means in this slot (lib/dumbbells.js): written only when the slot
+    // picked its own, so every other config stays the shape it was.
+    const dbLoad = isBellEx(ex) && !bw ? dbLoadOf(c.dbLoad) : null
+    const withMeant = dbLoad ? { dbLoad } : {}
     if (cardio) onSave({ sets, min: Math.max(1, Math.round(c.min) || 20), speed: Math.max(0, c.speed || 8), ...withNote, ...withRest })
-    else if (mode === 'time') onSave({ sets, mode: 'time', sec: Math.max(1, Math.round(c.sec) || 45), weight: Math.max(0, c.weight || 0), ...flags, ...(perSide ? { side: true } : {}), ...prog, ...withNote, ...withWarmups, ...withRest })
+    else if (mode === 'time') onSave({ sets, mode: 'time', sec: Math.max(1, Math.round(c.sec) || 45), weight: Math.max(0, c.weight || 0), ...flags, ...(perSide ? { side: true } : {}), ...prog, ...withNote, ...withWarmups, ...withRest, ...withMeant })
     else {
       // A unilateral target is stored even: the split has to divide, and a typed 15 would
       // otherwise plan seven reps on one side and eight on the other, every session.
@@ -1623,7 +1700,7 @@ function ExConfig({ ex, existing, onSave, onDelete, onReplace, close, routine, i
         range = normalizeRepRange(reps, c.repsMin, stride)
         reps = range.reps
       }
-      const out = { sets, mode: 'reps', reps, weight: Math.max(0, c.weight || 0), ...flags, ...(perSide ? { side: true } : {}), ...prog, ...withNote, ...withWarmups, ...withRest }
+      const out = { sets, mode: 'reps', reps, weight: Math.max(0, c.weight || 0), ...flags, ...(perSide ? { side: true } : {}), ...prog, ...withNote, ...withWarmups, ...withRest, ...withMeant }
       // The list is the prescription; sets and reps follow it, so everything that reads the
       // flat target (a config sheet reopened with the toggle off, older builds) still makes sense.
       const list = pyramid ? normalizePyramid(c.pyramid, stride) : []
@@ -1863,6 +1940,13 @@ function ExConfig({ ex, existing, onSave, onDelete, onReplace, close, routine, i
           ? t('Every set becomes a drop-set: after the main set, {0} drop(s) with no rest, each about {1}% lighter.', c.intensifier.count, c.intensifier.pct)
           : t('Every set becomes rest-pause: {0} reps to start, then {1} more split into short bursts, {2}s rest before each, roughly halving each time.', c.reps || 0, c.intensifier.totalReps, c.intensifier.restSec)}
       </div>}
+    </>}
+    {/* What a dumbbell weight means, for this routine's slot (cfg.dbLoad). Picking what the
+        exercise already means drops the key, so the slot follows the exercise's default again. */}
+    {isBellEx(ex) && !bw && mode !== 'cardio' && <>
+      <h4 className="sec">{t('Weight means')}</h4>
+      <DbLoadPicker ex={ex} cfg={c} value={dbLoadFor(st, { ...c, id: ex.id })}
+        onChange={v => setC(x => ({ ...x, dbLoad: v === dbLoadFor(st, ex.id) ? undefined : v }))} />
     </>}
     {/* How the weight is plate-loaded and what the bar weighs — per exercise, not per plan, so
         it sits apart from the config fields above and writes straight to S.barWeights/S.loadKind. */}
@@ -3177,7 +3261,8 @@ function doFinishWorkout() {
   if (!past) A.entries.forEach(e => {
     const loads = e.sets.filter(s => s.done && !isWarmupRow(s)).map(s => s.w).filter(w => w > 0)
     const mx = loads.length ? loads.reduce((a, b) => betterWeight(e.id, a, b)) : 0
-    if (beatsWeight(e.id, mx, bestWeightFor(st, e.id))) prs.push(e.id)
+    // Held against history read the way this session logged a dumbbell weight (lib/dumbbells.js).
+    if (beatsWeight(e.id, mx, bestWeightFor(st, e.id, entryDbLoad(e)))) prs.push(e.id)
     // A heavier estimate without a heavier top set is its own kind of progress —
     // same weight for more reps. Reported separately so it can't be read as a load PR.
     const rec = is1RMRecord(st, e.id, e)

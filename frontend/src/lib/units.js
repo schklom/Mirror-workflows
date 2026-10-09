@@ -100,7 +100,9 @@ export function convertStateUnit(S, to) {
   // The plate inventory (S.plates) is carried over as it is, not converted: it is kept per unit
   // (lib/plates.js), because a 45 lb plate does not become a 20.4 kg one. After the switch the
   // rows load from the new unit's own list, or the standard set until you count yours, and
-  // switching back finds the old list as you left it. The load kinds (S.loadKind) hold no weight.
+  // switching back finds the old list as you left it. The dumbbell list (S.dumbbells) is kept per
+  // unit the same way. The load kinds (S.loadKind) and what a dumbbell weight means (S.dbLoad)
+  // hold no weight.
   if (Array.isArray(S.routines)) out.routines = S.routines.map(r => ({ ...r, ex: (r.ex || []).map(cfg => convTarget(cfg, from, to)) }))
   if (Array.isArray(S.workouts)) out.workouts = S.workouts.map(convSession)
   if (S.active) out.active = convSession(S.active)

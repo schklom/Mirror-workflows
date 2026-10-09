@@ -162,6 +162,14 @@ export const DEF = {
   // leg press is 'single'; a barbell you never load plates on is 'none'. Absent or null = derived
   // from the equipment. Stamped like the plate list, for the same reason.
   loadKind: {},
+  // What a dumbbell or kettlebell weight means, keyed by exercise id: { mode: 'each' | 'total' |
+  // null, _ts } (lib/dumbbells.js). Absent or null = as entered, counted once, which is how every
+  // set was read before the choice existed. A routine slot can say its own (cfg.dbLoad).
+  dbLoad: {},
+  // The dumbbells you own, per unit: { kg: { weights: [3, 6, 8, …], _ts }, lb: { … } }
+  // (lib/dumbbells.js). Single bells, lightest first. Kept per unit and stamped like the plates;
+  // absent or empty = no list, and dumbbell lifts step by their increment as before.
+  dumbbells: {},
   // Gym check-in cards (see views/CheckIn.jsx). Each is a membership
   // code shown as a QR/barcode at the gym's turnstile — added by typing it, importing a photo
   // of the card, or scanning it. We only ever keep the code's VALUE, never a photo: the image

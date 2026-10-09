@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.4.0 (unreleased)
+## v1.4.0 (2026-10-09)
 
 The biggest update openGym has had: a new exercise database with 5,632 exercises and new
 animations, everything that was planned for v1.3.11 and v1.3.12, and the features you asked for

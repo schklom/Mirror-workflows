@@ -122,7 +122,7 @@ the full list.
 - Still to come from the old block: undo finish (GitLab !130), relabelling an "Unknown" exercise
   after an import, body measurements (PR #82), drag-and-drop on touch (#114)
 
-## v1.4.0: A new exercise database, plus everything planned for v1.3.11 and v1.3.12  (next)
+## v1.4.0: A new exercise database, plus everything planned for v1.3.11 and v1.3.12  (released 2026-10-09)
 
 v1.3.11 and v1.3.12 never shipped on their own: their release candidate grew into this one, so a
 single update brings the new catalogue and two rounds of community work. **No data changes:**

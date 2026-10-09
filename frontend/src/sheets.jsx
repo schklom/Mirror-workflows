@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from './store/useStore.js'
 import { useUI } from './store/useUI.js'
 import { EXDB, EXIDX, BODYPARTS, isCardio, isBodyweightEq, allExercises, equipmentOf, smOf, searchExercises, similarExercises, exOr, isAssisted, betterWeight, beatsWeight, isCustomEx } from './lib/exercises.js'
@@ -1248,7 +1248,9 @@ function ExercisePicker({ onPick, title, close, like }) {
   useRevealActiveChip(eqStrip, eqOn)
   // Close but not exact (a typo too many, most of the words, a similar name), listed under the
   // results once you have scrolled to their end, so a search almost never ends on nothing.
-  const similar = q.trim() && !special && f.length <= shown
+  // Worked out a beat behind the typing (useDeferredValue): the list itself never waits for it.
+  const qLate = useDeferredValue(q)
+  const similar = q.trim() && qLate === q && !special && f.length <= shown
     ? similarExercises((profile && !showAll ? all.filter(e => exAvailable(st, e)) : all).filter(e => bp === SAME || !bp || e.bp === bp), q, f, f.length ? 12 : 30)
     : []
   const pickRow = e => <div key={e.id} className="item" {...tappable(() => onPick(e))}>

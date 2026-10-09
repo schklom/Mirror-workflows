@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useDeferredValue, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
 import { EXDB, BODYPARTS, allExercises, equipmentOf, categoriesOf, searchExercises, similarExercises } from '../lib/exercises.js'
@@ -51,7 +51,9 @@ export default function Library() {
   const narrowed = !!(q.trim() || bp || eqOn || catOn)
   // Close but not exact (a typo too many, most of the words, a similar name), under the results
   // once they are all on screen, so a search almost never ends on "No match".
-  const similar = q.trim() && f.length <= shown
+  // Worked out a beat behind the typing (useDeferredValue): the list itself never waits for it.
+  const qLate = useDeferredValue(q)
+  const similar = q.trim() && qLate === q && f.length <= shown
     ? similarExercises(allExercises(S).filter(e => (!bp || e.bp === bp) && (!profile || showAll || exAvailable(S, e))), q, f, f.length ? 12 : 30)
     : []
   const row = e => {

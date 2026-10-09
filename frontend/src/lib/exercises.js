@@ -287,6 +287,8 @@ export const normalizeStr = s => (s || '')
 // Each entry keeps the full corpus for substring matching and, separately, the words of the
 // name (English and localized) that the typo tolerance below is allowed to compare against.
 const corpusCache = new WeakMap()
+// Every distinct word of every name the search has seen (a few thousand for the whole catalogue).
+const VOCAB = new Set()
 
 function corpusOf(e) {
   const v = getVersion()
@@ -308,6 +310,7 @@ function corpusOf(e) {
   // The joined form only counts from the start of a name word, or "thigh" would find "sumo
   // deadlift high pull" through "deadlifthighpull".
   const entry = { v, s, name, ...joinedOf(name), nameWords: name.split(/[\s\-‐-―()/,]+/).filter(Boolean) }
+  for (const w of entry.nameWords) VOCAB.add(w)
   corpusCache.set(e, entry)
   return entry
 }
@@ -344,12 +347,25 @@ const typosFor = word => (word.length < 4 ? 0 : word.length < 7 ? 1 : 2)
 // equipment words are shared by a whole slice of the catalogue, so one accidental neighbour
 // ("wrist" ~ "waist", "power" ~ "lower arms", "drucken" ~ "rucken") would list hundreds of
 // unrelated exercises ahead of the real hits (QA C26).
-function nearWord(a, b) {
+function nearWordUncached(a, b) {
   const max = typosFor(a)
   if (!max) return false
   if (editDistance(a, b, max) <= max) return true
   return a.length >= 5 && b.length > a.length && editDistance(a, b.slice(0, a.length), max) <= max
 }
+
+// One search compares the same few query words against the same few thousand distinct name
+// words over and over (5,600 exercises share most of their words). Each pair is worked out once
+// per search: without this a three-word query took over half a second on a desktop.
+let nearCache = new Map()
+const resetNearCache = () => { if (nearCache.size) nearCache = new Map() }
+function cached(kind, a, b, fn) {
+  const key = kind + a + '\u0000' + b
+  let v = nearCache.get(key)
+  if (v === undefined) { v = fn(); nearCache.set(key, v) }
+  return v
+}
+const nearWord = (a, b) => cached('n', a, b, () => nearWordUncached(a, b))
 
 // Gym shorthand and spellings people type, each read as the words the catalogue uses. A query
 // token matches when it or any of its expansions does; the expansions are phrases (all words).
@@ -370,7 +386,16 @@ const SYNONYMS = {
 
 // The forms a token may take: as typed, the shorthand it stands for, and the singular of a plural
 // ("curls" finds "curl", "raises" finds "raise", "presses" finds "press").
+const formsCache = new Map()
 function formsOf(tok) {
+  const hit = formsCache.get(tok)
+  if (hit) return hit
+  const forms = formsOfUncached(tok)
+  if (formsCache.size > 500) formsCache.clear()
+  formsCache.set(tok, forms)
+  return forms
+}
+function formsOfUncached(tok) {
   const out = [tok]
   for (const s of SYNONYMS[tok] || []) out.push(s)
   if (tok.length >= 4 && tok.endsWith('es') && !tok.endsWith('ses')) out.push(tok.slice(0, -2), tok.slice(0, -1))
@@ -434,16 +459,42 @@ export function matchExercise(e, query) {
 export function searchExercises(list, query) {
   const tokens = queryTokens(query)
   if (!tokens.length) return list
+  resetNearCache()
   const fuzzy = new Set(tokens.filter(tok => !list.some(e => hits(corpusOf(e), tok))))
   return rankByRelevance(list.filter(e => matchTokens(e, tokens, fuzzy)), tokens)
+}
+
+// Per search, for each form of each query word: the vocabulary words it starts, the ones within
+// the allowed typos, and the ones one typo further (for the similar list). Worked out once over
+// the vocabulary, so scoring an exercise is a handful of set lookups instead of string distance
+// against each of its words: 5,600 exercises took a quarter of a second the other way.
+function queryContext(tokens) {
+  const ctx = new Map()
+  for (const tok of tokens) {
+    for (const form of formsOf(tok)) {
+      if (ctx.has(form) || form.includes(' ')) continue
+      // One typo more than the exact search allows, but only for words of six letters and up:
+      // "pull" is two letters from "curl", and that is a different exercise, not a typo.
+      const extraMax = tok.length >= 6 ? typosFor(tok) + 1 : typosFor(tok)
+      const prefix = new Set(), near = new Set(), extra = new Set()
+      for (const w of VOCAB) {
+        if (w.startsWith(form)) prefix.add(w)
+        if (nearWordUncached(form, w)) near.add(w)
+        else if (tok.length >= 4 && editDistance(form, w, extraMax) <= extraMax) extra.add(w)
+      }
+      ctx.set(form, { prefix, near, extra })
+    }
+  }
+  return ctx
 }
 
 // How well one query token sits in an exercise: a whole word of the name beats the start of one,
 // which beats anywhere in the name, the name run together, a typo in the name, and last of all
 // another field (target, equipment, body part, muscles). Zero when it is not there at all.
-function tokenScore(entry, tok) {
+function tokenScore(entry, tok, ctx) {
   let best = 0
   for (const form of formsOf(tok)) {
+    const c = ctx && ctx.get(form)
     const exact = form === tok ? 0 : 5   // a shorthand or singular counts a little less than typed
     const words = form.split(' ')
     if (words.length > 1) {
@@ -452,10 +503,10 @@ function tokenScore(entry, tok) {
       continue
     }
     if (entry.nameWords.includes(form)) best = Math.max(best, 100 - exact)
-    else if (entry.nameWords.some(w => w.startsWith(form))) best = Math.max(best, 80 - exact)
+    else if (c ? entry.nameWords.some(w => c.prefix.has(w)) : entry.nameWords.some(w => w.startsWith(form))) best = Math.max(best, 80 - exact)
     else if (entry.name.includes(form)) best = Math.max(best, 60 - exact)
     else if (form.length >= 4 && joinedHit(entry, form)) best = Math.max(best, 55 - exact)
-    else if (entry.nameWords.some(w => nearWord(form, w))) best = Math.max(best, 40 - exact)
+    else if (c ? entry.nameWords.some(w => c.near.has(w)) : entry.nameWords.some(w => nearWord(form, w))) best = Math.max(best, 40 - exact)
     else if (entry.s.includes(form)) best = Math.max(best, 20 - exact)
   }
   return best
@@ -473,9 +524,10 @@ const priorOf = e => (CLASSIC.has(e.id) ? 3 : 0) + (EQ_PRIOR[e.eq] || 0) + (CAT_
 // "barbell squat" before its six variations), and the list's own order after that: custom
 // exercises, which callers put first, stay first among equal matches.
 function rankByRelevance(found, tokens) {
+  const ctx = queryContext(tokens)
   const scored = found.map((e, i) => {
     const entry = corpusOf(e)
-    return { e, i, score: tokens.reduce((sum, tok) => sum + tokenScore(entry, tok), 0) + priorOf(e), len: entry.nameWords.length }
+    return { e, i, score: tokens.reduce((sum, tok) => sum + tokenScore(entry, tok, ctx), 0) + priorOf(e), len: entry.nameWords.length }
   })
   scored.sort((a, b) => b.score - a.score || a.len - b.len || a.i - b.i)
   return scored.map(x => x.e)
@@ -488,7 +540,15 @@ function rankByRelevance(found, tokens) {
 export function similarExercises(list, query, exclude = [], limit = 30) {
   const tokens = queryTokens(query)
   if (!tokens.length) return []
+  resetNearCache()
   const skip = new Set(exclude)
+  // What the exact hits train most: "similar" leans towards the same muscle, so a curl search
+  // offers other biceps work rather than anything else that happens to say "dumbbell".
+  const tgCount = {}
+  for (const e of exclude.slice(0, 8)) if (e?.tg) tgCount[e.tg] = (tgCount[e.tg] || 0) + 1
+  const mainTg = Object.keys(tgCount).sort((a, b) => tgCount[b] - tgCount[a])[0]
+  for (const e of list) corpusOf(e)   // fills the vocabulary before it is searched
+  const ctx = queryContext(tokens)
   const out = []
   for (let i = 0; i < list.length; i++) {
     const e = list[i]
@@ -496,18 +556,15 @@ export function similarExercises(list, query, exclude = [], limit = 30) {
     const entry = corpusOf(e)
     let score = 0, found = 0
     for (const tok of tokens) {
-      let best = tokenScore(entry, tok)
-      if (!best) {
-        // One more typo than the exact search allows, name words only.
-        const extra = typosFor(tok) + 1
-        if (tok.length >= 4 && formsOf(tok).some(f => entry.nameWords.some(w => editDistance(f, w, extra) <= extra))) best = 25
-      }
+      let best = tokenScore(entry, tok, ctx)
+      // One more typo than the exact search allows, name words only.
+      if (!best && formsOf(tok).some(f => { const c = ctx.get(f); return c && entry.nameWords.some(w => c.extra.has(w)) })) best = 25
       if (best) { found++; score += best }
     }
     // Half the words at least (one of one, one of two, two of three...), and for a one-word query
     // a hit in the name, not just a shared body part.
     if (found * 2 < tokens.length || !found || (tokens.length === 1 && score < 25)) continue
-    out.push({ e, i, score: score + found * 30 + priorOf(e), len: entry.nameWords.length })
+    out.push({ e, i, score: score + found * 30 + priorOf(e) + (mainTg && e.tg === mainTg ? 40 : 0), len: entry.nameWords.length })
   }
   out.sort((a, b) => b.score - a.score || a.len - b.len || a.i - b.i)
   return out.slice(0, limit).map(x => x.e)

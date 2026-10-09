@@ -160,3 +160,28 @@ describe('Library header count', () => {
     expect(narrow).toContain('overflow:visible')
   })
 })
+
+describe('Library similar exercises', () => {
+  const search = (host, text) => {
+    const input = host.querySelector('.search input')
+    const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set
+    act(() => { setter.call(input, text); input.dispatchEvent(new Event('input', { bubbles: true })) })
+  }
+  const label = host => host.querySelector('.similar-label')?.textContent || null
+
+  it('offers what comes close instead of "No match" when nothing matches exactly', () => {
+    const host = render()
+    search(host, 'dumbbell curl qwxz')
+    expect(label(host)).toBe('No exact match. These come close:')
+    expect(host.textContent).not.toContain('No match')
+    expect(names(host).slice(0, 5).some(n => /dumbbell.*curl/.test(n))).toBe(true)
+  })
+
+  it('lists similar ones under a short result list, without repeating a result', () => {
+    const host = render()
+    search(host, 'face pull')
+    expect(label(host)).toBe('Similar exercises')
+    const all = names(host)
+    expect(new Set(all).size).toBe(all.length)
+  })
+})

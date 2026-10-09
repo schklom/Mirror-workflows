@@ -1446,7 +1446,7 @@ export default {
   'You have the latest version.': 'আপনার কাছে সর্বশেষ সংস্করণ আছে।',
   'Couldn’t check for updates. Are you online?': 'আপডেট দেখা যায়নি। আপনি কি অনলাইনে আছেন?',
   'Get the Android app': 'Android অ্যাপ নিন',
-  'Download the APK from opengym.duarte-santos.ch': 'opengym.duarte-santos.ch থেকে APK ডাউনলোড করুন',
+  'Download the APK from opengym.ch': 'opengym.ch থেকে APK ডাউনলোড করুন',
   'Releases are checked on gitlab.com. The download is verified against its checksum before the installer opens.': 'রিলিজগুলো gitlab.com-এ দেখা হয়। ইনস্টলার খোলার আগে ডাউনলোডটি তার চেকসাম দিয়ে যাচাই করা হয়।',
   'The web app updates together with your server. The Android app installs its own updates from here.': 'ওয়েব অ্যাপ আপনার সার্ভারের সাথে একসাথে আপডেট হয়। Android অ্যাপ এখান থেকে নিজের আপডেট ইনস্টল করে।',
   'Starting download…': 'ডাউনলোড শুরু হচ্ছে…',

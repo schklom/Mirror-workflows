@@ -16,7 +16,7 @@ jobs:
   parameters:
     runs-on: ubuntu-latest
     outputs:
-      UPSTREAM_REPO_BRANCH: ${{ steps.branch_name.outputs.SET_REMOTE_REPOSITORY_BRANCH }}
+      UPSTREAM_REPO_BRANCH: ${{ steps.branch_name.outputs.SET_UPSTREAM_REPO_BRANCH }}
     steps:
       - name: find HEAD branch name dynamically
         id: branch_name

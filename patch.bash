@@ -4,12 +4,14 @@ cp web/Dockerfile web/Dockerfile.bak
 
 # Copy data files into the image to avoid forcing the user to do it
 cat << 'EOF' >> web/Dockerfile
+USER root
 RUN apk add --no-cache git
+USER 101
 RUN git clone --depth 1 https://github.com/hasaneyldrm/exercises-dataset ds
 RUN mkdir -p /usr/share/nginx/html /usr/share/nginx/gif
 RUN mv /ds/images/*.jpg /usr/share/nginx/html/
 RUN mv /ds/videos/*.gif /usr/share/nginx/gif/
-RUN rm -rf /ds >> Dockerfile
+RUN rm -rf /ds
 EOF
 
 # Allow API_HOST and API_PORT environment variables

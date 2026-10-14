@@ -1,7 +1,8 @@
 name: Sync-build-push Wikiless
 
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    paths: .github/workflows/Sync-build-push Wikiless.yml
   schedule:
     # * is a special character in YAML so you have to quote this string
     - cron:  '0 0 * * *'

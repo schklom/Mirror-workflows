@@ -2437,8 +2437,9 @@ class Feeds extends Handler_Protected {
 	 * @return array<int, string>
 	 */
 	static function _get_update_intervals(bool $with_default = true): array {
-		return ($with_default ? [0 => __('Default interval')] : []) + [
+		$x = [
 			-1 => __('Disable updates'),
+			0 => __('Default interval'),
 			15 => __('15 minutes'),
 			30 => __('30 minutes'),
 			60 => __('Hourly'),
@@ -2447,6 +2448,11 @@ class Feeds extends Handler_Protected {
 			1440 => __('Daily'),
 			10080 => __('Weekly'),
 		];
+
+		if (!$with_default)
+			unset($x[0]);
+
+		return $x;
 	}
 }
 

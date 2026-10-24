@@ -329,7 +329,7 @@ class Handler_Public extends Handler {
 		if ($key) {
 			$access_key = ORM::for_table('ttrss_access_keys')
 				->select('owner_uid')
-				->where(['access_key' => $key, 'feed_id' => $feed])
+				->where(['access_key' => $key, 'feed_id' => $feed, 'is_cat' => $is_cat])
 				->find_one();
 
 			if ($access_key) {

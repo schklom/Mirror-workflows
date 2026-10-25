@@ -399,13 +399,15 @@ class API extends Handler {
 	}
 
 	function updateFeed(): bool {
-		$feed_id = (int) clean($_REQUEST["feed_id"]);
+		$feed_id = (int) clean($_REQUEST['feed_id']);
+		$user_owned_feed = (bool) ORM::for_table('ttrss_feeds')
+			->where(['id' => $feed_id, 'owner_uid' => $_SESSION['uid']])
+			->count();
 
-		if (!ini_get("open_basedir")) {
-			RSSUtils::update_rss_feed($feed_id);
-		}
+		if ($user_owned_feed && RSSUtils::update_rss_feed($feed_id))
+			return $this->_wrap(self::STATUS_OK, ['status' => 'OK']);
 
-		return $this->_wrap(self::STATUS_OK, ["status" => "OK"]);
+		return $this->_wrap(self::STATUS_ERR, ['error' => self::E_OPERATION_FAILED]);
 	}
 
 	function catchupFeed(): bool {
@@ -659,7 +661,8 @@ class API extends Handler {
 				$feed = ORM::for_table('ttrss_feeds')
 					->select_many('id', 'cache_images')
 					->select_expr('SUBSTRING_FOR_DATE(last_updated,1,19)', 'last_updated')
-					->find_one($feed_id);
+					->where(['id' => $feed_id, 'owner_uid' => $_SESSION['uid']])
+					->find_one();
 
 				if ($feed) {
 					$last_updated = strtotime($feed->last_updated ?? '');

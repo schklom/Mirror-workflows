@@ -20,9 +20,13 @@ jobs:
         run: |
           filename="AutoInput.Direct.apk"
           echo "filename=${filename}" >> $GITHUB_ENV
-          fileid=${{ secrets.AUTOINPUT_GOOGLE_DRIVE_FILE_ID }}
-          url="https://drive.usercontent.google.com/download?id=${fileid}&export=download&authuser=0&confirm=t"
-          curl -L "${url}" -o ${filename}
+          #fileid=${{ secrets.AUTOINPUT_GOOGLE_DRIVE_FILE_ID }}
+          #url="https://drive.usercontent.google.com/download?id=${fileid}&export=download&authuser=0&confirm=t"
+          
+          tasker_page_url=${{ secrets.AUTOINPUT_TASKER_PAGE_LINK }}
+          dropbox_url=$(curl --silent "${tasker_page_url}" | grep --perl-regexp --only-matching 'https://.*AutoInput.*?(?=")')
+          
+          curl -L "${dropbox_url}" -o ${filename}
       
       - name: Store md5 hash of new apk
         run: md5sum "${{ env.filename }}" | cut -d " " -f 1 > hash_new_file

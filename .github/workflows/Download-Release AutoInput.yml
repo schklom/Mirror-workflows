@@ -1,24 +1,14 @@
 name: Download+Release AutoInput
 
-# Controls when the workflow will run
 on:
   schedule:
-    # * is a special character in YAML so you have to quote this string
     - cron:  '1 0 * * SUN,WED' # Google causes problems sometimes when downloads are too frequent
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   apk:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout
         uses: actions/checkout@v7
         with:
@@ -41,8 +31,8 @@ jobs:
         run: |
           # Create hash_current_file if it doesn't exist
           touch hash_current_file
-          echo "current_hash=$(cat hash_current_file)" >> $GITHUB_ENV
-          echo "new_hash=$(cat hash_new_file)" >> $GITHUB_ENV
+          echo "current_hash=$(cat hash_current_file)" | tee -a $GITHUB_ENV
+          echo "new_hash=$(cat hash_new_file)" | tee -a $GITHUB_ENV
       
       - name: Record last update date and update current hash
         if: ${{ env.current_hash != env.new_hash }}

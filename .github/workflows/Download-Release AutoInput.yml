@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       ignore_hash:
-        default: true
+        default: false
         description: Ignore if the hash is new or not
         required: true
         type: boolean

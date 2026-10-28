@@ -3,6 +3,9 @@ name: Download+Release AutoInput
 on:
   schedule:
     - cron:  '1 0 * * SUN,WED' # Google causes problems sometimes when downloads are too frequent
+  push:
+    paths:
+      - .github/workflows/Download-Release AutoInput.yml
   workflow_dispatch:
 
 jobs:

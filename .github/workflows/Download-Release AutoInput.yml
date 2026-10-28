@@ -62,7 +62,7 @@ jobs:
           sudo apt install -y aapt
           ls -alh
           # get versionName string, remove "versionName=, remove "'". This is more readable than lookaheads/lookbehinds
-          version=`aapt dump badging ${{ env.filename }} | grep -Po "versionName='.+?'" | sed "s/versionName=//" | tr -d "'"
+          version=`aapt dump badging ${{ env.filename }} | grep -Po "versionName='.+?'" | sed "s/versionName=//" | tr -d "'"`
           echo "version=${version}" | tee -a $GITHUB_ENV
 #          unzip -d apk_files ${{ env.filename }}
 #          echo "version=$(grep "Version" apk_files/assets/about.html | grep -oP '[0-9\.]+')" >> $GITHUB_ENV

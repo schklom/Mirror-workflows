@@ -35,7 +35,7 @@ jobs:
           tasker_page_url=${{ secrets.AUTOINPUT_TASKER_PAGE_LINK }}
           dropbox_url=$(curl --silent "${tasker_page_url}" | grep --perl-regexp --only-matching 'https://.*AutoInput.*?(?=")')
           
-          curl -L "${dropbox_url}" -o ${filename}
+          curl -sSL "${dropbox_url}" -o ${filename}
       
       - name: Store md5 hash of new apk
         run: md5sum "${{ env.filename }}" | cut -d " " -f 1 > hash_new_file

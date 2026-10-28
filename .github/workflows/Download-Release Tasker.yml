@@ -44,7 +44,7 @@ jobs:
           dropbox_url=$(curl --silent "${tasker_page_url}" | grep --only-matching '".*dropbox.*"' | tr -d '"')
           
           echo "Got APK URL"
-          curl -sSL "${url}" -o ${filename}
+          curl -sSL "${dropbox_url}" -o ${filename}
       
       - name: Store md5 hash of new apk
         run: md5sum "${{ env.filename }}" | cut -d " " -f 1 > hash_new_file

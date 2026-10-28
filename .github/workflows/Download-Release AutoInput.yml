@@ -7,6 +7,12 @@ on:
     paths:
       - .github/workflows/Download-Release AutoInput.yml
   workflow_dispatch:
+    inputs:
+      ignore_hash:
+        default: true
+        description: Ignore if the hash is new or not
+        required: true
+        type: boolean
 
 jobs:
   apk:
@@ -42,43 +48,44 @@ jobs:
           echo "new_hash=$(cat hash_new_file)" | tee -a $GITHUB_ENV
       
       - name: Record last update date and update current hash
-        if: ${{ env.current_hash != env.new_hash }}
+        if: env.current_hash != env.new_hash || inputs.ignore_hash == true
         run: |
           date +%Y-%m-%d_%H-%M > last_update_date
-          echo "last_update_date_env=$(cat last_update_date)" >> $GITHUB_ENV
+          echo "last_update_date_env=$(cat last_update_date)" | tee -a $GITHUB_ENV
           mv hash_new_file hash_current_file
       
       # https://code.whatever.social/questions/13469147/get-android-apk-file-versionname-or-versioncode-without-installing-apk
       - name: Find version number
-        if: ${{ env.current_hash != env.new_hash }}
+        if: env.current_hash != env.new_hash || inputs.ignore_hash == true
         run: |
+          sudo apt update
           sudo apt install -y aapt
           ls -alh
           # get versionName string, remove "versionName=, remove "'". This is more readable than lookaheads/lookbehinds
-          version=`aapt dump badging ${{ env.filename }} | grep -Po "versionName='.+?'" | sed "s/versionName=//" | sed "s/'//g"`
-          echo "version=${version}" >> $GITHUB_ENV
+          version=`aapt dump badging ${{ env.filename }} | grep -Po "versionName='.+?'" | sed "s/versionName=//" | tr -d "'"
+          echo "version=${version}" | tee -a $GITHUB_ENV
 #          unzip -d apk_files ${{ env.filename }}
 #          echo "version=$(grep "Version" apk_files/assets/about.html | grep -oP '[0-9\.]+')" >> $GITHUB_ENV
 #          rm -rf apk_files
       
       - name: Write tag name
-        if: ${{ env.current_hash != env.new_hash }}
+        if: env.current_hash != env.new_hash || inputs.ignore_hash == true
         #run: echo "tagname=${{ env.version }}_${{ env.last_update_date_env }}" >> $GITHUB_ENV
         run: |
           ver="${{ env.version }}"
           last_update="${{ env.last_update_date_env }}"
           tagname="${ver}_${last_update}"
-          echo "tagname=${tagname}" >> $GITHUB_ENV
+          echo "tagname=${tagname}" | tee -a $GITHUB_ENV
       
       - name: Commit and push the change
-        if: ${{ env.current_hash != env.new_hash }}
+        if: env.current_hash != env.new_hash || inputs.ignore_hash == true
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "Update the apk's hash and update date"
           file_pattern: hash_current_file last_update_date
         
       - name: Release apk if hashes are different
-        if: ${{ env.current_hash != env.new_hash }}
+        if: env.current_hash != env.new_hash || inputs.ignore_hash == true
         uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ env.tagname }}

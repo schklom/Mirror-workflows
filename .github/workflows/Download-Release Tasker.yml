@@ -97,7 +97,7 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ env.tagname }}
-          body: "New version of Tasker Direct Purchase"
+          body: "New version of Tasker Direct Purchase, MD5 hash is ${{ env.new_hash }}"
           files: ${{ env.filename }}
           repository: "schklom/Tasker-apk"
           token: ${{ secrets.PAT_GITHUB_ACTION }}

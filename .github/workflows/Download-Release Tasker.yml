@@ -40,7 +40,7 @@ jobs:
           sudo apt install --reinstall -y ca-certificates
           sudo update-ca-certificates --fresh
           
-          tasker_page_url=${{ secrets.AUTOINPUT_TASKER_PAGE_LINK }}
+          tasker_page_url=${{ secrets.TASKER_PAGE_LINK }}
           dropbox_url=$(curl --silent "${tasker_page_url}" | grep --only-matching '".*dropbox.*"' | tr -d '"')
           
           echo "Got APK URL"

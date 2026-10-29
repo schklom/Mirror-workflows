@@ -1,12 +1,15 @@
 package engines
 
 import (
+	"bytes"
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
+	"strconv"
+	"time"
 )
 
 // iCIBA is an engine that fetches data from https://www.iciba.com.
@@ -222,25 +225,32 @@ func (_ *ICIBA) SourceLanguages() (Language, error) {
 func (_ *ICIBA) TargetLanguages() (Language, error) { return icibaLanguages, nil }
 
 func (_ *ICIBA) Translate(text string, from, to string) (TranslationResult, error) {
-	requestURL, _ := url.Parse("https://ifanyi.iciba.com/index.php")
+	requestURL, _ := url.Parse("https://dictionary.iciba.com/dictionary/fy/batch")
+
+	timestamp := strconv.FormatInt(time.Now().UnixMilli(), 10)
 
 	query := url.Values{}
-	query.Add("c", "trans")
-	query.Add("m", "fy")
 	query.Add("client", "6")
-	query.Add("auth_user", "key_web_fanyi")
+	query.Add("key", "1000006")
+	query.Add("timestamp", timestamp)
 
-	sum := md5.Sum([]byte(("6key_web_fanyiifanyiweb8hc9s98e" + text)))
-	query.Add("sign", hex.EncodeToString(sum[:])[:16])
+	sum := md5.Sum([]byte("/dictionary/fy/batch" + "6" + "1000006" + timestamp + "7ece94d9f9c202b0d2ec557dg4r9bc"))
+	query.Add("signature", hex.EncodeToString(sum[:]))
 
 	requestURL.RawQuery = query.Encode()
 
-	formData := url.Values{}
-	formData.Add("from", from)
-	formData.Add("to", to)
-	formData.Add("q", text)
+	formData, err := json.Marshal(
+		map[string]interface{}{
+			"from":     from,
+			"to":       to,
+			"textList": []string{text},
+		},
+	)
+	if err != nil {
+		return TranslationResult{}, err
+	}
 
-	response, err := http.PostForm(requestURL.String(), formData)
+	response, err := http.Post(requestURL.String(), "application/json", bytes.NewBuffer(formData))
 	if err != nil {
 		return TranslationResult{}, err
 	}
@@ -252,31 +262,35 @@ func (_ *ICIBA) Translate(text string, from, to string) (TranslationResult, erro
 	}
 
 	var responseJSON struct {
-		Content struct {
+		Data []struct {
 			From string `json:"from"`
 			Out  string `json:"out"`
-		} `json:"content"`
+		} `json:"data"`
 	}
 
 	if err := json.NewDecoder(response.Body).Decode(&responseJSON); err != nil {
 		return TranslationResult{}, err
 	}
 
+	if len(responseJSON.Data) == 0 {
+		return TranslationResult{}, fmt.Errorf("no translation returned from iCIBA")
+	}
+
 	for code := range icibaLanguages {
-		if code == responseJSON.Content.From {
+		if code == responseJSON.Data[0].From {
 			from = code
 			break
 		}
 	}
 
 	if from == "" {
-		return TranslationResult{TranslatedText: responseJSON.Content.Out},
-			fmt.Errorf("language code \"%s\" is not in iCIBA's language list", responseJSON.Content.From)
+		return TranslationResult{TranslatedText: responseJSON.Data[0].Out},
+			fmt.Errorf("language code \"%s\" is not in iCIBA's language list", responseJSON.Data[0].From)
 	}
 
 	return TranslationResult{
 		SourceLanguage: from,
-		TranslatedText: responseJSON.Content.Out,
+		TranslatedText: responseJSON.Data[0].Out,
 	}, nil
 }
 

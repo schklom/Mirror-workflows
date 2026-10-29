@@ -2,15 +2,12 @@ package engines
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
-
-	"encoding/json"
 	"regexp"
-
-	"github.com/PuerkitoBio/goquery"
 )
 
 type GoogleTranslate struct{}
@@ -18,56 +15,58 @@ type GoogleTranslate struct{}
 func (_ *GoogleTranslate) DisplayName() string { return "Google Translate" }
 
 func (_ *GoogleTranslate) getLangs(type_ string) (Language, error) {
-	var langsType string
+	var langsIndex int
 	switch type_ {
 	case "source":
-		langsType = "sl"
+		langsIndex = 0
 
 	case "target":
-		langsType = "tl"
+		langsIndex = 1
 
 	default:
-		return nil, fmt.Errorf("Invalid language type: %s", langsType)
+		return nil, fmt.Errorf("Invalid language type: %s", type_)
 	}
 
-	requestURL, _ := url.Parse("https://translate.google.com/m")
+	url_ := "https://translate.google.com/_/TranslateWebserverUi/data/batchexecute?rpcids=n9wk7&rt=c"
 
-	query := url.Values{}
-	query.Add("mui", langsType)
-	query.Add("hl", "en-US")
-	requestURL.RawQuery = query.Encode()
+	req := []interface{}{[]interface{}{[]interface{}{"n9wk7", `["en"]`, nil, "generic"}}}
 
-	response, err := http.Get(requestURL.String())
+	JSONString, _ := json.Marshal(req)
+
+	body := "f.req=" + url.QueryEscape(string(JSONString))
+
+	response, err := http.Post(url_, "application/x-www-form-urlencoded;charset=utf-8", bytes.NewBuffer([]byte(body)))
 	if err != nil {
 		return nil, err
 	}
 
 	defer response.Body.Close()
 
-	doc, err := goquery.NewDocumentFromReader(response.Body)
+	bodyBytes, err := ioutil.ReadAll(response.Body)
 	if err != nil {
+		return nil, err
+	}
+
+	responseTextList := regexp.MustCompile(`\n\d+\n(.*)\n\d+\n`).FindStringSubmatch(string(bodyBytes))
+	if len(responseTextList) < 2 {
+		return nil, fmt.Errorf("unexpected response from Google Translate")
+	}
+
+	var raw []interface{}
+	if err := json.Unmarshal([]byte(responseTextList[1]), &raw); err != nil {
+		return nil, err
+	}
+
+	var json_ []interface{}
+	if err := json.Unmarshal([]byte(raw[0].([]interface{})[2].(string)), &json_); err != nil {
 		return nil, err
 	}
 
 	var langs Language = make(Language)
 
-	doc.Find(".language-item").Each(func(_ int, s *goquery.Selection) {
-		a := s.Find("a").First()
-
-		href, exists := a.Attr("href")
-		if !exists {
-			return
-		}
-
-		langURL, err := url.Parse(href)
-		if err != nil {
-			return
-		}
-
-		langCode := langURL.Query()[langsType][0]
-
-		langs[langCode] = a.Text()
-	})
+	for _, lang := range json_[langsIndex].([]interface{}) {
+		langs[lang.([]interface{})[0].(string)] = lang.([]interface{})[1].(string)
+	}
 
 	return langs, nil
 }
@@ -96,34 +95,9 @@ func (e *GoogleTranslate) Tts(text, lang string) (string, error) {
 }
 
 func (_ *GoogleTranslate) Translate(text string, from, to string) (TranslationResult, error) {
-	requestURL, _ := url.Parse("https://translate.google.com/m")
-
 	if from == "" {
 		from = "auto"
 	}
-
-	query := url.Values{}
-	query.Add("sl", from)
-	query.Add("tl", to)
-	query.Add("hl", to)
-	query.Add("q", text)
-	requestURL.RawQuery = query.Encode()
-
-	response, err := http.Get(requestURL.String())
-
-	if err != nil {
-		return TranslationResult{}, err
-	}
-
-	defer response.Body.Close()
-
-	doc, err := goquery.NewDocumentFromReader(response.Body)
-
-	if err != nil {
-		return TranslationResult{}, err
-	}
-
-	translatedText := doc.Find(".result-container").Text()
 
 	url_ := "https://translate.google.com/_/TranslateWebserverUi/data/batchexecute?rpcids=MkEWBc&rt=c"
 
@@ -161,6 +135,7 @@ func (_ *GoogleTranslate) Translate(text string, from, to string) (TranslationRe
 	definitions := make(map[string][]map[string]interface{})
 	translations := make(map[string]map[string]map[string]interface{})
 	pronunciation := ""
+	translatedText := ""
 
 	if len(responseTextList) > 0 {
 		responseText = responseTextList[1]
@@ -289,6 +264,21 @@ func (_ *GoogleTranslate) Translate(text string, from, to string) (TranslationRe
 							pronunciation = raw.(string)
 						}
 					}
+				}
+			}
+
+			// Multi-sentence results are split into segments at index 5.
+			if len(json_) > 1 && json_[1] != nil && len(json_[1].([]interface{})[0].([]interface{})) > 0 {
+				variant := json_[1].([]interface{})[0].([]interface{})[0].([]interface{})
+				if len(variant) > 5 && variant[5] != nil {
+					for _, segment := range variant[5].([]interface{}) {
+						if len(segment.([]interface{})) > 2 && segment.([]interface{})[2] == true && translatedText != "" {
+							translatedText += " "
+						}
+						translatedText += segment.([]interface{})[0].(string)
+					}
+				} else if len(variant) > 0 && variant[0] != nil {
+					translatedText = variant[0].(string)
 				}
 			}
 

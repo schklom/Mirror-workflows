@@ -2,10 +2,24 @@ package engines
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"net/http"
 )
+
+// Reverso's Cloudflare rejects Go's default TLS fingerprint.
+var reversoClient = func() *http.Client {
+	transport := http.DefaultTransport.(*http.Transport).Clone()
+	transport.TLSClientConfig = &tls.Config{
+		CurvePreferences: []tls.CurveID{
+			tls.X25519,
+			tls.CurveP256,
+			tls.CurveP384,
+		},
+	}
+	return &http.Client{Transport: transport}
+}()
 
 // Reverso is an engine that fetches data from https://reverso.net.
 type Reverso struct{}
@@ -88,9 +102,7 @@ func (e *Reverso) callAPI(text string, from, to string) (reversoAPIResponse, err
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; rv:110.0) Gecko/20100101 Firefox/110.0")
 
-	client := &http.Client{}
-
-	response, err := client.Do(request)
+	response, err := reversoClient.Do(request)
 
 	if err != nil {
 		return reversoAPIResponse{}, err

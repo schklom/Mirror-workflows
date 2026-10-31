@@ -101,6 +101,7 @@ func (e *Reverso) callAPI(text string, from, to string) (reversoAPIResponse, err
 
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; rv:110.0) Gecko/20100101 Firefox/110.0")
+	request.Header.Set("X-Reverso-Origin", "translation.web")
 
 	response, err := reversoClient.Do(request)
 

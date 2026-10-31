@@ -1,3 +1,3 @@
 module codeberg.org/SimpleWeb/SimplyTranslate/engines
 
-go 1.17
+go 1.27

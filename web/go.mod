@@ -1,6 +1,6 @@
 module codeberg.org/SimpleWeb/SimplyTranslate/web
 
-go 1.26.3
+go 1.27
 
 require (
 	codeberg.org/SimpleWeb/SimplyTranslate/engines v0.0.0

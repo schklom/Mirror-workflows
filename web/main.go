@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"net/http"
 	"net/url"
 	"os"
@@ -86,6 +87,7 @@ func main() {
 			to = c.FormValue("to")
 			originalText = c.FormValue("text")
 			if result, err := engines.Engines[engine].Translate(originalText, from, to); err != nil {
+				fmt.Printf("%s: %s\n", engine, err)
 				return c.SendStatus(500)
 			} else {
 				translatedText = result.TranslatedText
@@ -183,6 +185,7 @@ func main() {
 			return c.SendStatus(400)
 		}
 		if result, err := engines.Engines[engine].Translate(text, from, to); err != nil {
+			fmt.Printf("%s: %s\n", engine, err)
 			return c.SendStatus(500)
 		} else {
 			return c.JSON(result)

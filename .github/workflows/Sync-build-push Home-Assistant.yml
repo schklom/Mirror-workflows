@@ -1,11 +1,16 @@
 name: Sync-build-push Home-Assistant
 
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    paths: .github/workflows/Sync-build-push Home-Assistant.yml
   schedule:
-    # * is a special character in YAML so you have to quote this string
     - cron:  '0 0 * * *'
   workflow_dispatch:
+
+env:
+  LOCAL_BRANCH: Home-Assistant-Dockerfile
+  UPSTREAM_REPO: https://github.com/home-assistant/core
+  UPSTREAM_BRANCH: refs/heads/master
 
 jobs:
   get_commits:
@@ -18,20 +23,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
         with:
-          ref: 'Home-Assistant-Extra' # branch
+          ref: "${{ env.LOCAL_BRANCH }}"
       - name: set local and remote latest commit as environment variables
         id: commits
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
         # https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
         run: |
-          echo "SETREMOTE=$(git ls-remote https://github.com/home-assistant/core refs/heads/master | awk '{ print $1 }')" >> $GITHUB_OUTPUT
-          echo "SETLOCAL=$(cat last_sync_with_original_repo_commit_id)" >> $GITHUB_OUTPUT
+          echo "SETREMOTE=$(git ls-remote ${{ env.UPSTREAM_REPO }} ${{ env.UPSTREAM_BRANCH }} | awk '{ print $1 }')" >> $GITHUB_OUTPUT
+          echo "SETLOCAL=$(cat last_sync_with_original_repo_commit_id)" | tee -a $GITHUB_OUTPUT
   
   repo_sync:
     needs: [get_commits]
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
-    if: ${{ needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE || github.event_name == 'workflow_dispatch' }}
+    if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE || github.event_name == 'workflow_dispatch'
     steps:
       # - name: repo-sync
         # uses: wei/git-sync@v3
@@ -44,28 +49,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
         with:
-          ref: 'Home-Assistant-Extra' # branch
+          ref: "${{ env.LOCAL_BRANCH }}"
       - name: get most recent commit id on original repo, for next comparison on sync
-        run: git ls-remote https://github.com/home-assistant/core refs/heads/master | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
+        run: printf "%s" "${{ needs.get_commits.outputs.REMOTE }}" > last_sync_with_original_repo_commit_id
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: Add last_sync_with_original_repo_commit_id
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      #- uses: actions/checkout@v7
-        #with:
-          #ref: 'Home-Assistant-Extra'
-      #- name: app dockerfile
-      #  run: sed -r 's/^FROM ([a-zA-Z]+)(.*)$/FROM arm32v7\/\1\2/' src/app/Dockerfile > src/app/Dockerfile
-      #- name: adapt web dockerfile
-      #  run: sed -r 's/^FROM abiosoft\/caddy:no-stats$/FROM jessestuart\/caddy/' web/Dockerfile > web/Dockerfile
-      # https://github.com/marketplace/actions/git-auto-commit
-      #- name: pushing web Dockerfile changes to main branch
-      #  uses: stefanzweifel/git-auto-commit-action@v7
-      #  with:
-          # Optional but recommended
-          # Defaults to "Apply automatic changes"
-      #    commit_message: Updated web Dockerfile to work with Raspberry Pi 4
 
   build_push:
     needs: [repo_sync]
@@ -75,8 +65,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
         with:
-          #repository: 'schklom/Home-Assistant-Extra'
-          ref: 'Home-Assistant-Extra' # branch
+          ref: "${{ env.LOCAL_BRANCH }}"
       # https://github.com/docker/setup-qemu-action#usage
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v4.4.0
@@ -99,7 +88,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       # https://github.com/docker/build-push-action#multi-platform-image
-      - name: Build and push Home-Assistant-Extra
+      - name: Build and push ${{ env.LOCAL_BRANCH }}
         uses: docker/build-push-action@v7
         with:
           context: .
